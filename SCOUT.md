@@ -33,7 +33,7 @@ node /tmp/ai-scout/tools/collect.mjs --sources /tmp/ai-scout/sources.json,source
 ```
 - `sources.local.json` 이 없을 때만(`test -f sources.local.json` 이 거짓) `--sources /tmp/ai-scout/sources.json`
 - `ok: false` 인 원천은 보고서 「수집 실패」에 이름과 `error` 를 적는다
-- 웹 검색으로 커뮤니티 발견을 보충한다(최대 3회, 지난 7일 안팎). 검색에서 나온 것은 **발견만** — 「근거」 2점은 공식 문서 · 원본 저장소로 확인한 것만
+- 웹 검색을 1~3회 해 커뮤니티 발견을 보충한다(지난 7일 안팎 — 0회로 넘기지 않는다). 검색에서 나온 것은 **발견만** — 「근거」 2점은 공식 문서 · 원본 저장소로 확인한 것만
 - ⛔ 남의 저장소 GitHub REST(`api.github.com/repos/…`) · `releases.atom` · 허용 목록 밖 호스트는 쓰지 않는다(클라우드에서 막힌다)
 
 ## 4. 공식 변경 요약
@@ -46,6 +46,8 @@ node /tmp/ai-scout/tools/collect.mjs --sources /tmp/ai-scout/sources.json,source
 ## 5. 채점
 후보 = 관련 있는 공식 변경 + 커뮤니티 · 인접 · 고정(`group: 고정`) 새 항목 + 웹 검색 발견. 장부에서 판정이 **추천 · 채택 · 보류 · 기각 · 도입됨**인 것은 빼되(추천은 판정 대기 — 두 이슈에 같은 것이 오르지 않게), 「다시 볼 조건」이 충족됐으면 다시 채점한다.
 
+**채점 전에 후보마다 원본을 읽는다** — GitHub 저장소는 `curl -sSL https://raw.githubusercontent.com/<소유자>/<저장소>/HEAD/README.md | head -60`, npm 은 `curl -sSL https://registry.npmjs.org/<이름>/latest` 의 `description`, MCP 레지스트리는 그 항목의 `description`. ⛔ 「내용 미확인」으로 점수를 매기지 않는다 — 못 읽었으면 채점하지 말고 「본 것」에 「읽기 실패: 이유」로 적는다.
+
 | 키 | 점수 | 기준 |
 |---|---|---|
 | `relevance` 0~4 | 관련성 | 4 = 프로필의 겪은 문제 · 보류 항목을 직접 푼다 · 2 = 쓰는 도구 · 흐름이 나아진다 · 0 = 있으면 좋다 |
@@ -54,6 +56,8 @@ node /tmp/ai-scout/tools/collect.mjs --sources /tmp/ai-scout/sources.json,source
 | `env` 0~2 | 환경 | 2 = 프로필의 OS 정식 지원 + 가진 것과 안 겹침 · 1 = 하나만 · 0 = 둘 다 아님 |
 | `removes` | +2 | 프로필이 가진 도구 · 규칙을 **지울 수 있다** |
 | `security` | −2 | 내 권한으로 돈다 · 로그인 공유 · 설치가 설정 · 훅을 바꾼다 — 감점과 별개로 보고서 · 이슈에 ⚠️ 로 반드시 적는다 |
+
+관련성 0 은 추천에 오르지 않는다 — 다른 점수가 높아도 「있으면 좋다」일 뿐이다(`select.mjs` 가 막고, 아깝게 빠진 것으로만 간다).
 
 `/tmp/scores.json` 에 쓴다 — 항목마다 근거 한 줄씩:
 ```
@@ -72,7 +76,7 @@ node /tmp/ai-scout/tools/select.mjs /tmp/scores.json --threshold <문턱> --cap 
 `reports/$(date -u +%F).md`:
 ```
 # AI-SCOUT YYYY-MM-DD
-> 원천 N곳(실패 K곳) · 후보 M개 · 문턱 T · 엔진 <태그>
+> 원천 N곳(실패 K곳) · 후보 M개 · 문턱 T · 엔진 <태그>        ← M = collect 「새것」 합 + 웹 발견 수(어림하지 않는다)
 ## 이번 주 추천 (N건)
 ### 1. (9점) 이름 — 무엇 한 줄
 - 종류 · 원천 · 출처
@@ -109,7 +113,7 @@ git add reports ledger.md snapshots && git commit -m "scout: $(date -u +%F) 주�
 판정 줄 형식은 `<번호> <채택|기각|보류|도입>[: 이유]` — 번호는 `reports/<오늘>.json` 의 `n` 이다. 만든 이슈 번호를 `reports/<오늘>.json` 의 `"issue"` 에 넣고, `scout: <오늘> 이슈 #<번호>` 로 6 과 같은 방법으로 커밋 · push 한다.
 
 ## 8. 알림
-푸시 알림 도구가 있으면 한 줄:
+푸시 알림 도구가 있으면 한 줄 — 0건이어도 보낸다(알림이 와야 실행된 줄 안다):
 - 추천 있음: `AI-SCOUT 추천 N건 — 이슈 #M <이슈 링크>`
 - 0건: `AI-SCOUT 0건 (공식 변경 K건) <보고서 링크>`
 

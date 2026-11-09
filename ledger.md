@@ -23,7 +23,7 @@
 
 | 원천 | 후보 | 추천 | 채택 | 마지막 수확 |
 |---|---|---|---|---|
-| cc-changelog | 1 | 0 | 0 | 2026-11-09 |
+| cc-changelog | 0 | 0 | 0 | — |
 | cc-docs-map | 0 | 0 | 0 | — |
 | anthropic-engineering | 0 | 0 | 0 | — |
 | anthropic-news | 0 | 0 | 0 | — |
@@ -33,7 +33,7 @@
 | agent-sdk-ts | 0 | 0 | 0 | — |
 | cc-action | 0 | 0 | 0 | — |
 | anthropics-new-repos | 0 | 0 | 0 | — |
-| gh-topic | 2 | 0 | 0 | 2026-11-09 |
+| gh-topic | 0 | 0 | 0 | — |
 | awesome-cc | 0 | 0 | 0 | — |
 | mcp-registry | 0 | 0 | 0 | — |
 | npm | 0 | 0 | 0 | — |

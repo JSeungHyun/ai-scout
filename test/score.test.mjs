@@ -35,3 +35,9 @@ test('같은 점수는 관련성이 높은 쪽, 그다음 입력 순서', () => 
   const r = select([entry('p', 6, 2), entry('q', 6, 4), entry('s', 6, 2)], { threshold: 5 });
   assert.deepEqual(r.items.map((i) => i.id), ['q', 'p', 's']);
 });
+
+test('관련성 0(있으면 좋다)은 합계가 문턱을 넘어도 추천에 오르지 않는다', () => {
+  const r = select([entry('nice', 6, 0), entry('real', 5, 2)], { threshold: 5, near: 2 });
+  assert.deepEqual(r.items.map((i) => i.id), ['real']);
+  assert.deepEqual(r.nearMiss.map((i) => i.id), ['nice']);
+});
