@@ -23,17 +23,17 @@
 
 | 원천 | 후보 | 추천 | 채택 | 마지막 수확 |
 |---|---|---|---|---|
-| cc-changelog | 0 | 0 | 0 | — |
+| cc-changelog | 2 | 0 | 0 | 2026-11-09 |
 | cc-docs-map | 0 | 0 | 0 | — |
 | anthropic-engineering | 0 | 0 | 0 | — |
 | anthropic-news | 0 | 0 | 0 | — |
 | claude-blog | 0 | 0 | 0 | — |
 | plugins-official | 0 | 0 | 0 | — |
 | skills | 0 | 0 | 0 | — |
-| agent-sdk-ts | 0 | 0 | 0 | — |
-| cc-action | 0 | 0 | 0 | — |
+| agent-sdk-ts | 1 | 0 | 0 | 2026-11-09 |
+| cc-action | 1 | 0 | 0 | 2026-11-09 |
 | anthropics-new-repos | 0 | 0 | 0 | — |
-| gh-topic | 0 | 0 | 0 | — |
+| gh-topic | 20 | 0 | 0 | 2026-11-09 |
 | awesome-cc | 0 | 0 | 0 | — |
 | mcp-registry | 0 | 0 | 0 | — |
 | npm | 0 | 0 | 0 | — |
@@ -47,3 +47,4 @@
 
 | 용어 | 층 | 처음 본 날 | 원문 | 근거 등급 | 메모 |
 |---|---|---|---|---|---|
+| 하네스 엔지니어링 | 하네스 | 2026-11-09 | 원문 미확인(martinfowler.com 차단) | 1 | 증거=피드백 루프 · graph=컨텍스트 구분을 문서에 적을지 |

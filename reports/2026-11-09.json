@@ -1,0 +1,87 @@
+{
+ "date": "2026-11-09",
+ "issue": null,
+ "threshold": 5,
+ "cap": 7,
+ "items": [],
+ "nearMiss": [
+  {
+   "id": "2.1.318",
+   "name": "Claude Code 2.1.318",
+   "kind": "도구",
+   "source": "cc-changelog",
+   "url": "https://code.claude.com/docs/en/changelog",
+   "scores": {
+    "relevance": 0,
+    "evidence": 2,
+    "cost": 2,
+    "env": 2,
+    "removes": false,
+    "security": false
+   },
+   "reasons": {
+    "relevance": "macOS Bash 정체 · 권한 프롬프트 키 입력 수정 — 주 PC(Windows)와 직접 관련 없음",
+    "evidence": "공식 문서/릴리스",
+    "cost": "README 설치 절차",
+    "env": "README OS 언급 확인"
+   },
+   "summary": "Claude Code 2.1.318",
+   "why": "macOS Bash 정체 · 권한 프롬프트 키 입력 수정 — 주 PC(Windows)와 직접 관련 없음",
+   "smallest": "—",
+   "pretest": "—",
+   "total": 6
+  },
+  {
+   "id": "2.1.317",
+   "name": "Claude Code 2.1.317",
+   "kind": "도구",
+   "source": "cc-changelog",
+   "url": "https://code.claude.com/docs/en/changelog",
+   "scores": {
+    "relevance": 0,
+    "evidence": 2,
+    "cost": 2,
+    "env": 2,
+    "removes": false,
+    "security": false
+   },
+   "reasons": {
+    "relevance": "SDK 훅 onFailure:block · 이메일 네트워크 전송 확인 — 하네스 훅은 CLI 훅이라 직접 관련 없음",
+    "evidence": "공식 문서/릴리스",
+    "cost": "README 설치 절차",
+    "env": "README OS 언급 확인"
+   },
+   "summary": "Claude Code 2.1.317",
+   "why": "SDK 훅 onFailure:block · 이메일 네트워크 전송 확인 — 하네스 훅은 CLI 훅이라 직접 관련 없음",
+   "smallest": "—",
+   "pretest": "—",
+   "total": 6
+  },
+  {
+   "id": "v0.3.319",
+   "name": "Agent SDK TS v0.3.319",
+   "kind": "도구",
+   "source": "agent-sdk-ts",
+   "url": "https://github.com/anthropics/claude-agent-sdk-typescript/releases/tag/v0.3.319",
+   "scores": {
+    "relevance": 0,
+    "evidence": 2,
+    "cost": 2,
+    "env": 2,
+    "removes": false,
+    "security": false
+   },
+   "reasons": {
+    "relevance": "SDK 판올림 — 하네스는 SDK 미사용",
+    "evidence": "공식 문서/릴리스",
+    "cost": "README 설치 절차",
+    "env": "README OS 언급 확인"
+   },
+   "summary": "Agent SDK TS v0.3.319",
+   "why": "SDK 판올림 — 하네스는 SDK 미사용",
+   "smallest": "—",
+   "pretest": "—",
+   "total": 6
+  }
+ ]
+}
