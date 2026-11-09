@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { extractItems, jsonPath, parseLsRemote, diffItems } from '../lib/items.mjs';
+import { extractItems, jsonPath, parseLsRemote, diffItems, versionSection } from '../lib/items.mjs';
 
 test('sections — 제목 아래 본문, CRLF 도 같다', () => {
   const s = { kind: 'sections', heading: '^## (.+)$' };
@@ -36,4 +36,21 @@ test('diffItems 첫 실행 — firstRun 개만, 0 이면 없다', () => {
   assert.deepEqual(diffItems(null, items, 2).map((i) => i.id), ['a', 'b']);
   assert.deepEqual(diffItems(null, items, 0), []);
   assert.deepEqual(diffItems(['a'], items, 2).map((i) => i.id), ['b', 'c']);
+});
+
+test('sections — 긴 절도 자르지 않는다 (v0.1.3 은 4000자에서 잘라 각 판의 17~35% 만 봤다)', () => {
+  const long = Array.from({ length: 900 }, (_, i) => `- Windows: 고친 것 ${i}`).join('\n');
+  const [item] = extractItems({ kind: 'sections', heading: '^## (.+)$' }, `## 2.1.317\n${long}\n`);
+  assert.equal(item.text, long);
+});
+
+test('versionSection — 그 판의 제목부터 같거나 높은 단계 제목 앞까지, v · [] 접두는 무시', () => {
+  const md = '# Changelog\n\n## [0.3.320]\n- 다음\n\n## 0.3.319 - 2026-11-08\n### Fixed\n- 고침\n## 0.3.3190\n- 아님\n';
+  assert.equal(versionSection(md, '0.3.319'), '### Fixed\n- 고침');
+  assert.equal(versionSection(md, '0.3.320'), '- 다음');
+  assert.equal(versionSection(md, '9.9.9'), '', '판이 없으면 빈 문자열');
+});
+
+test('versionSection — 판을 모르면(HEAD) 첫 절', () => {
+  assert.equal(versionSection('# Changelog\r\n\r\n## 5.4.0\r\n- 새것\r\n## 5.3.0\r\n- 옛것\r\n'), '- 새것');
 });

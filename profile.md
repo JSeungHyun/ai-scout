@@ -9,6 +9,7 @@
 - 보고 언어: 한국어
 - 관심 개념: 하네스 엔지니어링 · 루프 엔지니어링 · 그래프 엔지니어링 · 소프트웨어 팩토리 · 컨텍스트 엔지니어링
 - 문턱: 5
+- 소식지: https://raw.githubusercontent.com/JSeungHyun/ai-scout/main/digest/
 
 ## 가진 것
 - 개인 하네스 harness-kit(공개): 증거 모듈(`verify` · `final-gate` 스킬 · 관문 Stop 훅) + 그래프 모듈(요구 → 용어 · 파일 · 함정 기록, UserPromptSubmit 훅) · 의존성 0

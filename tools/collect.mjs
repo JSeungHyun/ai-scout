@@ -1,20 +1,16 @@
 #!/usr/bin/env node
-// 원천 수집: node tools/collect.mjs --sources a.json[,b.json] --snapshots <dir> --out <file> [--since YYYY-MM-DD]
+// 원천 수집: node tools/collect.mjs --sources a.json[,b.json] --snapshots <dir> --out <file> [--texts <dir>] [--since YYYY-MM-DD]
 //          node tools/collect.mjs --sources a.json[,b.json] --check   (스냅숏 없이 원천별 개수만)
-import { execFile } from 'node:child_process';
-import { promisify, parseArgs } from 'node:util';
+// --texts: 본문(CHANGELOG 절)이 있는 새 항목을 <dir>/<원천>/<id>.md 로
+import { parseArgs } from 'node:util';
 import { writeFileSync } from 'node:fs';
-import { loadSources, collect, fetchItems, zeroOk, reason } from '../lib/collect.mjs';
+import { loadSources, collect, fetchItems, zeroOk, reason, writeTexts } from '../lib/collect.mjs';
+import { run } from '../lib/run.mjs';
 
-// fetch 대신 curl — 클라우드 프록시를 확실히 따른다
-const exec = promisify(execFile);
-const CURL = ['-sSL', '--fail', '--max-time', '20', '-A', 'ai-scout'];
-const run = async (cmd, args) => (await exec(cmd, cmd === 'curl' ? [...CURL, ...args] : args, { timeout: 30000, maxBuffer: 64 << 20 })).stdout;
-
-const { values: a } = parseArgs({ options: { sources: { type: 'string' }, snapshots: { type: 'string' }, out: { type: 'string' }, since: { type: 'string' }, check: { type: 'boolean' } } });
+const { values: a } = parseArgs({ options: { sources: { type: 'string' }, snapshots: { type: 'string' }, out: { type: 'string' }, texts: { type: 'string' }, since: { type: 'string' }, check: { type: 'boolean' } } });
 const say = (s) => process.stdout.write(`${s}\n`);
 if (!a.sources || (!a.check && (!a.snapshots || !a.out))) {
-  process.stderr.write('usage: collect.mjs --sources a.json[,b.json] (--snapshots <dir> --out <file> [--since YYYY-MM-DD] | --check)\n');
+  process.stderr.write('usage: collect.mjs --sources a.json[,b.json] (--snapshots <dir> --out <file> [--texts <dir>] [--since YYYY-MM-DD] | --check)\n');
   process.exit(2);
 }
 const since = a.since ?? new Date(Date.now() - 7 * 864e5).toISOString().slice(0, 10);
@@ -37,5 +33,6 @@ if (a.check) {
 
 const r = await collect({ sources, snapshotsDir: a.snapshots, since, run });
 writeFileSync(a.out, `${JSON.stringify(r, null, 1)}\n`);
+if (a.texts) writeTexts(r, a.texts);
 for (const s of r.sources) say(`${s.id} ${s.ok ? `새것 ${s.newItems.length}` : `실패: ${s.error}`}`);
 process.exit(r.sources.every((s) => !s.ok) ? 1 : 0);

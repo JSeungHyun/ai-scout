@@ -1,0 +1,125 @@
+import { test } from 'node:test';
+import assert from 'node:assert/strict';
+import { spawnSync } from 'node:child_process';
+import { mkdtempSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
+import { FIELDS, checkDigest, picks, renderDigest } from '../lib/digest.mjs';
+
+const collected = { sources: [
+  { id: 'cc-changelog', group: '공식', ok: true, newItems: [{ id: '2.1.320', title: '2.1.320', text: '- Windows: 고침' }] },
+  { id: 'agent-sdk-ts', group: '공식', ok: true, newItems: [{ id: 'v0.3.320', title: 'v0.3.320', changelog: { url: 'https://raw.githubusercontent.com/a/s/v0.3.320/CHANGELOG.md', status: 404 } }] },
+  { id: 'gh-topic', group: '커뮤니티', ok: true, newItems: [{ id: 'o/tool', title: 'o/tool' }] },
+  { id: 'codex', group: '인접', ok: true, newItems: [{ id: 'rust-v0.168.0', title: 'rust-v0.168.0' }] },
+  { id: 'npm', group: '커뮤니티', ok: false, newItems: [], error: 'curl: (28) timed out' },
+] };
+const cand = (o) => ({ kind: '도구', what: '무엇 한 줄', details: ['원본에서 읽은 것'], os: '공식 — 세 OS', evidence: 2, cost: 2, reach: 2, security: false, reasons: { evidence: '원본 저장소', cost: '플러그인 하나', reach: '누구나' }, ...o });
+const good = () => ({
+  date: '2026-11-16', engine: 'v0.2.0', url: 'https://github.com/o/ai-scout/blob/main/digest/2026-11-16.md', issue: null,
+  sources: { total: 5, failed: [{ id: 'npm', error: 'curl: (28) timed out' }] },
+  conceptSearch: 'harness engineering agent loop',
+  candidates: [
+    cand({ id: '2.1.320', name: 'Claude Code 2.1.320', source: 'cc-changelog', group: '공식', kind: '변경', url: 'https://code.claude.com/docs/en/changelog', os: 'CHANGELOG: Windows 수정 1줄' }),
+    cand({ id: 'o/tool', name: 'tool', source: 'gh-topic', group: '커뮤니티', url: 'https://github.com/o/tool', os: '12: Works on Windows · 13: macOS', cost: 1 }),
+    cand({ id: 'web-thing', name: 'web thing', source: 'web', group: 'web', url: 'https://example.com/x', evidence: 1, reach: 1, security: '설치가 훅을 바꾼다' }),
+  ],
+  unread: [{ id: 'v0.3.320', name: 'Agent SDK TS v0.3.320', source: 'agent-sdk-ts', url: 'https://github.com/a/s/releases/tag/v0.3.320', reason: 'CHANGELOG 미확인(404)' }],
+  adjacent: [{ id: 'rust-v0.168.0', source: 'codex', what: '새 판' }],
+  concepts: [{ term: 'guide 와 sensor', definition: '앞에서 막는 것과 뒤에서 재는 것', origin: '해설 블로그', url: 'https://origin.example/x', date: '2026-11-12', layer: '하네스', grade: 1, read: 'https://explainer.example/x' }],
+});
+const check = (d, web = 1) => checkDigest(d, collected, web);
+const errs = (mut, web) => { const d = good(); mut(d); return check(d, web).join('\n'); };
+
+test('checkDigest — 맞는 소식지는 오류가 없다', () => {
+  assert.deepEqual(check(good()), []);
+});
+
+test('FIELDS — 개인 층이 읽는 후보 필드 이름 (바꾸면 SCOUT.md 와 개인 층이 깨진다)', () => {
+  assert.deepEqual(FIELDS, ['id', 'name', 'source', 'group', 'kind', 'url', 'what', 'details', 'os', 'evidence', 'cost', 'reach', 'security', 'reasons']);
+});
+
+test('필수 필드 · 범위 — 어느 후보인지 id 와 함께', () => {
+  assert.match(errs((d) => { d.candidates[0].evidence = 3; }), /2\.1\.320: evidence 는 0~2/);
+  assert.match(errs((d) => { d.candidates[1].details = []; }), /o\/tool: details/);
+  assert.match(errs((d) => { d.candidates[1].security = ''; }), /o\/tool: security/);
+  assert.match(errs((d) => { d.candidates[0].kind = '구조'; }), /2\.1\.320: kind/);
+  assert.match(errs((d) => { delete d.candidates[2].reasons.reach; }), /web-thing: reasons\.reach/);
+  assert.match(errs((d) => { delete d.candidates; }), /candidates/);
+});
+
+test('후보 = 수집 새것(인접 제외) + 웹 발견 — 빠진 것 · 남는 것 · 원천 묶음 · 웹 수', () => {
+  assert.match(errs((d) => { d.candidates.splice(1, 1); }), /gh-topic: .*빠졌다.*o\/tool/);
+  assert.match(errs((d) => { d.candidates.push(cand({ id: 'o/other', name: 'other', source: 'gh-topic', group: '커뮤니티', url: 'https://x' })); }), /gh-topic: .*o\/other/);
+  assert.match(errs((d) => { d.candidates[0].group = '커뮤니티'; }), /2\.1\.320: group 은 공식/);
+  assert.match(errs(() => {}, 2), /웹 발견이 2개여야 한다 \(받은 수 1\)/);
+  assert.match(errs((d) => { d.candidates.push({ ...d.candidates[1] }); }), /o\/tool: id 가 겹친다/);
+});
+
+test('인접은 adjacent 에만, 수집 실패는 sources 에 — 수집 결과와 같아야', () => {
+  assert.match(errs((d) => { d.adjacent = []; }), /인접.*rust-v0\.168\.0/);
+  assert.match(errs((d) => { d.sources.failed = []; }), /수집 실패.*npm/);
+  assert.match(errs((d) => { d.sources.total = 4; }), /원천 5곳/);
+});
+
+test('GitHub 저장소 후보의 OS 근거는 README 행 번호나 「OS 언급 없음」 (v0.1.3 은 상투문 「README OS 언급 확인」)', () => {
+  assert.match(errs((d) => { d.candidates[1].os = 'README OS 언급 확인'; }), /o\/tool: .*행 번호/);
+  assert.deepEqual(check({ ...good(), candidates: good().candidates.map((c) => (c.id === 'o/tool' ? { ...c, os: 'README 에 OS 언급 없음' } : c)) }), []);
+});
+
+test('본문을 받은 수집 항목은 읽기 실패로 넘기지 않고, CHANGELOG 가 200 이 아니면 「미확인(코드)」', () => {
+  assert.match(errs((d) => { d.unread.push({ id: '2.1.320', name: 'x', source: 'cc-changelog', reason: '길다' }); d.candidates.shift(); }), /2\.1\.320: 본문을 받았다/);
+  assert.match(errs((d) => { d.unread[0].reason = '판올림'; }), /v0\.3\.320: .*미확인\(404\)/);
+});
+
+test('date 는 그 주 월요일(개인 층이 이 이름으로 찾는다) · url 은 그 날짜 md', () => {
+  assert.match(errs((d) => { d.date = '2026-11-17'; }), /월요일/);
+  assert.match(errs((d) => { d.url = 'digest/2026-11-16.md'; }), /url/);
+});
+
+test('개념 — 최대 3 · 원문 날짜 7일 안 · 층 · 등급 1 은 연 글 · 등급 2 는 원문 · 검색어 낱말 자체는 개념이 아니다', () => {
+  assert.match(errs((d) => { d.concepts = Array(4).fill(d.concepts[0]).map((k, i) => ({ ...k, term: `t${i}` })); }), /최대 3/);
+  assert.match(errs((d) => { d.concepts[0].date = '2026-02-17'; }), /7일/);
+  assert.match(errs((d) => { d.concepts[0].layer = '기타'; }), /layer/);
+  assert.match(errs((d) => { delete d.concepts[0].read; }), /등급 1.*read/);
+  assert.match(errs((d) => { d.concepts[0].grade = 2; }), /등급 2.*원문/);
+  assert.match(errs((d) => { d.concepts[0].term = 'Harness Engineering'; }), /검색어/);
+  assert.deepEqual(check({ ...good(), concepts: [{ ...good().concepts[0], grade: 0, read: '' }] }), []);
+});
+
+test('picks(「이런 것도 있어요」) — 도구만, 근거 + 비용 + 범용성 − 보안 2 순으로 상위 3, 합 4 미만은 올리지 않는다', () => {
+  const c = (id, e, k, r, o = {}) => ({ id, kind: '도구', evidence: e, cost: k, reach: r, security: false, ...o });
+  const cs = [c('change', 2, 2, 2, { kind: '변경' }), c('low', 1, 1, 1), c('mid', 2, 1, 1), c('top', 2, 2, 2), c('risky', 2, 2, 2, { security: '훅' }), c('tie', 2, 1, 1), c('late', 2, 1, 1)];
+  assert.deepEqual(picks(cs).map((x) => x.id), ['top', 'mid', 'risky']);
+});
+
+test('renderDigest — 머리 숫자 · 절 · ⚠️ · 판정 줄 안내 없음', () => {
+  const md = renderDigest(good());
+  assert.match(md, /^# AI-SCOUT 소식 2026-11-16\n/);
+  assert.match(md, /> 원천 5곳\(실패 1곳\) · 후보 3개\(읽기 실패 1개\) · 공식 변경 1건 · 개념 1건 · 엔진 v0\.2\.0/);
+  for (const s of ['## 이런 것도 있어요 (1건)', '## 이번 주 개념 (1건)', '## 이번 주 공식 변경 (1건)', '- 인접: rust-v0.168.0(codex) — 새 판', '## 후보 전체 (3개)', '## 읽기 실패 (1개)', '- npm — curl: (28) timed out', '⚠️ 설치가 훅을 바꾼다', '12: Works on Windows', '  - 원본에서 읽은 것']) assert.ok(md.includes(s), `md 에 「${s}」 가 없다`);
+  assert.match(md, /\*\*guide 와 sensor\*\* — 앞에서 막는 것과 뒤에서 재는 것 · 처음 말한 쪽 \[해설 블로그\]\(https:\/\/origin\.example\/x\) 2026-11-12 · 층 하네스 · 근거 등급 1/);
+  assert.ok(!/채택|기각|판정/.test(md), '소식지는 판정 대상이 아니다');
+});
+
+test('renderDigest — 개념 0건이면 검색어, 등급 0 은 ⚠️', () => {
+  assert.match(renderDigest({ ...good(), concepts: [] }), /## 이번 주 개념 \(0건\)\n없음 — 개념 검색: harness engineering agent loop/);
+  assert.match(renderDigest({ ...good(), concepts: [{ ...good().concepts[0], grade: 0 }] }), /근거 등급 0 ⚠️/);
+});
+
+test('digest.mjs — --check 는 오류마다 한 줄과 exit 1, 통과하면 요약과 exit 0 · --render 는 stdout', () => {
+  const dir = mkdtempSync(join(tmpdir(), 'scout-'));
+  const [file, col] = ['d.json', 'c.json'].map((f) => join(dir, f));
+  writeFileSync(file, JSON.stringify(good()));
+  writeFileSync(col, JSON.stringify(collected));
+  const run = (...args) => spawnSync(process.execPath, ['tools/digest.mjs', ...args], { cwd: new URL('..', import.meta.url), encoding: 'utf8' });
+  assert.equal(run('--check', file, '--collect', col).status, 2, '--web 을 빠뜨리면 검사가 꺼지지 않게 usage');
+  const bad = run('--check', file, '--collect', col, '--web', '2');
+  assert.equal(bad.status, 1);
+  assert.match(bad.stderr, /웹 발견이 2개여야 한다/);
+  const ok = run('--check', file, '--collect', col, '--web', '1');
+  assert.equal(ok.status, 0);
+  assert.match(ok.stdout, /통과 · 후보 3개/);
+  const md = run('--render', file);
+  assert.equal(md.status, 0);
+  assert.equal(md.stdout, renderDigest(good()));
+});
