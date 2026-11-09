@@ -1,13 +1,13 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
-import { mkdirSync, mkdtempSync, writeFileSync } from 'node:fs';
+import { mkdirSync, mkdtempSync, readFileSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { FIELDS, checkDigest, issueBody, picks, renderDigest } from '../lib/digest.mjs';
+import { FIELDS, checkDigest, issueBody, picks, renderDigest, withLines } from '../lib/digest.mjs';
 
 const collected = { sources: [
-  { id: 'cc-changelog', group: '공식', ok: true, newItems: [{ id: '2.1.320', title: '2.1.320', text: '- Windows: 고침' }] },
+  { id: 'cc-changelog', group: '공식', ok: true, newItems: [{ id: '2.1.320', title: '2.1.320', text: '- Windows: 고침', lines: ['12: - Windows: 고침'] }] },
   { id: 'agent-sdk-ts', group: '공식', ok: true, newItems: [{ id: 'v0.3.320', title: 'v0.3.320', changelog: { url: 'https://raw.githubusercontent.com/a/s/v0.3.320/CHANGELOG.md', status: 404 } }] },
   { id: 'gh-topic', group: '커뮤니티', ok: true, newItems: [{ id: 'o/tool', title: 'o/tool' }] },
   { id: 'codex', group: '인접', ok: true, newItems: [{ id: 'rust-v0.168.0', title: 'rust-v0.168.0' }] },
@@ -19,7 +19,7 @@ const good = () => ({
   sources: { total: 5, failed: [{ id: 'npm', error: 'curl: (28) timed out' }] },
   conceptSearch: 'harness engineering agent loop',
   candidates: [
-    cand({ id: '2.1.320', name: 'Claude Code 2.1.320', source: 'cc-changelog', group: '공식', kind: '변경', url: 'https://code.claude.com/docs/en/changelog', os: 'CHANGELOG: Windows 수정 1줄' }),
+    cand({ id: '2.1.320', name: 'Claude Code 2.1.320', source: 'cc-changelog', group: '공식', kind: '변경', url: 'https://code.claude.com/docs/en/changelog', os: 'CHANGELOG: Windows 수정 1줄', lines: ['12: - Windows: 고침'] }),
     cand({ id: 'o/tool', name: 'tool', source: 'gh-topic', group: '커뮤니티', url: 'https://github.com/o/tool', os: '12: Works on Windows · 13: macOS', cost: 1, details: ['5: 원본에서 읽은 것'] }),
     cand({ id: 'web-thing', name: 'web thing', source: 'web', group: 'web', url: 'https://example.com/x', evidence: 1, reach: 1, security: '설치가 훅을 바꾼다' }),
   ],
@@ -37,7 +37,22 @@ test('checkDigest — 맞는 소식지는 오류가 없다', () => {
 });
 
 test('FIELDS — 개인 층이 읽는 후보 필드 이름 (바꾸면 SCOUT.md 와 개인 층이 깨진다)', () => {
-  assert.deepEqual(FIELDS, ['id', 'name', 'source', 'group', 'kind', 'url', 'what', 'details', 'os', 'evidence', 'cost', 'reach', 'security', 'reasons']);
+  assert.deepEqual(FIELDS, ['id', 'name', 'source', 'group', 'kind', 'url', 'what', 'details', 'lines', 'os', 'evidence', 'cost', 'reach', 'security', 'reasons']);
+});
+
+test('CHANGELOG 절이 있는 판은 lines = collect 의 절 줄(원본 행 번호) 그대로 (11-09: details 9/87줄만 실려 개인 층이 SendMessage 변경을 못 봤다)', () => {
+  assert.match(errs((d) => { delete d.candidates[0].lines; }), /2\.1\.320: lines .*--lines/);
+  assert.match(errs((d) => { d.candidates[0].lines = ['12: - Windows: 고침', '13: - 지어낸 줄']; }), /2\.1\.320: lines/);
+  assert.match(errs((d) => { d.candidates[0].lines = ['99: - Windows: 고침']; }), /2\.1\.320: lines/, '행 번호도 같아야 한다');
+});
+
+test('withLines — collect 의 절 줄을 그 판 후보에 채운다 · 절이 없는 후보는 그대로', () => {
+  const d = good();
+  delete d.candidates[0].lines;
+  const filled = withLines(d, collected);
+  assert.deepEqual(filled.candidates[0].lines, ['12: - Windows: 고침']);
+  assert.deepEqual(filled.candidates.slice(1), d.candidates.slice(1));
+  assert.deepEqual(check(filled), []);
 });
 
 test('필수 필드 · 범위 — 어느 후보인지 id 와 함께', () => {
@@ -142,6 +157,7 @@ test('renderDigest — 머리 숫자 · 절 · ⚠️ · 판정 줄 안내 없�
   for (const s of ['## 이런 것도 있어요 (1건)', '## 이번 주 개념 (1건)', '- 인접: rust-v0.168.0(codex) — 새 판', '## 후보 전체 (3개)', '## 읽기 실패 (1개)', '- npm — curl: (28) timed out', '⚠️ 설치가 훅을 바꾼다', '12: Works on Windows', '  - 원본에서 읽은 것']) assert.ok(md.includes(s), `md 에 「${s}」 가 없다`);
   assert.match(md, /\*\*guide 와 sensor\*\* — 앞에서 막는 것과 뒤에서 재는 것 · 처음 말한 쪽 \[해설 블로그\]\(https:\/\/origin\.example\/x\) 2026-11-12 · 층 하네스 · 근거 등급 1/);
   assert.ok(!/채택|기각|판정/.test(md), '소식지는 판정 대상이 아니다');
+  assert.ok(!md.includes('12: - Windows'), 'md 는 details 만 — 절 줄(lines)은 JSON 에만');
 });
 
 test('renderDigest — 개념 0건이면 검색어, 등급 0 은 ⚠️', () => {
@@ -181,4 +197,18 @@ test('digest.mjs — --check 는 오류마다 한 줄과 exit 1, 통과하면 �
   const issue = run('--issue', file);
   assert.equal(issue.status, 0);
   assert.equal(issue.stdout, issueBody(good()));
+});
+
+test('digest.mjs --lines — collect 출력에서 절 줄을 채워 같은 파일에 쓴다(손으로 옮기지 않게) · --collect 가 없으면 usage', () => {
+  const dir = mkdtempSync(join(tmpdir(), 'scout-'));
+  const [file, col] = ['d.json', 'c.json'].map((f) => join(dir, f));
+  const d = good();
+  delete d.candidates[0].lines;
+  writeFileSync(file, JSON.stringify(d));
+  writeFileSync(col, JSON.stringify(collected));
+  const run = (...args) => spawnSync(process.execPath, ['tools/digest.mjs', ...args], { cwd: new URL('..', import.meta.url), encoding: 'utf8' });
+  assert.equal(run('--lines', file).status, 2);
+  const r = run('--lines', file, '--collect', col);
+  assert.equal(r.status, 0, r.stderr);
+  assert.deepEqual(JSON.parse(readFileSync(file, 'utf8')), good());
 });

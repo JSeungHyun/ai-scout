@@ -53,7 +53,7 @@ collect 출력 직후, 원본 파일을 열기 전에 검색한다 — 읽은 �
   "sources": { "total": <원천 수>, "failed": [{ "id": "…", "error": "…" }] },
   "conceptSearch": "<개념 검색어>",
   "candidates": [{ "id": "<collect 항목 id · 웹 발견은 이름>", "name": "이름", "source": "<원천 id 또는 web>", "group": "공식|커뮤니티|web", "kind": "도구|변경", "url": "https://…",
-    "what": "무엇 한 줄", "details": ["원본에서 읽은 주요 내용 · 변경 — 한 줄씩"], "os": "OS 근거",
+    "what": "무엇 한 줄", "details": ["원본에서 읽은 주요 내용 · 변경 — 한 줄씩"], "lines": ["(쓰지 않는다 — --lines 가 채운다)"], "os": "OS 근거",
     "evidence": 0, "cost": 0, "reach": 0, "security": false,
     "reasons": { "evidence": "…", "cost": "…", "reach": "…", "security": "보안 행이 있는데 false 일 때 — 왜 ⚠️ 가 아닌가" } }],
   "unread": [{ "id": "…", "name": "…", "source": "…", "group": "공식|커뮤니티|web", "url": "…", "reason": "읽기 실패 이유 — 미확인(404) 등" }],
@@ -63,6 +63,7 @@ collect 출력 직후, 원본 파일을 열기 전에 검색한다 — 읽은 �
 - 공식 새 항목은 **빠짐없이** `candidates` 에(못 읽었으면 `unread` — 이유가 「미확인」 줄로 함께 오른다) — 「이번 주 공식 변경」 절은 도구가 여기서 만든다. 커뮤니티 새 항목 · 웹 발견도 하나씩 — **묶지 않는다**
 - `kind`: 도구 = 설치할 것(플러그인 · 스킬 · MCP · 패키지 · 저장소) · 변경 = CLI · SDK 판 · 문서 · 공식 글
 - `details`: 판이면 눈에 띄는 변경(OS 별 수정 포함), 도구면 하는 일 · 설치 방식 — 원본에서 읽은 것만. 개인 층은 원본을 다시 읽지 않고 이것으로 판정한다. 판의 백틱 안은 그 판 원문 그대로 — 도구가 그 판 절 본문에서 찾는다(다른 판의 변경을 옮겨 적지 않게). GitHub 저장소는 README 행 번호 인용(3)
+- `lines`: CHANGELOG 절이 있는 판(태그 · HEAD 포함)은 절 전문 줄(원본 행 번호)을 싣는다 — 손으로 쓰지 않고 아래 `--lines` 가 collect 출력에서 채운다(md 에는 실리지 않는다). details 가 고른 줄 밖의 변경도 개인 층 `link.mjs` 가 하네스 열린 줄과 맞춘다
 - `reasons`: 후보마다 원본에서 읽은 근거 — 점수를 문구로 바꾸지 않는다. 같은 문장이 커뮤니티 후보 절반 이상이면 도구가 거부한다
 - 인접 원천(`group: 인접`)의 새 항목은 `adjacent` 에 한 줄씩 — 채점하지 않고 **중립 사실을 적지 않는다**
 - 이름 · `@handle` 을 옮길 때는 백틱으로 감싼다 — 사용자 명의로 남에게 멘션 알림이 가지 않게
@@ -78,9 +79,10 @@ collect 출력 직후, 원본 파일을 열기 전에 검색한다 — 읽은 �
 「이런 것도 있어요」는 도구가 고른다 — `kind: 도구` 중 근거 + 비용 + 범용성 − (⚠️ 이면 2) 순으로 상위 3, 합 4 미만은 올리지 않는다(억지로 채우지 않는다). 동점이면 수집 순서(gh-topic 은 별 순)로 앞선 것.
 
 ```
+node /tmp/ai-scout/tools/digest.mjs --lines digest/<이번 주>.json --collect /tmp/candidates.json
 node /tmp/ai-scout/tools/digest.mjs --check digest/<이번 주>.json --collect /tmp/candidates.json --web <웹 발견 수> --readme /tmp/readme
 ```
-- 실패하면 메시지대로 고쳐 다시 돌린다(빠진 · 남는 후보 · 범위 · OS 근거 · README 행 번호 · 보안 이유 · 같은 reasons 문장 · 판 귀속 · 미확인 표시 · 개념 날짜 · 등급) — 통과하기 전에는 md · 이슈 · 커밋을 하지 않는다
+- 실패하면 메시지대로 고쳐 다시 돌린다(빠진 · 남는 후보 · 범위 · OS 근거 · README 행 번호 · 보안 이유 · 같은 reasons 문장 · 판 귀속 · 절 줄 · 미확인 표시 · 개념 날짜 · 등급) — 통과하기 전에는 md · 이슈 · 커밋을 하지 않는다. JSON 을 새로 쓰면 `--lines` 부터 다시
 
 ## 6. 기록
 ```

@@ -103,6 +103,15 @@ test('장부 제외 — CHANGELOG 판 일부만 가리키는 장부 줄로 판 �
   for (const s of ['CHANGELOG 판 단위 항목', '나머지 변경으로 채점한다']) has(s);
 });
 
+test('하네스 문서는 link.mjs 로 읽고 select 에 --links · 관련성 이유는 대조한 자리(11-09: plan.md 를 grep 한 번 · SendMessage 연결을 details 밖이라 놓쳤다 · 15/24 상투문)', () => {
+  for (const s of [
+    'node /tmp/ai-scout/tools/link.mjs --profile profile.md --digest <소식지 JSON> --out /tmp/links.json', '--links /tmp/links.json',
+    '하네스 문서는 5 의 `link.mjs` 로 읽는다', '겹치는 「가진 것」 또는 「해당 줄 없음」', '`plan.md:13`', '관련성 2 이상 항목만',
+  ]) has(s);
+  assert.ok(!md.includes('curl -sSL <raw 주소>'), '하네스 문서를 손으로 받으면 일부만 본다');
+  assert.ok(md.indexOf('tools/link.mjs') < md.indexOf('tools/select.mjs'), 'select 전에 연결 후보를 낸다');
+});
+
 // ── 두 층 공통 ──
 
 test('엔진 도구는 이 절차의 도구 · 금지는 후보로 받은 코드만(11-09 v0.2.0: 분류기가 「가져온 코드」 금지를 clone 한 엔진 도구에도 걸었다)', () => {
@@ -154,6 +163,15 @@ test('DIGEST.md — README 파일의 보안 행 · 행 번호 인용 · ⚠️ �
     '--web <웹 발견 수> --readme /tmp/readme', '보안 행', '플러그인 훅', 'details 한 줄 이상은 그 파일의 행 번호 줄을 인용',
     '`reasons.security`', '같은 문장이 커뮤니티 후보 절반 이상이면 도구가 거부한다', '백틱 안은 그 판 원문 그대로',
   ]) dhas(s);
+});
+
+test('DIGEST.md — CHANGELOG 판의 절 줄은 --lines 가 채우고 --check 앞에 둔다', () => {
+  dhas('node /tmp/ai-scout/tools/digest.mjs --lines digest/<이번 주>.json --collect /tmp/candidates.json');
+  assert.ok(digest.indexOf('tools/digest.mjs --lines') < digest.indexOf('tools/digest.mjs --check'), '--check 가 lines 를 본다');
+});
+
+test('design.md — 연결 후보 단락 · 도구 목록에 link', () => {
+  for (const s of ['**연결 후보**', 'link(']) ghas(s);
 });
 
 test('DIGEST.md — evidence 의 GitHub 도구 기준(11-09: 20/20 일괄 1)', () => {

@@ -8,7 +8,7 @@ import { total, validate, select } from '../lib/score.mjs';
 
 const S = { relevance: 4, evidence: 2, cost: 2, env: 1, removes: false, security: false };
 // 합계가 t 가 되는 항목 — 관련성은 r
-const entry = (id, t, r = Math.min(4, t)) => ({ id, name: id, kind: '도구', source: 'x', scores: { relevance: r, evidence: 0, cost: 0, env: 0, removes: false, security: false, ...fill(t - r) } });
+const entry = (id, t, r = Math.min(4, t)) => ({ id, name: id, kind: '도구', source: 'x', scores: { relevance: r, evidence: 0, cost: 0, env: 0, removes: false, security: false, ...fill(t - r) }, reasons: { relevance: `${id} — 대조한 자리` }, why: 'w', smallest: 's', pretest: 'p' });
 const fill = (rest) => ({ evidence: Math.min(2, rest), cost: Math.min(2, Math.max(0, rest - 2)), env: Math.max(0, rest - 4) });
 
 test('total', () => {
@@ -21,7 +21,31 @@ test('범위 밖 점수는 id 와 함께 실패', () => {
   assert.throws(() => validate([{ id: 'x', scores: { ...S, relevance: 5 } }]), /x/);
   assert.throws(() => validate([{ id: 'y', scores: { relevance: 1, evidence: 0, cost: 0 } }]), /y/);
   assert.throws(() => validate([{ id: 'z', scores: { ...S, removes: 'yes' } }]), /z/);
-  assert.doesNotThrow(() => validate([{ id: 'ok', scores: S }]));
+  assert.doesNotThrow(() => validate([{ id: 'ok', scores: S, why: 'w', smallest: 's', pretest: 'p' }]));
+});
+
+test('같은 reasons.relevance 문장이 항목 절반 이상이면 거부 (11-09 개인: 15/24 같은 문장 — 항목마다 대조했는지 감사할 수 없다)', () => {
+  const same = (id) => ({ ...entry(id, 3, 1), reasons: { relevance: '프로필과 무관 — 있으면 좋다 이하' } });
+  assert.throws(() => validate([same('a'), same('b'), entry('c', 3, 1), entry('d', 3, 1)]), /reasons\.relevance 「프로필과 무관 — 있으면 좋다 이하」 가 2\/4개/);
+  assert.doesNotThrow(() => validate([same('a'), same('b'), entry('c', 3, 1), entry('d', 3, 1), entry('e', 3, 1)]), '5개 중 2개는 절반 미만');
+  const blank = (id) => ({ ...entry(id, 3, 1), reasons: {} });
+  assert.throws(() => validate([blank('a'), blank('b'), entry('c', 3, 1)]), /reasons\.relevance 「\(비어 있음\)」/, '빼 버려도 같은 규칙');
+});
+
+test('why · smallest · pretest 는 관련성 2 이상만 요구 (11-09: 24/24 「없음(추천 아님)」 고정 문구)', () => {
+  const { why, smallest, pretest, ...bare } = entry('hi', 6, 2);
+  assert.throws(() => validate([bare]), /hi: .*why · smallest · pretest/);
+  assert.throws(() => validate([{ ...bare, why: 'w', smallest: ' ', pretest: 'p' }]), /hi: .*smallest/);
+  const { why: _w, smallest: _s, pretest: _p, ...low } = entry('lo', 6, 1);
+  assert.doesNotThrow(() => validate([low]));
+});
+
+test('연결 후보가 있는 항목은 reasons.relevance 가 그 하네스 자리(파일:행)를 인용해야 — 점수는 0 이어도 된다', () => {
+  const links = [{ id: 'cl', line: 304, word: 'SendMessage', text: '- Changed SendMessage', doc: 'https://raw.example/o/h/main/docs/plan.md', at: [13, 201] }];
+  const cl = entry('cl', 6, 0);
+  assert.throws(() => select([cl, entry('b', 4)], { links }), /cl: 연결 후보 .*304.*SendMessage.*plan\.md:13 · plan\.md:201/);
+  assert.doesNotThrow(() => select([{ ...cl, reasons: { relevance: '하네스 plan.md:201 은 답장 경로 — 이 변경과 다르다' } }, entry('b', 4)], { links }));
+  assert.doesNotThrow(() => select([entry('b', 4)], { links }), '장부로 빠진 항목의 연결 후보는 묻지 않는다');
 });
 
 test('문턱 · 상한 · 아깝게 빠진 것 · 번호', () => {
@@ -92,23 +116,32 @@ test('expect — 항목 수가 다르면 받은 수와 함께 실패 (후보를 
   assert.doesNotThrow(() => select([entry('a', 9)]));
 });
 
-test('select.mjs — --expect · --digest · --out 이 없으면 usage 와 exit 2, 성공해야 --out 이 생긴다', () => {
+test('select.mjs — --expect · --digest · --links · --out 이 없으면 usage 와 exit 2, 성공해야 --out 이 생긴다', () => {
   const dir = mkdtempSync(join(tmpdir(), 'scout-'));
-  const [file, digest, out] = ['scores.json', 'digest.json', 'report.json'].map((f) => join(dir, f));
+  const [file, digest, links, out] = ['scores.json', 'digest.json', 'links.json', 'report.json'].map((f) => join(dir, f));
   writeFileSync(file, JSON.stringify([entry('a', 9)]));
   writeFileSync(digest, JSON.stringify({ date: '2026-11-16', url: 'https://x/digest/2026-11-16.md', candidates: [] }));
+  writeFileSync(links, JSON.stringify({ docs: [], links: [] }));
   const run = (...args) => spawnSync(process.execPath, ['tools/select.mjs', file, '--date', '2026-11-16', ...args], { cwd: new URL('..', import.meta.url), encoding: 'utf8' });
-  const none = run('--digest', digest, '--out', out);
+  const none = run('--digest', digest, '--links', links, '--out', out);
   assert.equal(none.status, 2);
   assert.match(none.stderr, /--expect N/);
-  assert.equal(run('--expect', '1', '--out', out).status, 2);
-  assert.equal(run('--expect', '1', '--digest', digest).status, 2);
-  assert.equal(run('--expect', '2', '--digest', digest, '--out', out).status, 1);
+  assert.equal(run('--expect', '1', '--links', links, '--out', out).status, 2);
+  assert.equal(run('--expect', '1', '--digest', digest, '--links', links).status, 2);
+  const noLinks = run('--expect', '1', '--digest', digest, '--out', out);
+  assert.equal(noLinks.status, 2, '--links 를 빠뜨리면 연결 후보 검사가 조용히 꺼지지 않게 usage');
+  assert.match(noLinks.stderr, /--links/);
+  assert.equal(run('--expect', '2', '--digest', digest, '--links', links, '--out', out).status, 1);
   assert.equal(existsSync(out), false, '실패하면 보고서가 생기지 않는다');
-  const stale = spawnSync(process.execPath, ['tools/select.mjs', file, '--date', '2026-11-24', '--expect', '1', '--digest', digest, '--out', out], { cwd: new URL('..', import.meta.url), encoding: 'utf8' });
+  const stale = run('--expect', '1', '--digest', digest, '--links', links, '--out', out, '--date', '2026-11-24');
   assert.equal(stale.status, 1, '지난주 소식지로 추천하지 않는다');
   assert.match(stale.stderr, /이번 주\(2026-11-23\)/);
-  assert.equal(run('--expect', '1', '--digest', digest, '--out', out).status, 0);
+  writeFileSync(links, JSON.stringify({ docs: [], links: [{ id: 'a', line: 304, word: 'SendMessage', text: 't', doc: 'https://raw.example/docs/plan.md', at: [13] }] }));
+  const uncited = run('--expect', '1', '--digest', digest, '--links', links, '--out', out);
+  assert.equal(uncited.status, 1);
+  assert.match(uncited.stderr, /a: 연결 후보 .*plan\.md:13/);
+  writeFileSync(links, JSON.stringify({ docs: [], links: [] }));
+  assert.equal(run('--expect', '1', '--digest', digest, '--links', links, '--out', out).status, 0);
   const r = JSON.parse(readFileSync(out, 'utf8'));
   assert.deepEqual([r.date, r.issue, r.expect, r.digest], ['2026-11-16', null, 1, { date: '2026-11-16', url: 'https://x/digest/2026-11-16.md' }]);
   assert.deepEqual([r.items.length, r.seen.length, r.rescored.length], [1, 0, 0]);
@@ -116,9 +149,10 @@ test('select.mjs — --expect · --digest · --out 이 없으면 usage 와 exit 
 
 test('select.mjs — --out 이 이미 있으면 첫 결과로 보고, 이유 없는 점수 변경을 거부한다', () => {
   const dir = mkdtempSync(join(tmpdir(), 'scout-'));
-  const [file, digest, out] = ['scores.json', 'digest.json', 'report.json'].map((f) => join(dir, f));
+  const [file, digest, links, out] = ['scores.json', 'digest.json', 'links.json', 'report.json'].map((f) => join(dir, f));
   writeFileSync(digest, JSON.stringify({ date: '2026-11-16', url: 'u', candidates: [] }));
-  const run = () => spawnSync(process.execPath, ['tools/select.mjs', file, '--date', '2026-11-16', '--expect', '1', '--digest', digest, '--out', out], { cwd: new URL('..', import.meta.url), encoding: 'utf8' });
+  writeFileSync(links, JSON.stringify({ docs: [], links: [] }));
+  const run = () => spawnSync(process.execPath, ['tools/select.mjs', file, '--date', '2026-11-16', '--expect', '1', '--digest', digest, '--links', links, '--out', out], { cwd: new URL('..', import.meta.url), encoding: 'utf8' });
   writeFileSync(file, JSON.stringify([entry('a', 7, 1)]));
   assert.equal(run().status, 0);
   writeFileSync(file, JSON.stringify([entry('a', 6, 0)]));

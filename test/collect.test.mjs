@@ -96,7 +96,7 @@ test('pinned-marketplace — 고정 sha 와 최신 HEAD 가 다르면 항목', a
   const behind = await collect({ sources: [src], snapshotsDir: tmp(), since: '2026-11-02', run: fakeRun({ 'raw.example': market, 'o/p.git': 'bbbbbbb2\tHEAD\n', 'p/bbbbbbb2/CHANGELOG.md': cl }) });
   assert.deepEqual(behind.sources[0].newItems, [{
     id: 'p@bbbbbbb2', title: 'p: 고정 aaaaaaa → 최신 bbbbbbb', url: 'https://github.com/o/p/compare/aaaaaaa...bbbbbbb',
-    repo: 'https://github.com/o/p', ref: 'bbbbbbb2', changelog: { url: 'https://raw.githubusercontent.com/o/p/bbbbbbb2/CHANGELOG.md', status: 200 }, text: '- 새것',
+    repo: 'https://github.com/o/p', ref: 'bbbbbbb2', changelog: { url: 'https://raw.githubusercontent.com/o/p/bbbbbbb2/CHANGELOG.md', status: 200 }, text: '- 새것', lines: ['3: - 새것'],
   }]);
   const same = await collect({ sources: [src], snapshotsDir: tmp(), since: '2026-11-02', run: fakeRun({ 'raw.example': market, 'o/p.git': 'aaaaaaa1\tHEAD\n' }) });
   assert.equal(same.sources[0].ok, true);
@@ -137,6 +137,7 @@ test('git-tags 새 판은 그 태그의 CHANGELOG 에서 판 절과 HTTP 200 을
   const src = { id: 't', group: '공식', kind: 'git-tags', repo: 'https://github.com/o/t', tagPattern: '^v\\d+\\.\\d+\\.\\d+$', firstRun: 1 };
   const [row] = (await collect({ sources: [src], snapshotsDir: tmp(), since: '2026-11-02', run })).sources;
   assert.equal(row.newItems[0].text, '- 새 기능');
+  assert.deepEqual(row.newItems[0].lines, ['3: - 새 기능'], '절 줄은 그 ref CHANGELOG 의 원본 행 번호로');
   assert.deepEqual(row.newItems[0].changelog, { url: 'https://raw.githubusercontent.com/o/t/v2.0.0/CHANGELOG.md', status: 200 });
 });
 

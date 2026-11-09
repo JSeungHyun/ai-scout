@@ -32,7 +32,7 @@ Claude Code 생태계(CLI 판 · 공식 플러그인 · 스킬 · MCP · 커뮤�
 |---|---|
 | `DIGEST.md` · `SCOUT.md` | 매주 절차 — 공통 소식지 · 개인 추천 |
 | `sources.json` | 원천과 읽는 길 |
-| `lib/` · `tools/` | 수집 · README 읽기 · 소식지 검사와 md · 선택 · 보고서 · 판정 줄 — Node 20+, 의존성 0, `node --test` |
+| `lib/` · `tools/` | 수집 · README 읽기 · 소식지 검사와 md · 하네스 연결 후보 · 선택 · 보고서 · 판정 줄 — Node 20+, 의존성 0, `node --test` |
 | `digest/` | 공통 소식지와 그 장부 |
 | `docs/design.md` | 설계 |
 

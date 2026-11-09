@@ -6,9 +6,14 @@ test('sections — 제목 아래 본문, CRLF 도 같다', () => {
   const s = { kind: 'sections', heading: '^## (.+)$' };
   const body = '# Changelog\r\n\r\n## 2.1.319\r\n- a\r\n- b\r\n## 2.1.318\n- c\n';
   assert.deepEqual(extractItems(s, body), [
-    { id: '2.1.319', title: '2.1.319', text: '- a\n- b' },
-    { id: '2.1.318', title: '2.1.318', text: '- c' },
+    { id: '2.1.319', title: '2.1.319', text: '- a\n- b', lines: ['4: - a', '5: - b'] },
+    { id: '2.1.318', title: '2.1.318', text: '- c', lines: ['7: - c'] },
   ]);
+});
+
+test('sections — 절 줄은 원본 행 번호와 함께, 빈 줄은 뺀다 (11-09: details 9/87줄만 실려 개인 층이 SendMessage 변경을 못 봤다)', () => {
+  const [item] = extractItems({ kind: 'sections', heading: '^## (.+)$' }, '# Changelog\n\n## 2.1.317\n\n- Changed `SendMessage`\n\n- Fixed x\n');
+  assert.deepEqual(item.lines, ['5: - Changed `SendMessage`', '7: - Fixed x']);
 });
 
 test('lines — 캡처 1 이 id, 중복 제거, 상대 경로는 원천 url 기준 절대 url', () => {
@@ -46,11 +51,11 @@ test('sections — 긴 절도 자르지 않는다 (v0.1.3 은 4000자에서 잘�
 
 test('versionSection — 그 판의 제목부터 같거나 높은 단계 제목 앞까지, v · [] 접두는 무시', () => {
   const md = '# Changelog\n\n## [0.3.320]\n- 다음\n\n## 0.3.319 - 2026-11-08\n### Fixed\n- 고침\n## 0.3.3190\n- 아님\n';
-  assert.equal(versionSection(md, '0.3.319'), '### Fixed\n- 고침');
-  assert.equal(versionSection(md, '0.3.320'), '- 다음');
-  assert.equal(versionSection(md, '9.9.9'), '', '판이 없으면 빈 문자열');
+  assert.deepEqual(versionSection(md, '0.3.319'), { text: '### Fixed\n- 고침', lines: ['7: ### Fixed', '8: - 고침'] });
+  assert.equal(versionSection(md, '0.3.320').text, '- 다음');
+  assert.deepEqual(versionSection(md, '9.9.9'), { text: '', lines: [] }, '판이 없으면 빈 절');
 });
 
 test('versionSection — 판을 모르면(HEAD) 첫 절', () => {
-  assert.equal(versionSection('# Changelog\r\n\r\n## 5.4.0\r\n- 새것\r\n## 5.3.0\r\n- 옛것\r\n'), '- 새것');
+  assert.deepEqual(versionSection('# Changelog\r\n\r\n## 5.4.0\r\n- 새것\r\n## 5.3.0\r\n- 옛것\r\n'), { text: '- 새것', lines: ['4: - 새것'] });
 });

@@ -14,7 +14,7 @@
 - `reports/$(date -u +%F).json 이 이미 있으면` 오늘 실행은 끝난 것이다 — 아무것도 바꾸지 않고 멈춘다(이유 「오늘 이미 실행됨」 — 같은 날 다시 돌면 스냅숏이 이미 전진해 있어 보고서와 이슈 연결을 빈 결과로 덮는다)
 
 ## 1. 읽기
-`profile.md` · `ledger.md` 를 읽는다. 프로필이 하네스 문서를 가리키면 그것도 읽는다(공개 저장소면 `curl -sSL <raw 주소>`). 프로필의 「문턱」 값(없으면 5)과 `소식지:` 주소를 기억한다.
+`profile.md` · `ledger.md` 를 읽는다. 하네스 문서는 5 의 `link.mjs` 로 읽는다 — curl 로 따로 받아 일부만 grep 하지 않는다(열린 줄 전부와 연결 후보를 도구가 낸다). 프로필의 「문턱」 값(없으면 5)과 `소식지:` 주소를 기억한다.
 
 ## 2. 지난 판정 반영
 보고서 JSON 에서 시작한다(이슈 목록 도구에 기대지 않는다):
@@ -51,8 +51,16 @@ node /tmp/ai-scout/tools/collect.mjs --sources sources.local.json --snapshots sn
 ⛔ 「내용 미확인」으로 점수를 매기지 않는다 — 개인 원천을 못 읽었으면 채점하지 말고 보고서 「수집 실패」에 「읽기 실패: 이유」로 적는다.
 
 - 소식지 후보의 `evidence` · `cost` 는 **소식지 값 그대로**, `security` 는 소식지 `security` 가 이유 문자열이면 `true`(그 이유를 `reasons.security` 에) — `select.mjs --digest` 가 맞춰 보고 다르면 거부한다. `reasons.evidence` · `reasons.cost` 도 소식지 것을 옮긴다
-- 개인이 매기는 것은 `relevance` · `env` · `removes` — `env` 는 소식지 `os` 근거로 프로필의 OS 를 보고, 프로필 「가진 것」과 겹치는지 본다. `what` · `details` 로 판정하고 원본을 다시 읽지 않는다
+- 개인이 매기는 것은 `relevance` · `env` · `removes` — `env` 는 소식지 `os` 근거로 프로필의 OS 를 보고, 프로필 「가진 것」과 겹치는지 본다. `what` · `details`(연결 후보는 아래 `/tmp/links.json` 의 `text`)로 판정하고 원본을 다시 읽지 않는다
 - 개인 원천 항목은 여섯 값을 모두 직접 매긴다(원본은 4 의 `/tmp/texts`)
+- 채점 전에 하네스 문서를 읽어 연결 후보를 낸다:
+  ```
+  node /tmp/ai-scout/tools/link.mjs --profile profile.md --digest <소식지 JSON> --out /tmp/links.json
+  ```
+  `docs[].open` 은 프로필 「겪은 문제」가 가리키는 하네스 문서의 열린 줄(⚠️ · ⏸ · 보류 · `- [ ]` — 원본 행 번호)이고, `links` 는 소식지 공식 판의 절 줄(`lines` — details 에 없는 줄까지)이 그 열린 줄의 식별자 낱말과 닿은 **연결 후보**(`id` · CHANGELOG `line` · `text` · 하네스 `doc` · 행 `at`)다. 하네스가 없는 프로필이면 둘 다 비어 있다. 실패하면(문서를 못 받음) 멈춘다
+- 관련성 이유(`reasons.relevance`)에는 대조한 프로필 · 하네스 자리를 적는다 — 겹치는 「가진 것」 또는 「해당 줄 없음」. 같은 문장이 항목 절반 이상이면 select 가 거부한다
+- 연결 후보가 있는 항목은 `reasons.relevance` 에 그 하네스 자리를 `plan.md:13` 꼴(파일 이름:행)로 인용한다 — 점수는 판단대로(0 이어도 「봤다」는 인용은 남긴다)
+- `why` · `smallest` · `pretest` 는 관련성 2 이상 항목만 쓴다 — 나머지는 빼고, 고정 문구로 채우지 않는다
 
 | 키 | 점수 | 기준 |
 |---|---|---|
@@ -70,18 +78,18 @@ node /tmp/ai-scout/tools/collect.mjs --sources sources.local.json --snapshots sn
 [{ "id": "<소식지 후보 id 또는 개인 원천 항목 id>", "name": "이름", "kind": "도구|구조", "source": "<원천 id 또는 web>", "url": "<출처>",
    "scores": { "relevance": 0, "evidence": 0, "cost": 0, "env": 0, "removes": false, "security": false },
    "reasons": { "relevance": "…", "evidence": "…", "cost": "…", "env": "…", "security": "…(있을 때)", "removes": "…(있을 때)" },
-   "summary": "무엇 한 줄", "why": "왜 나에게", "smallest": "가장 작은 도입", "pretest": "사전 시험 방법" }]
+   "summary": "무엇 한 줄", "why": "왜 나에게(관련성 2 이상만)", "smallest": "가장 작은 도입(〃)", "pretest": "사전 시험 방법(〃)" }]
 ```
 ```
-node /tmp/ai-scout/tools/select.mjs /tmp/scores.json --digest <소식지 JSON> --threshold <문턱> --cap 7 --expect <scores.json 에 넣어야 할 수> --date $(date -u +%F) --out reports/$(date -u +%F).json [--near 3]
+node /tmp/ai-scout/tools/select.mjs /tmp/scores.json --digest <소식지 JSON> --links /tmp/links.json --threshold <문턱> --cap 7 --expect <scores.json 에 넣어야 할 수> --date $(date -u +%F) --out reports/$(date -u +%F).json [--near 3]
 ```
 - `--expect` 수 = 소식지 후보 수 − 장부로 뺀 수 + 개인 원천 새것 − 개인 원천 읽기 실패 — 3 · 4 · 5 에서 센 값으로 넣는다(scores.json 을 센 값이 아니다). 어긋나면 select 가 scores.json 에 없는 소식지 후보 id 를 보여 준다
 - `--near 3` 은 `reports/*.json` 이 2개 미만일 때만(처음 2회)
-- 실패하면(범위 밖 점수 · 소식지와 다른 근거 · 비용 · 보안 · 숫자 아닌 문턱 · 항목 수가 `--expect` 와 다름) 메시지대로 고친다 — 소식지가 이번 주 것이 아니라는 실패는 고치지 말고 3 대로 알리고 멈춘다. 그 밖에는 메시지대로 고쳐 다시 돌린다 — 성공하기 전에는 `reports/` 에 아무것도 생기지 않는다
+- 실패하면(범위 밖 점수 · 소식지와 다른 근거 · 비용 · 보안 · 숫자 아닌 문턱 · 항목 수가 `--expect` 와 다름 · 연결 후보 인용 없음 · 같은 관련성 이유 · 관련성 2 이상인데 why · smallest · pretest 없음) 메시지대로 고친다 — 소식지가 이번 주 것이 아니라는 실패는 고치지 말고 3 대로 알리고 멈춘다. 그 밖에는 메시지대로 고쳐 다시 돌린다 — 성공하기 전에는 `reports/` 에 아무것도 생기지 않는다
 - **재채점**: select 가 성공한 뒤 점수를 고치려면 그 항목에 `"rescore": "이유"` 를 넣고 같은 명령을 다시 돌린다 — select 가 첫 결과와 비교해 이유 없는 변경은 거부하고, 전 · 후 · 이유를 보고서 「재채점」 절에 남긴다. ⛔ `reports/$(date -u +%F).json` 을 지우거나 옮기지 않는다
 
 ## 5-1. 개념 — 소식지 것에 내 자리 한 줄
-소식지 `concepts`(최대 3)마다 한 줄: 용어 — 「내 환경의 어느 자리」(1 에서 읽은 하네스 문서 · 프로필 「가진 것」과 대조해 어느 모듈 · 규칙에 질문을 던지나 — 하네스가 없으면 층만) · 소식지 근거 등급 · 원문 링크. 새로 찾지 않는다 — 개념 검색 · 원문 읽기는 공통 층 몫이다.
+소식지 `concepts`(최대 3)마다 한 줄: 용어 — 「내 환경의 어느 자리」(5 의 `/tmp/links.json` 하네스 열린 줄 · 프로필 「가진 것」과 대조해 어느 모듈 · 규칙에 질문을 던지나 — 하네스가 없으면 층만) · 소식지 근거 등급 · 원문 링크. 새로 찾지 않는다 — 개념 검색 · 원문 읽기는 공통 층 몫이다.
 - 5 의 문턱 · 상한 · `select.mjs` 에 넣지 않고, 판정 줄 대상도 아니다
 - ⛔ **개념은 추천이 아니다** — 도입 · 설치 제안을 붙이지 않는다
 
