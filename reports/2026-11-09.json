@@ -1,0 +1,61 @@
+{
+ "date": "2026-11-09",
+ "issue": null,
+ "threshold": 5,
+ "cap": 7,
+ "items": [],
+ "nearMiss": [
+  {
+   "id": "rtk-ai/rtk",
+   "name": "rtk-ai/rtk",
+   "kind": "도구",
+   "source": "gh-topic",
+   "url": "https://github.com/rtk-ai/rtk",
+   "scores": {
+    "relevance": 0,
+    "evidence": 0,
+    "cost": 0,
+    "env": 0,
+    "removes": false,
+    "security": false
+   },
+   "reasons": {
+    "relevance": "겪은 문제와 연결 없음(내용 미확인)",
+    "evidence": "토픽 목록만",
+    "cost": "새 의존성 추정",
+    "env": "미확인"
+   },
+   "summary": "gh-topic 신규 — 내용 미확인",
+   "why": "프로필 근거 없음",
+   "smallest": "-",
+   "pretest": "-",
+   "total": 0
+  },
+  {
+   "id": "thedotmack/claude-mem",
+   "name": "claude-mem",
+   "kind": "도구",
+   "source": "gh-topic",
+   "url": "https://github.com/thedotmack/claude-mem",
+   "scores": {
+    "relevance": 0,
+    "evidence": 0,
+    "cost": 0,
+    "env": 0,
+    "removes": false,
+    "security": true
+   },
+   "reasons": {
+    "relevance": "하네스 graph 모듈과 영역 겹침 가능, 문제 연결 없음",
+    "evidence": "토픽 목록만",
+    "cost": "새 의존성·훅 추정",
+    "env": "미확인"
+   },
+   "summary": "세션 메모리 도구(미확인)",
+   "why": "과설계 방지 기준에 어긋남",
+   "smallest": "-",
+   "pretest": "-",
+   "total": -2
+  }
+ ]
+}
