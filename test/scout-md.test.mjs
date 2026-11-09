@@ -44,3 +44,44 @@ test('채점표의 범위가 lib/score.mjs 와 같다', () => {
 test('첫 실행(11-09)에서 빠진 단계 — 후보 읽기 · 웹 검색 · 0건 알림 · 관련성 0', () => {
   for (const s of ['채점 전에 후보마다 원본을 읽는다', '「내용 미확인」으로 점수를 매기지 않는다', '웹 검색을 1~3회', '0건이어도 보낸다', '관련성 0 은 추천에 오르지 않는다']) has(s);
 });
+
+test('재시험(v0.1.1)에서 빠진 것 — 웹 검색은 5 의 원본 읽기 바로 앞 · M 은 발견 수', () => {
+  for (const s of ['검색 발견도 scores.json 에 넣는다', '/tmp/web.md', '웹 **발견** 수(검색 횟수가 아니다)']) has(s);
+  // §3 끝에 두면 select 뒤로 밀린다(v0.1.1 로그: select 06:04:40 → 검색 06:04:46)
+  const [score, web, read] = ['## 5. 채점', '웹 검색을 1~3회', '**채점 전에 후보마다 원본을 읽는다**'].map((s) => md.indexOf(s));
+  assert.ok(score < web && web < read, '웹 검색 문장은 §5 안, 원본 읽기 앞에 있어야 한다');
+});
+
+test('재시험(v0.1.1)에서 빠진 것 — README 는 저장소마다 따로 · M 의 collect 몫은 출력 그대로', () => {
+  for (const s of ['저장소마다 따로 출력한다', '한 번의 for 루프로 몰아 읽지 않는다', '출력이 잘리면 나눠 다시 읽는다', '`새것 N` 의 합', '`node -e` 로 다시 세지 않는다']) has(s);
+});
+
+test('재시험(v0.1.1)에서 빠진 것 — 알림의 보고서 링크는 절대 주소 · 첫 줄은 템플릿 그대로', () => {
+  for (const s of [String.raw`$(git remote get-url origin | sed 's/\.git$//')/blob/main/reports/$(date -u +%F).md`, '첫 줄은 템플릿 그대로']) has(s);
+});
+
+test('재시험(v0.1.1)에서 빠진 것 — README 는 배지 · HTML 을 걸러 읽고 OS 언급은 grep 으로', () => {
+  for (const s of [String.raw`grep -vE '^\s*<|!\[' | head -80`, "grep -niE 'windows|winget|powershell|wsl|macos|linux' | head -5", '걸린 행(번호 포함)', 'README 에 OS 언급 없음']) has(s);
+  assert.ok(!md.includes('head -60'), 'README 첫 60행은 배지 · HTML 뿐일 수 있다');
+});
+
+test('재시험(v0.1.1)에서 빠진 것 — 후보 전부 채점 · 인접은 요약만 · --expect', () => {
+  for (const s of ['**후보 전부**', '묶지 않는다', '인접 원천(`group: 인접`)', '**채점하지 않는다**', '--expect', 'M − 장부로 뺀 수 − 인접 수']) has(s);
+});
+
+test('재시험(v0.1.1)에서 빠진 것 — md 점수는 JSON total · 본 것은 한 줄씩 · ⚠️ 는 묶음 줄에도', () => {
+  for (const s of ['JSON 의 `total` 을 그대로', 'scores.json 의 나머지를 한 줄씩', '묶음 줄에서도']) has(s);
+});
+
+test('재시험(v0.1.1)에서 빠진 것 — 「미확인」은 CHANGELOG HTTP 코드가 200 이 아닐 때만', () => {
+  for (const s of ["-o /tmp/cl.md -w '%{http_code}'", '200 이 아닐 때만']) has(s);
+});
+
+test('원천 정리에서 인접 원천은 뺀다 — 채점하지 않으니 매번 추천 0건이다', () => {
+  has('4주 동안 추천 0건인 원천(인접 원천 제외)');
+});
+
+test('이슈 본문의 보고서 링크도 알림과 같은 절대 주소', () => {
+  for (const s of ['보고서: <보고서 링크>', '이슈의 `<보고서 링크>` 도 8 과 같은 절대 주소']) has(s);
+  assert.ok(!md.includes('<reports/YYYY-MM-DD.md 링크>'), '상대 경로는 이슈에서 열리지 않는다');
+});

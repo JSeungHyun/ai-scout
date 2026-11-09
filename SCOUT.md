@@ -33,20 +33,28 @@ node /tmp/ai-scout/tools/collect.mjs --sources /tmp/ai-scout/sources.json,source
 ```
 - `sources.local.json` 이 없을 때만(`test -f sources.local.json` 이 거짓) `--sources /tmp/ai-scout/sources.json`
 - `ok: false` 인 원천은 보고서 「수집 실패」에 이름과 `error` 를 적는다
-- 웹 검색을 1~3회 해 커뮤니티 발견을 보충한다(지난 7일 안팎 — 0회로 넘기지 않는다). 검색에서 나온 것은 **발견만** — 「근거」 2점은 공식 문서 · 원본 저장소로 확인한 것만
+- M 의 collect 몫 = `tools/collect.mjs` 가 출력하는 원천별 `새것 N` 의 합 — `node -e` 로 다시 세지 않는다
 - ⛔ 남의 저장소 GitHub REST(`api.github.com/repos/…`) · `releases.atom` · 허용 목록 밖 호스트는 쓰지 않는다(클라우드에서 막힌다)
 
 ## 4. 공식 변경 요약
 `group: 공식` 인 원천의 새 항목은 **빠짐없이** 한 줄씩 「이번 주 공식 변경」에 적는다.
 - CHANGELOG 절: 판마다 눈에 띄는 변경 1~3개
 - 페이지 링크: 제목(필요하면 `curl` 로 받아 `<title>`)
-- 새 태그 · 새 HEAD(git-tags · git-head · pinned): 무엇이 바뀌었는지는 `curl -sSL https://raw.githubusercontent.com/<소유자>/<저장소>/<태그 또는 HEAD>/CHANGELOG.md` 로 읽는다. 없으면 「미확인」
-프로필과 관련 있는 것은 5 의 채점 대상이 된다.
+- 새 태그 · 새 HEAD(git-tags · git-head · pinned): 무엇이 바뀌었는지는 `curl -sSL -o /tmp/cl.md -w '%{http_code}' https://raw.githubusercontent.com/<소유자>/<저장소>/<태그 또는 HEAD>/CHANGELOG.md` 로 받아 `/tmp/cl.md` 에서 그 판의 절을 읽는다. 「미확인」은 코드가 **200 이 아닐 때만** — 「미확인(404)」처럼 그 HTTP 코드를 함께 적는다
+
+공식 새 항목은 모두 5 의 채점 대상이다(프로필과 관련 없으면 관련성 0). 인접 원천(`group: 인접`)의 새 항목은 **채점하지 않는다** — 이 절 끝에 「인접:」 한 줄로 무엇이 새로 나왔는지만 요약한다(K 에 세지 않는다).
 
 ## 5. 채점
-후보 = 관련 있는 공식 변경 + 커뮤니티 · 인접 · 고정(`group: 고정`) 새 항목 + 웹 검색 발견. 장부에서 판정이 **추천 · 채택 · 보류 · 기각 · 도입됨**인 것은 빼되(추천은 판정 대기 — 두 이슈에 같은 것이 오르지 않게), 「다시 볼 조건」이 충족됐으면 다시 채점한다.
+후보 = 공식 · 커뮤니티 · 고정(`group: 고정`) 새 항목 + 웹 검색 발견(`/tmp/web.md`) — 인접은 4 의 요약만. 장부에서 판정이 **추천 · 채택 · 보류 · 기각 · 도입됨**인 것은 빼되(추천은 판정 대기 — 두 이슈에 같은 것이 오르지 않게), 「다시 볼 조건」이 충족됐으면 다시 채점한다.
 
-**채점 전에 후보마다 원본을 읽는다** — GitHub 저장소는 `curl -sSL https://raw.githubusercontent.com/<소유자>/<저장소>/HEAD/README.md | head -60`, npm 은 `curl -sSL https://registry.npmjs.org/<이름>/latest` 의 `description`, MCP 레지스트리는 그 항목의 `description`. ⛔ 「내용 미확인」으로 점수를 매기지 않는다 — 못 읽었으면 채점하지 말고 「본 것」에 「읽기 실패: 이유」로 적는다.
+웹 검색을 1~3회 해 커뮤니티 발견을 보충한다(지난 7일 안팎 — 0회로 넘기지 않는다). 발견마다 이름 · 링크를 `/tmp/web.md` 에 한 줄씩 남기고(collect 후보와 겹치면 적지 않는다) **검색 발견도 scores.json 에 넣는다** — select 뒤에 검색하면 발견이 채점에 못 들어간다. 검색에서 나온 것은 **발견만** — 「근거」 2점은 공식 문서 · 원본 저장소로 확인한 것만. 후보 M = collect 몫(3) + 웹 **발견** 수(검색 횟수가 아니다) — 발견 수는 `/tmp/web.md` 줄 수. 어림하지 않는다.
+
+**채점 전에 후보마다 원본을 읽는다** — 공식 · 고정 항목은 4 에서 읽은 것, npm 은 `curl -sSL https://registry.npmjs.org/<이름>/latest` 의 `description`, MCP 레지스트리는 그 항목의 `description`. GitHub 저장소는 README 를 두 번 읽는다(`<raw README>` = `https://raw.githubusercontent.com/<소유자>/<저장소>/HEAD/README.md`):
+- 본문: `curl -sSL <raw README> | grep -vE '^\s*<|!\[' | head -80` — 첫 줄들이 배지 · HTML 뿐이어도 본문이 나온다
+- 환경: `curl -sSL <raw README> | grep -niE 'windows|winget|powershell|wsl|macos|linux' | head -5` — `env` 근거에는 걸린 행(번호 포함)을 적는다. 0줄이면 「README 에 OS 언급 없음」(「미확인」이 아니다)
+- 저장소마다 따로 출력한다 — 한 번의 for 루프로 몰아 읽지 않는다. 출력이 잘리면 나눠 다시 읽는다
+
+⛔ 「내용 미확인」으로 점수를 매기지 않는다 — 못 읽었으면 채점하지 말고 「본 것」에 「읽기 실패: 이유」로 적는다.
 
 | 키 | 점수 | 기준 |
 |---|---|---|
@@ -59,7 +67,7 @@ node /tmp/ai-scout/tools/collect.mjs --sources /tmp/ai-scout/sources.json,source
 
 관련성 0 은 추천에 오르지 않는다 — 다른 점수가 높아도 「있으면 좋다」일 뿐이다(`select.mjs` 가 막고, 아깝게 빠진 것으로만 간다).
 
-`/tmp/scores.json` 에 쓴다 — 항목마다 근거 한 줄씩:
+`/tmp/scores.json` 에 장부로 뺀 것 · 읽기 실패를 제외한 **후보 전부**를 쓴다 — 관련성 0 도 넣고, 여러 후보를 한 항목으로 묶지 않는다. 항목마다 근거 한 줄씩:
 ```
 [{ "id": "<원천 항목 id 또는 이름>", "name": "이름", "kind": "도구|구조", "source": "<원천 id 또는 web>", "url": "<출처>",
    "scores": { "relevance": 0, "evidence": 0, "cost": 0, "env": 0, "removes": false, "security": false },
@@ -67,16 +75,17 @@ node /tmp/ai-scout/tools/collect.mjs --sources /tmp/ai-scout/sources.json,source
    "summary": "무엇 한 줄", "why": "왜 나에게", "smallest": "가장 작은 도입", "pretest": "사전 시험 방법" }]
 ```
 ```
-node /tmp/ai-scout/tools/select.mjs /tmp/scores.json --threshold <문턱> --cap 7 --date $(date -u +%F) [--near 3] > /tmp/report.json && mv /tmp/report.json reports/$(date -u +%F).json
+node /tmp/ai-scout/tools/select.mjs /tmp/scores.json --threshold <문턱> --cap 7 --expect <scores.json 에 넣어야 할 수> --date $(date -u +%F) [--near 3] > /tmp/report.json && mv /tmp/report.json reports/$(date -u +%F).json
 ```
+- `--expect` 수 = M − 장부로 뺀 수 − 인접 수 − 읽기 실패 수 — 3 · 4 · 5 에서 센 값으로 넣는다(scores.json 을 센 값이 아니다)
 - `--near 3` 은 `reports/*.json` 이 2개 미만일 때만(처음 2회)
-- 실패하면(범위 밖 점수 · 숫자 아닌 문턱) 메시지대로 고쳐 다시 돌린다 — 성공하기 전에는 `reports/` 에 아무것도 생기지 않는다
+- 실패하면(범위 밖 점수 · 숫자 아닌 문턱 · 항목 수가 `--expect` 와 다름) 메시지대로 고쳐 다시 돌린다 — 성공하기 전에는 `reports/` 에 아무것도 생기지 않는다
 
 ## 6. 기록
 `reports/$(date -u +%F).md`:
 ```
 # AI-SCOUT YYYY-MM-DD
-> 원천 N곳(실패 K곳) · 후보 M개 · 문턱 T · 엔진 <태그>        ← M = collect 「새것」 합 + 웹 발견 수(어림하지 않는다)
+> 원천 N곳(실패 K곳) · 후보 M개 · 문턱 T · 엔진 <태그>        ← M = 5 의 후보 M
 ## 이번 주 추천 (N건)
 ### 1. (9점) 이름 — 무엇 한 줄
 - 종류 · 원천 · 출처
@@ -90,6 +99,10 @@ node /tmp/ai-scout/tools/select.mjs /tmp/scores.json --threshold <문턱> --cap 
 ## 수집 실패
 ## 판정 반영           (2 에서 반영한 것 · unparsed 줄)
 ```
+- 「(N점)」은 JSON 의 `total` 을 그대로 쓴다 — ⚠️ 감점까지 들어간 값이다. md 에서 다시 더하지 않는다
+- 「본 것」은 scores.json 의 나머지를 한 줄씩(점수 · 이유) — 묶지 않는다. 읽기 실패도 한 줄씩
+- ⚠️ 보안 표시는 묶음 줄에서도 빠뜨리지 않는다(이슈의 「아깝게 빠진 것」 한 줄 등)
+
 장부: 추천 항목을 판정 표에 판정 「추천」 · 점수 · 마지막 확인 오늘로 더하고(이미 있으면 그 줄을 고친다), 원천 수확 표의 「후보 · 추천」을 원천별로 더한다(「채택」은 2-7 대로 다시 센다).
 
 커밋 · push:
@@ -108,19 +121,21 @@ git add reports ledger.md snapshots && git commit -m "scout: $(date -u +%F) 주�
 아깝게 빠진 것: (4점) … · (4점) …          ← nearMiss 가 있을 때만
 
 판정은 댓글로 한 줄씩:  1 채택 / 2 기각: 이유 / 3 보류: 다시 볼 조건 / 1 도입
-보고서: <reports/YYYY-MM-DD.md 링크>
+보고서: <보고서 링크>
 ```
+이슈의 `<보고서 링크>` 도 8 과 같은 절대 주소다 — 상대 경로는 이슈에서 열리지 않는다.
 판정 줄 형식은 `<번호> <채택|기각|보류|도입>[: 이유]` — 번호는 `reports/<오늘>.json` 의 `n` 이다. 만든 이슈 번호를 `reports/<오늘>.json` 의 `"issue"` 에 넣고, `scout: <오늘> 이슈 #<번호>` 로 6 과 같은 방법으로 커밋 · push 한다.
 
 ## 8. 알림
-푸시 알림 도구가 있으면 한 줄 — 0건이어도 보낸다(알림이 와야 실행된 줄 안다):
+푸시 알림 도구가 있으면 보낸다 — 0건이어도 보낸다(알림이 와야 실행된 줄 안다). 첫 줄은 템플릿 그대로(요약은 그 뒤에 덧붙여도 된다):
 - 추천 있음: `AI-SCOUT 추천 N건 — 이슈 #M <이슈 링크>`
 - 0건: `AI-SCOUT 0건 (공식 변경 K건) <보고서 링크>`
+- `<보고서 링크>` 는 상대 경로가 아니라 `$(git remote get-url origin | sed 's/\.git$//')/blob/main/reports/$(date -u +%F).md` — 알림에서 열려야 한다
 
 ## 9. 4주마다
 `reports/*.json` 개수가 4의 배수인 주에는 보고서에 두 절을 더한다. **바꾸는 것은 사람이다 — 제안만.**
 - 문턱 점검: 최근 4주 평균 추천 수(목표 3~5) · 점수대별 채택률 → 문턱 조정 제안
-- 원천 정리: 4주 동안 추천 0건인 원천 → 빼기 제안
+- 원천 정리: 4주 동안 추천 0건인 원천(인접 원천 제외) → 빼기 제안 — 인접은 채점하지 않으므로 추천이 늘 0건이다
 
 ## 지킬 것
 - ⛔ **추천만 한다** — 설치 · 설정 · 훅을 바꾸지 않는다

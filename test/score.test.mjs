@@ -1,5 +1,9 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
+import { spawnSync } from 'node:child_process';
+import { mkdtempSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 import { total, validate, select } from '../lib/score.mjs';
 
 const S = { relevance: 4, evidence: 2, cost: 2, env: 1, removes: false, security: false };
@@ -40,4 +44,22 @@ test('관련성 0(있으면 좋다)은 합계가 문턱을 넘어도 추천에 �
   const r = select([entry('nice', 6, 0), entry('real', 5, 2)], { threshold: 5, near: 2 });
   assert.deepEqual(r.items.map((i) => i.id), ['real']);
   assert.deepEqual(r.nearMiss.map((i) => i.id), ['nice']);
+});
+
+test('expect — 항목 수가 다르면 받은 수와 함께 실패 (후보를 묶거나 빠뜨리지 않게)', () => {
+  assert.throws(() => select([entry('a', 9)], { expect: 2 }), /받은 수 1/);
+  assert.throws(() => select([entry('a', 9)], { expect: NaN }), /expect/);
+  assert.doesNotThrow(() => select([entry('a', 9)], { expect: 1 }));
+  assert.doesNotThrow(() => select([entry('a', 9)]));
+});
+
+test('select.mjs — --expect 가 없으면 usage 와 exit 2 (루틴이 빠뜨려 검사가 꺼지지 않게)', () => {
+  const file = join(mkdtempSync(join(tmpdir(), 'scout-')), 'scores.json');
+  writeFileSync(file, JSON.stringify([entry('a', 9)]));
+  const run = (...args) => spawnSync(process.execPath, ['tools/select.mjs', file, '--date', '2026-11-09', ...args], { cwd: new URL('..', import.meta.url), encoding: 'utf8' });
+  const none = run();
+  assert.equal(none.status, 2);
+  assert.match(none.stderr, /--expect N/);
+  assert.equal(run('--expect', '2').status, 1);
+  assert.equal(run('--expect', '1').status, 0);
 });
