@@ -1,0 +1,651 @@
+{
+ "date": "2026-11-09",
+ "issue": null,
+ "threshold": 5,
+ "cap": 7,
+ "expect": 24,
+ "digest": {
+  "date": "2026-11-09",
+  "url": "https://github.com/JSeungHyun/ai-scout/blob/main/digest/2026-11-09.md"
+ },
+ "items": [],
+ "nearMiss": [
+  {
+   "id": "2.1.319",
+   "name": "Claude Code 2.1.319",
+   "kind": "구조",
+   "source": "cc-changelog",
+   "url": "https://raw.githubusercontent.com/anthropics/claude-code/main/CHANGELOG.md",
+   "scores": {
+    "relevance": 1,
+    "evidence": 2,
+    "cost": 2,
+    "env": 2,
+    "removes": false,
+    "security": false
+   },
+   "reasons": {
+    "relevance": "장부 줄(Bash deny 우회 · denyInsteadOfPrompting)과 겹치는 부분은 뺐다. 남은 것은 Windows 설정 저장 대기 · MCP tasks 로 겪은 문제와 직접 연결 없음",
+    "evidence": "소식지 값 2",
+    "cost": "소식지 값 2",
+    "env": "CHANGELOG 본문 — Windows 항목 포함, 나머지 OS 공통"
+   },
+   "summary": "Claude Code 2.1.319 — auto mode · MCP tasks · 권한 설정 · 보안 수정",
+   "why": "장부 줄(Bash deny 우회 · denyInsteadOfPrompting)과 겹치는 부분은 뺐다. 남은 것은 Windows 설정 저장 대기 · MCP tasks 로 겪은 문제와 직접 연결 없음",
+   "smallest": "없음(추천 아님)",
+   "pretest": "해당 없음",
+   "total": 7
+  },
+  {
+   "id": "2.1.318",
+   "name": "Claude Code 2.1.318",
+   "kind": "구조",
+   "source": "cc-changelog",
+   "url": "https://raw.githubusercontent.com/anthropics/claude-code/main/CHANGELOG.md",
+   "scores": {
+    "relevance": 1,
+    "evidence": 2,
+    "cost": 2,
+    "env": 2,
+    "removes": false,
+    "security": false
+   },
+   "reasons": {
+    "relevance": "로그인 만료 표시 · 네트워크 홈 안정화 — 기록된 문제와 연결 없음",
+    "evidence": "소식지 값 2",
+    "cost": "소식지 값 2",
+    "env": "CHANGELOG 본문 — macOS · Windows · VSCode · 클라우드 항목 포함"
+   },
+   "summary": "Claude Code 2.1.318 — 로그인 만료 표시 · 네트워크 홈 디렉터리 안정화 · 클라우드 세션 개선",
+   "why": "로그인 만료 표시 · 네트워크 홈 안정화 — 기록된 문제와 연결 없음",
+   "smallest": "없음(추천 아님)",
+   "pretest": "해당 없음",
+   "total": 7
+  },
+  {
+   "id": "2.1.317",
+   "name": "Claude Code 2.1.317",
+   "kind": "구조",
+   "source": "cc-changelog",
+   "url": "https://raw.githubusercontent.com/anthropics/claude-code/main/CHANGELOG.md",
+   "scores": {
+    "relevance": 1,
+    "evidence": 2,
+    "cost": 2,
+    "env": 2,
+    "removes": false,
+    "security": false
+   },
+   "reasons": {
+    "relevance": "Windows 도구 거부 · 260자 수정은 있으면 좋은 정도 — 하네스 문제로 기록된 것 없음",
+    "evidence": "소식지 값 2",
+    "cost": "소식지 값 2",
+    "env": "CHANGELOG 본문 — Windows 항목 포함"
+   },
+   "summary": "Claude Code 2.1.317 — 계정 이메일 전송 확인 · SDK 훅 `onFailure` · 게이트웨이 비용 리포트",
+   "why": "Windows 도구 거부 · 260자 수정은 있으면 좋은 정도 — 하네스 문제로 기록된 것 없음",
+   "smallest": "없음(추천 아님)",
+   "pretest": "해당 없음",
+   "total": 7
+  }
+ ],
+ "seen": [
+  {
+   "id": "Egonex-AI/Understand-Anything",
+   "name": "Egonex-AI/Understand-Anything",
+   "kind": "도구",
+   "source": "gh-topic",
+   "url": "https://github.com/Egonex-AI/Understand-Anything",
+   "scores": {
+    "relevance": 1,
+    "evidence": 1,
+    "cost": 2,
+    "env": 1,
+    "removes": false,
+    "security": false
+   },
+   "reasons": {
+    "relevance": "코드 지식 그래프 플러그인 — 하네스 graph 와 영역 다름 · 겹침",
+    "evidence": "소식지 값 1",
+    "cost": "소식지 값 2",
+    "env": "199: **macOS / Linux:** · 206: **Windows (PowerShell):** · 217: macOS / Linux: `./install.sh --update`"
+   },
+   "summary": "Claude Code 플러그인 — 멀티 에이전트로 프로젝트를 분석해 파일 · 함수 · 의존성 지식 그래프와 가이드 투어 제공",
+   "why": "코드 지식 그래프 플러그인 — 하네스 graph 와 영역 다름 · 겹침",
+   "smallest": "없음(추천 아님)",
+   "pretest": "해당 없음",
+   "total": 5
+  },
+  {
+   "id": "v0.3.319",
+   "name": "Agent SDK TypeScript v0.3.319",
+   "kind": "구조",
+   "source": "agent-sdk-ts",
+   "url": "https://github.com/anthropics/claude-agent-sdk-typescript/releases/tag/v0.3.319",
+   "scores": {
+    "relevance": 0,
+    "evidence": 2,
+    "cost": 2,
+    "env": 1,
+    "removes": false,
+    "security": false
+   },
+   "reasons": {
+    "relevance": "SDK — 하네스는 SDK 를 쓰지 않음",
+    "evidence": "소식지 값 2",
+    "cost": "소식지 값 2",
+    "env": "CHANGELOG 본문 — OS 별 항목 없음"
+   },
+   "summary": "Agent SDK(TS) v0.3.319 — MCP task 지원, Claude Code 2.1.319 동기화",
+   "why": "SDK — 하네스는 SDK 를 쓰지 않음",
+   "smallest": "없음(추천 아님)",
+   "pretest": "해당 없음",
+   "total": 5
+  },
+  {
+   "id": "heygen-com/hyperframes",
+   "name": "heygen-com/hyperframes",
+   "kind": "도구",
+   "source": "gh-topic",
+   "url": "https://github.com/heygen-com/hyperframes",
+   "scores": {
+    "relevance": 0,
+    "evidence": 1,
+    "cost": 2,
+    "env": 2,
+    "removes": false,
+    "security": false
+   },
+   "reasons": {
+    "relevance": "프로필의 겪은 문제 · 쓰는 흐름과 무관 — 있으면 좋다 이하",
+    "evidence": "소식지 값 1",
+    "cost": "소식지 값 2",
+    "env": "35: … download?os=mac … · 36: … os=windows … · 37: … os=deb … · 343: # macOS"
+   },
+   "summary": "HTML · CSS · 애니메이션을 결정적 MP4 로 렌더링하는 오픈소스 프레임워크 + Claude Code 플러그인",
+   "why": "프로필의 겪은 문제 · 쓰는 흐름과 무관 — 있으면 좋다 이하",
+   "smallest": "없음(추천 아님)",
+   "pretest": "해당 없음",
+   "total": 5
+  },
+  {
+   "id": "nextlevelbuilder/ui-ux-pro-max-skill",
+   "name": "nextlevelbuilder/ui-ux-pro-max-skill",
+   "kind": "도구",
+   "source": "gh-topic",
+   "url": "https://github.com/nextlevelbuilder/ui-ux-pro-max-skill",
+   "scores": {
+    "relevance": 0,
+    "evidence": 1,
+    "cost": 1,
+    "env": 2,
+    "removes": false,
+    "security": false
+   },
+   "reasons": {
+    "relevance": "프로필의 겪은 문제 · 쓰는 흐름과 무관 — 있으면 좋다 이하",
+    "evidence": "소식지 값 1",
+    "cost": "소식지 값 1",
+    "env": "338: … install it yourself from python.org … · 688: # macOS, Linux, or WSL · 693: # Windows PowerShell · 768: The search"
+   },
+   "summary": "UI/UX 디자인 시스템 생성 스킬(v2.0 Design System Generator)",
+   "why": "프로필의 겪은 문제 · 쓰는 흐름과 무관 — 있으면 좋다 이하",
+   "smallest": "없음(추천 아님)",
+   "pretest": "해당 없음",
+   "total": 4
+  },
+  {
+   "id": "stablyai/orca",
+   "name": "stablyai/orca",
+   "kind": "도구",
+   "source": "gh-topic",
+   "url": "https://github.com/stablyai/orca",
+   "scores": {
+    "relevance": 0,
+    "evidence": 1,
+    "cost": 1,
+    "env": 2,
+    "removes": false,
+    "security": false
+   },
+   "reasons": {
+    "relevance": "프로필의 겪은 문제 · 쓰는 흐름과 무관 — 있으면 좋다 이하",
+    "evidence": "소식지 값 1",
+    "cost": "소식지 값 1",
+    "env": "11: macOS | Windows | Linux 배지 · 262: ### Desktop — macOS, Windows, Linux · 270: # macOS (Homebrew) · 276: # Arch Linux "
+   },
+   "summary": "Claude Code · Codex 등 여러 에이전트를 각자 worktree 에서 병렬 실행하는 앱(채팅/터미널, diff · 브라우저 · CLI 통합)",
+   "why": "프로필의 겪은 문제 · 쓰는 흐름과 무관 — 있으면 좋다 이하",
+   "smallest": "없음(추천 아님)",
+   "pretest": "해당 없음",
+   "total": 4
+  },
+  {
+   "id": "tt-a1i/archify",
+   "name": "tt-a1i/archify",
+   "kind": "도구",
+   "source": "gh-topic",
+   "url": "https://github.com/tt-a1i/archify",
+   "scores": {
+    "relevance": 0,
+    "evidence": 1,
+    "cost": 2,
+    "env": 1,
+    "removes": false,
+    "security": false
+   },
+   "reasons": {
+    "relevance": "프로필의 겪은 문제 · 쓰는 흐름과 무관 — 있으면 좋다 이하",
+    "evidence": "소식지 값 1",
+    "cost": "소식지 값 2",
+    "env": "README 에 OS 언급 없음"
+   },
+   "summary": "한 문장 또는 저장소로 소스 링크가 달린 아키텍처 다이어그램을 만드는 스킬(Cursor · Claude Code · Codex CLI · OpenCode)",
+   "why": "프로필의 겪은 문제 · 쓰는 흐름과 무관 — 있으면 좋다 이하",
+   "smallest": "없음(추천 아님)",
+   "pretest": "해당 없음",
+   "total": 4
+  },
+  {
+   "id": "Graphify-Labs/graphify",
+   "name": "Graphify-Labs/graphify",
+   "kind": "도구",
+   "source": "gh-topic",
+   "url": "https://github.com/Graphify-Labs/graphify",
+   "scores": {
+    "relevance": 1,
+    "evidence": 1,
+    "cost": 0,
+    "env": 1,
+    "removes": false,
+    "security": false
+   },
+   "reasons": {
+    "relevance": "코드 지식 그래프 — 하네스 graph(요구→용어·파일·함정)와 영역이 다르고 CodeGraph 보류와 같은 이유",
+    "evidence": "소식지 값 1",
+    "cost": "소식지 값 0",
+    "env": "76: One install, any assistant, any OS. … · 166: macOS quick install (Homebrew) · 171: Windows quick install: winget ins"
+   },
+   "summary": "`/graphify` — 코드 · 문서 · PDF · 이미지 · 영상을 지식 그래프로 만들어 grep 대신 질의",
+   "why": "코드 지식 그래프 — 하네스 graph(요구→용어·파일·함정)와 영역이 다르고 CodeGraph 보류와 같은 이유",
+   "smallest": "없음(추천 아님)",
+   "pretest": "해당 없음",
+   "total": 3
+  },
+  {
+   "id": "rtk-ai/rtk",
+   "name": "rtk-ai/rtk",
+   "kind": "도구",
+   "source": "gh-topic",
+   "url": "https://github.com/rtk-ai/rtk",
+   "scores": {
+    "relevance": 1,
+    "evidence": 1,
+    "cost": 1,
+    "env": 2,
+    "removes": false,
+    "security": true
+   },
+   "reasons": {
+    "relevance": "셸 출력 압축 훅 — 겪은 문제 아님, 훅 기동이 느린 PC 에 훅 추가는 역효과 가능",
+    "evidence": "소식지 값 1",
+    "cost": "소식지 값 1",
+    "env": "82: brew install rtk # macOS / Linux · 83: winget install rtk-ai.rtk # Windows · 94: … native Windows, WSL …",
+    "security": "훅으로 셸 명령 출력을 가로채 바꿈"
+   },
+   "summary": "셸 명령 출력을 LLM 에 닿기 전에 압축하는 Rust 단일 바이너리(100+ 명령, <10ms)",
+   "why": "셸 출력 압축 훅 — 겪은 문제 아님, 훅 기동이 느린 PC 에 훅 추가는 역효과 가능",
+   "smallest": "없음(추천 아님)",
+   "pretest": "해당 없음",
+   "total": 3
+  },
+  {
+   "id": "JuliusBrussee/caveman",
+   "name": "JuliusBrussee/caveman",
+   "kind": "도구",
+   "source": "gh-topic",
+   "url": "https://github.com/JuliusBrussee/caveman",
+   "scores": {
+    "relevance": 0,
+    "evidence": 1,
+    "cost": 2,
+    "env": 2,
+    "removes": false,
+    "security": true
+   },
+   "reasons": {
+    "relevance": "프로필의 겪은 문제 · 쓰는 흐름과 무관 — 있으면 좋다 이하",
+    "evidence": "소식지 값 1",
+    "cost": "소식지 값 2",
+    "env": "69: One command. Mac, Linux, Windows. · 141: Other ways in … Claude Code plugin … · 165: Windows, PowerShell 5.1+",
+    "security": "설치 스크립트가 에이전트 설정 · 로그인을 찾아 변경(설치 시 변경 내역 표시)"
+   },
+   "summary": "에이전트 출력 · 입력 토큰을 줄이는 「caveman」 말투 스킬/플러그인",
+   "why": "프로필의 겪은 문제 · 쓰는 흐름과 무관 — 있으면 좋다 이하",
+   "smallest": "없음(추천 아님)",
+   "pretest": "해당 없음",
+   "total": 3
+  },
+  {
+   "id": "Leonxlnx/taste-skill",
+   "name": "Leonxlnx/taste-skill",
+   "kind": "도구",
+   "source": "gh-topic",
+   "url": "https://github.com/Leonxlnx/taste-skill",
+   "scores": {
+    "relevance": 0,
+    "evidence": 1,
+    "cost": 1,
+    "env": 1,
+    "removes": false,
+    "security": false
+   },
+   "reasons": {
+    "relevance": "프로필의 겪은 문제 · 쓰는 흐름과 무관 — 있으면 좋다 이하",
+    "evidence": "소식지 값 1",
+    "cost": "소식지 값 1",
+    "env": "117: `./install.sh` symlinks the skill into Claude Code (`--codex` for Codex …)"
+   },
+   "summary": "코딩 에이전트가 기업 웹사이트를 한 디자인 시스템으로 만들게 하는 스킬(tasteskill 2.5.1)",
+   "why": "프로필의 겪은 문제 · 쓰는 흐름과 무관 — 있으면 좋다 이하",
+   "smallest": "없음(추천 아님)",
+   "pretest": "해당 없음",
+   "total": 3
+  },
+  {
+   "id": "ruvnet/RuView",
+   "name": "ruvnet/RuView",
+   "kind": "도구",
+   "source": "gh-topic",
+   "url": "https://github.com/ruvnet/RuView",
+   "scores": {
+    "relevance": 0,
+    "evidence": 1,
+    "cost": 0,
+    "env": 2,
+    "removes": false,
+    "security": false
+   },
+   "reasons": {
+    "relevance": "프로필의 겪은 문제 · 쓰는 흐름과 무관 — 있으면 좋다 이하",
+    "evidence": "소식지 값 1",
+    "cost": "소식지 값 0",
+    "env": "219: … PyO3 wheel (abi3-py310, Linux/macOS/Windows) · 245: Any WiFi … Windows, macOS, or Linux laptop"
+   },
+   "summary": "WiFi CSI(ESP32)로 사람 감지 · 호흡/심박 측정 · 모션 추적하는 센싱 플랫폼 — 코딩 에이전트 도구가 아님",
+   "why": "프로필의 겪은 문제 · 쓰는 흐름과 무관 — 있으면 좋다 이하",
+   "smallest": "없음(추천 아님)",
+   "pretest": "해당 없음",
+   "total": 3
+  },
+  {
+   "id": "career-ops-hq/career-ops",
+   "name": "career-ops-hq/career-ops",
+   "kind": "도구",
+   "source": "gh-topic",
+   "url": "https://github.com/career-ops-hq/career-ops",
+   "scores": {
+    "relevance": 0,
+    "evidence": 1,
+    "cost": 0,
+    "env": 2,
+    "removes": false,
+    "security": false
+   },
+   "reasons": {
+    "relevance": "프로필의 겪은 문제 · 쓰는 흐름과 무관 — 있으면 좋다 이하",
+    "evidence": "소식지 값 1",
+    "cost": "소식지 값 0",
+    "env": "237: # On a non-Debian/Ubuntu Linux distro … Chromium … · 566: How do I install career-ops on Windows? · 567: career-ops"
+   },
+   "summary": "채용 공고를 붙여넣으면 열려 있는지 · 맞는지 판단하고 CV 를 맞춤 작성하는 로컬 도구 — 제출은 사람이",
+   "why": "프로필의 겪은 문제 · 쓰는 흐름과 무관 — 있으면 좋다 이하",
+   "smallest": "없음(추천 아님)",
+   "pretest": "해당 없음",
+   "total": 3
+  },
+  {
+   "id": "affaan-m/ECC",
+   "name": "affaan-m/ECC",
+   "kind": "도구",
+   "source": "gh-topic",
+   "url": "https://github.com/affaan-m/ECC",
+   "scores": {
+    "relevance": 1,
+    "evidence": 1,
+    "cost": 1,
+    "env": 1,
+    "removes": false,
+    "security": true
+   },
+   "reasons": {
+    "relevance": "에이전트 하네스 플러그인 — 하네스 증거·그래프 모듈과 겹침(과설계 방지)",
+    "evidence": "소식지 값 1",
+    "cost": "소식지 값 1",
+    "env": "179: #### Windows first-time walkthrough · 184: 2. Open **PowerShell** from the Windows Start menu. · 467: Windows:",
+    "security": "플러그인이 훅 · 설정을 바꿈"
+   },
+   "summary": "에이전트 하네스 성능 시스템 — plan→test→implement→review→verify→remember 흐름의 Claude Code 플러그인(`ecc@ecc`)",
+   "why": "에이전트 하네스 플러그인 — 하네스 증거·그래프 모듈과 겹침(과설계 방지)",
+   "smallest": "없음(추천 아님)",
+   "pretest": "해당 없음",
+   "total": 2
+  },
+  {
+   "id": "ruvnet/ruflo",
+   "name": "ruvnet/ruflo",
+   "kind": "도구",
+   "source": "gh-topic",
+   "url": "https://github.com/ruvnet/ruflo",
+   "scores": {
+    "relevance": 1,
+    "evidence": 1,
+    "cost": 1,
+    "env": 1,
+    "removes": false,
+    "security": true
+   },
+   "reasons": {
+    "relevance": "에이전트 메타 하네스 — 겹침",
+    "evidence": "소식지 값 1",
+    "cost": "소식지 값 1",
+    "env": "317: **macOS / Linux / WSL / Git-Bash:** · 324: **All platforms (including native Windows PowerShell / cmd):** · 337: > ",
+    "security": "init 이 프로젝트 설정 · 훅을 바꿈"
+   },
+   "summary": "Claude Code · Codex 용 에이전트 메타 하네스",
+   "why": "에이전트 메타 하네스 — 겹침",
+   "smallest": "없음(추천 아님)",
+   "pretest": "해당 없음",
+   "total": 2
+  },
+  {
+   "id": "morluto/rea",
+   "name": "morluto/rea",
+   "kind": "도구",
+   "source": "gh-topic",
+   "url": "https://github.com/morluto/rea",
+   "scores": {
+    "relevance": 0,
+    "evidence": 1,
+    "cost": 1,
+    "env": 2,
+    "removes": false,
+    "security": true
+   },
+   "reasons": {
+    "relevance": "프로필의 겪은 문제 · 쓰는 흐름과 무관 — 있으면 좋다 이하",
+    "evidence": "소식지 값 1",
+    "cost": "소식지 값 1",
+    "env": "73: On Linux, Ghidra, JADX, firmware tool launches … · 76: \"Linux owned-process prerequisite\". · 128: … `\"D:/apps/exampl",
+    "security": "사용자 권한으로 외부 분석 도구를 실행(설정 · 실행 권한 필요)"
+   },
+   "summary": "리버스 엔지니어링용 MCP — 바이너리 · 앱 · 런타임 동작 분석",
+   "why": "프로필의 겪은 문제 · 쓰는 흐름과 무관 — 있으면 좋다 이하",
+   "smallest": "없음(추천 아님)",
+   "pretest": "해당 없음",
+   "total": 2
+  },
+  {
+   "id": "farion1231/cc-switch",
+   "name": "farion1231/cc-switch",
+   "kind": "도구",
+   "source": "gh-topic",
+   "url": "https://github.com/farion1231/cc-switch",
+   "scores": {
+    "relevance": 0,
+    "evidence": 1,
+    "cost": 1,
+    "env": 2,
+    "removes": false,
+    "security": true
+   },
+   "reasons": {
+    "relevance": "프로필의 겪은 문제 · 쓰는 흐름과 무관 — 있으면 좋다 이하",
+    "evidence": "소식지 값 1",
+    "cost": "소식지 값 1",
+    "env": "10: platform-Windows | macOS | Linux 배지 · 244: Cross-Platform … Tauri 2 · 267: Windows 10 and above · 268: macOS 12 and ",
+    "security": "앱이 Claude Code 설정 파일을 직접 수정"
+   },
+   "summary": "Claude Code · Codex · Gemini CLI 등의 API 제공자 · MCP · 스킬 · 프롬프트 설정을 한 곳에서 바꾸는 데스크톱 앱(Tauri 2)",
+   "why": "프로필의 겪은 문제 · 쓰는 흐름과 무관 — 있으면 좋다 이하",
+   "smallest": "없음(추천 아님)",
+   "pretest": "해당 없음",
+   "total": 2
+  },
+  {
+   "id": "paperclipai/paperclip",
+   "name": "paperclipai/paperclip",
+   "kind": "도구",
+   "source": "gh-topic",
+   "url": "https://github.com/paperclipai/paperclip",
+   "scores": {
+    "relevance": 0,
+    "evidence": 1,
+    "cost": 0,
+    "env": 1,
+    "removes": false,
+    "security": false
+   },
+   "reasons": {
+    "relevance": "프로필의 겪은 문제 · 쓰는 흐름과 무관 — 있으면 좋다 이하",
+    "evidence": "소식지 값 1",
+    "cost": "소식지 값 0",
+    "env": "README 에 OS 언급 없음"
+   },
+   "summary": "AI 에이전트 팀을 회사처럼 운영(목표 · 예산 · 거버넌스 · 비용 추적)하는 Node.js 서버 + React UI",
+   "why": "프로필의 겪은 문제 · 쓰는 흐름과 무관 — 있으면 좋다 이하",
+   "smallest": "없음(추천 아님)",
+   "pretest": "해당 없음",
+   "total": 2
+  },
+  {
+   "id": "NousResearch/hermes-agent",
+   "name": "NousResearch/hermes-agent",
+   "kind": "도구",
+   "source": "gh-topic",
+   "url": "https://github.com/NousResearch/hermes-agent",
+   "scores": {
+    "relevance": 0,
+    "evidence": 1,
+    "cost": 0,
+    "env": 2,
+    "removes": false,
+    "security": true
+   },
+   "reasons": {
+    "relevance": "프로필의 겪은 문제 · 쓰는 흐름과 무관 — 있으면 좋다 이하",
+    "evidence": "소식지 값 1",
+    "cost": "소식지 값 0",
+    "env": "37: ### Linux, macOS, WSL2 · 43: ### Windows (native, PowerShell) · 45: > **Heads up:** Native Windows runs Hermes witho",
+    "security": "curl|bash 설치 · 사용자 권한 에이전트"
+   },
+   "summary": "Nous Research 의 자기개선 AI 에이전트(스킬 자동 생성 · 학습 루프, 모델 교체 가능) — Claude Code 용 도구가 아닌 독립 에이전트",
+   "why": "프로필의 겪은 문제 · 쓰는 흐름과 무관 — 있으면 좋다 이하",
+   "smallest": "없음(추천 아님)",
+   "pretest": "해당 없음",
+   "total": 1
+  },
+  {
+   "id": "thedotmack/claude-mem",
+   "name": "thedotmack/claude-mem",
+   "kind": "도구",
+   "source": "gh-topic",
+   "url": "https://github.com/thedotmack/claude-mem",
+   "scores": {
+    "relevance": 0,
+    "evidence": 1,
+    "cost": 0,
+    "env": 2,
+    "removes": false,
+    "security": true
+   },
+   "reasons": {
+    "relevance": "프로필의 겪은 문제 · 쓰는 흐름과 무관 — 있으면 좋다 이하",
+    "evidence": "소식지 값 1",
+    "cost": "소식지 값 0",
+    "env": "347: ### Windows Setup Notes · 351: ```powershell",
+    "security": "설치가 설정 · 훅을 바꾸고 텔레메트리 기본 켜짐"
+   },
+   "summary": "세션 옆에서 메모를 남기는 두 번째 에이전트로 다음 세션에 기억 색인을 이어주는 메모리 도구",
+   "why": "프로필의 겪은 문제 · 쓰는 흐름과 무관 — 있으면 좋다 이하",
+   "smallest": "없음(추천 아님)",
+   "pretest": "해당 없음",
+   "total": 1
+  },
+  {
+   "id": "Panniantong/Agent-Reach",
+   "name": "Panniantong/Agent-Reach",
+   "kind": "도구",
+   "source": "gh-topic",
+   "url": "https://github.com/Panniantong/Agent-Reach",
+   "scores": {
+    "relevance": 0,
+    "evidence": 1,
+    "cost": 1,
+    "env": 1,
+    "removes": false,
+    "security": true
+   },
+   "reasons": {
+    "relevance": "프로필의 겪은 문제 · 쓰는 흐름과 무관 — 있으면 좋다 이하",
+    "evidence": "소식지 값 1",
+    "cost": "소식지 값 1",
+    "env": "README 에 OS 언급 없음",
+    "security": "외부 플랫폼 로그인 · 쿠키를 에이전트에 넘길 수 있음(README 미확인)"
+   },
+   "summary": "에이전트가 X · Reddit · YouTube · 샤오홍슈 등을 검색 · 읽게 해주는 도구(중국어 README)",
+   "why": "프로필의 겪은 문제 · 쓰는 흐름과 무관 — 있으면 좋다 이하",
+   "smallest": "없음(추천 아님)",
+   "pretest": "해당 없음",
+   "total": 1
+  },
+  {
+   "id": "cheaper-inference/OmniRoute",
+   "name": "cheaper-inference/OmniRoute",
+   "kind": "도구",
+   "source": "gh-topic",
+   "url": "https://github.com/cheaper-inference/OmniRoute",
+   "scores": {
+    "relevance": 0,
+    "evidence": 1,
+    "cost": 0,
+    "env": 1,
+    "removes": false,
+    "security": true
+   },
+   "reasons": {
+    "relevance": "프로필의 겪은 문제 · 쓰는 흐름과 무관 — 있으면 좋다 이하",
+    "evidence": "소식지 값 1",
+    "cost": "소식지 값 0",
+    "env": "450: … · 775: Desktop (Electron) … · 776: Menu-bar (OmniRouteTray) brew install --cask … · 1148: Arch Linux (AUR)",
+    "security": "API 키 · 계정을 모아 중계 서버에 맡김"
+   },
+   "summary": "여러 제공자의 무료 티어를 묶는 무료 AI 게이트웨이(토큰 합산 수치는 추정)",
+   "why": "프로필의 겪은 문제 · 쓰는 흐름과 무관 — 있으면 좋다 이하",
+   "smallest": "없음(추천 아님)",
+   "pretest": "해당 없음",
+   "total": 0
+  }
+ ],
+ "rescored": []
+}
