@@ -1,0 +1,18 @@
+[
+  { "id": "cc-changelog", "group": "공식", "kind": "sections", "url": "https://raw.githubusercontent.com/anthropics/claude-code/main/CHANGELOG.md", "heading": "^## (.+)$", "firstRun": 3 },
+  { "id": "cc-docs-map", "group": "공식", "kind": "lines", "url": "https://code.claude.com/docs/en/claude_code_docs_map.md", "pattern": "\\((https://code\\.claude\\.com/docs/en/[^)#\\s]+)\\)" },
+  { "id": "anthropic-engineering", "group": "공식", "kind": "lines", "url": "https://www.anthropic.com/engineering", "pattern": "href=\"(/research/(?!team/)[^\"#?]+)\"" },
+  { "id": "anthropic-news", "group": "공식", "kind": "lines", "url": "https://www.anthropic.com/news", "pattern": "href=\"(/news/[^\"#?]+)\"" },
+  { "id": "claude-blog", "group": "공식", "kind": "lines", "url": "https://claude.com/resources/articles", "pattern": "href=\"(/resources/articles/[^\"#?]+)\"" },
+  { "id": "plugins-official", "group": "공식", "kind": "json", "url": "https://raw.githubusercontent.com/anthropics/claude-plugins-official/main/.claude-plugin/marketplace.json", "path": "plugins[].name" },
+  { "id": "skills", "group": "공식", "kind": "git-head", "repo": "https://github.com/anthropics/skills" },
+  { "id": "agent-sdk-ts", "group": "공식", "kind": "git-tags", "repo": "https://github.com/anthropics/claude-agent-sdk-typescript", "tagPattern": "^v\\d+\\.\\d+\\.\\d+$", "firstRun": 1 },
+  { "id": "cc-action", "group": "공식", "kind": "git-tags", "repo": "https://github.com/anthropics/claude-code-action", "tagPattern": "^v\\d+\\.\\d+\\.\\d+$", "firstRun": 1 },
+  { "id": "anthropics-new-repos", "group": "공식", "kind": "json", "url": "https://api.github.com/search/repositories?q=org:anthropics+created:%3E%3D{since}&sort=updated&per_page=20", "path": "items[].full_name", "firstRun": 20 },
+  { "id": "gh-topic", "group": "커뮤니티", "kind": "json", "url": "https://api.github.com/search/repositories?q=topic:claude-code+pushed:%3E%3D{since}&sort=stars&per_page=20", "path": "items[].full_name", "firstRun": 20 },
+  { "id": "awesome-cc", "group": "커뮤니티", "kind": "lines", "url": "https://raw.githubusercontent.com/hesreallyhim/awesome-claude-code/main/README.md", "pattern": "\\]\\((https://github\\.com/[^)\\s]+)\\)" },
+  { "id": "mcp-registry", "group": "커뮤니티", "kind": "json", "url": "https://registry.modelcontextprotocol.io/v0/servers?search=claude&version=latest&limit=100", "path": "servers[].server.name" },
+  { "id": "npm", "group": "커뮤니티", "kind": "json", "url": "https://registry.npmjs.org/-/v1/search?text=keywords:claude-code&size=50", "path": "objects[].package.name" },
+  { "id": "codex", "group": "인접", "kind": "git-tags", "repo": "https://github.com/openai/codex", "tagPattern": "^rust-v\\d+\\.\\d+\\.\\d+$", "firstRun": 1 },
+  { "id": "gemini-cli", "group": "인접", "kind": "git-tags", "repo": "https://github.com/google-gemini/gemini-cli", "tagPattern": "^v\\d+\\.\\d+\\.\\d+$", "firstRun": 1 }
+]
