@@ -144,8 +144,24 @@ test('DIGEST.md — 소식지 이름은 그 주 월요일(개인 층과 같은 �
   for (const s of [WEEK, '`digest/<이번 주>.json` 이 이미 있으면']) dhas(s);
 });
 
-test('DIGEST.md — 공개 이슈 제목 · 본문은 소식지 md · 판정 줄 안내 없음 · 댓글은 판정이 아니다', () => {
-  for (const s of ['[AI-SCOUT 소식] YYYY-MM-DD', '본문 = `digest/<이번 주>.md` 그대로', '판정 줄 안내를 붙이지 않는다', '댓글은 판정이 아니다']) dhas(s);
+test('DIGEST.md — 공개 이슈 제목 · 본문은 --issue 출력 그대로(11-09: 15K자 md 를 「22KB 라서」 손 요약) · 판정 줄 안내 없음 · 댓글은 판정이 아니다', () => {
+  for (const s of ['[AI-SCOUT 소식] YYYY-MM-DD', '본문 = `node /tmp/ai-scout/tools/digest.mjs --issue digest/<이번 주>.json` 출력', '도구 출력 그대로 — 요약하지 않는다', '판정 줄 안내를 붙이지 않는다', '댓글은 판정이 아니다']) dhas(s);
+  assert.ok(!digest.includes('본문 = `digest/<이번 주>.md` 그대로'), '길이 판단을 모델에 맡기지 않는다');
+});
+
+test('DIGEST.md — README 파일의 보안 행 · 행 번호 인용 · ⚠️ 아닌 이유 · 상투문 금지 · 판 귀속(검사가 요구하는 꼴로)', () => {
+  for (const s of [
+    '--web <웹 발견 수> --readme /tmp/readme', '보안 행', '플러그인 훅', 'details 한 줄 이상은 그 파일의 행 번호 줄을 인용',
+    '`reasons.security`', '같은 문장이 커뮤니티 후보 절반 이상이면 도구가 거부한다', '백틱 안은 그 판 원문 그대로',
+  ]) dhas(s);
+});
+
+test('DIGEST.md — evidence 의 GitHub 도구 기준(11-09: 20/20 일괄 1)', () => {
+  dhas('GitHub 도구: 2 = README 로 무엇 · 설치 확인 · 1 = 핵심 주장이 자체 측정 · 0 = 원본 없음');
+});
+
+test('DIGEST.md — 검색은 collect 출력 직후 · 장부는 같은 주 재실행이면 바꾼다 · 「이런 것도 있어요」 동점', () => {
+  for (const s of ['collect 출력 직후, 원본 파일을 열기 전에', '같은 주 재실행이면 그 주 값으로 바꾼다', '후보 = candidates + unread', '동점이면 수집 순서(gh-topic 은 별 순)']) dhas(s);
 });
 
 test('DIGEST.md — 후보 필드가 lib/digest.mjs FIELDS 와 같다(개인 층이 이 이름으로 읽는다)', () => {

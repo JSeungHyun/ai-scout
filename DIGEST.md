@@ -23,12 +23,14 @@ node /tmp/ai-scout/tools/collect.mjs --sources /tmp/ai-scout/sources.json --snap
 - ⛔ 남의 저장소 GitHub REST(`api.github.com/repos/…`) · `releases.atom` · 허용 목록 밖 호스트는 쓰지 않는다(클라우드에서 막힌다)
 
 ## 2. 웹 검색 — 원본 읽기 앞에
-웹 검색을 1~3회 한다(지난 7일 안팎 — 0회로 넘기지 않는다 · 커뮤니티 발견 1회 이상 + 4 의 **개념 검색** 1회). 발견마다 이름 · 링크를 `/tmp/web.md` 에 한 줄씩 남긴다(collect 후보와 겹치면 적지 않는다). **검색 발견도 후보다** — 3 에서 원본을 읽고 5 의 `candidates`(`"source": "web"`)에 넣는다. 검색은 **발견만** — 근거 2 는 공식 문서 · 원본 저장소로 확인한 것만. 웹 **발견** 수(검색 횟수가 아니다) = `wc -l < /tmp/web.md`. 어림하지 않는다.
+collect 출력 직후, 원본 파일을 열기 전에 검색한다 — 읽은 뒤에 찾은 발견은 읽히지 않는다. 웹 검색을 1~3회 한다(지난 7일 안팎 — 0회로 넘기지 않는다 · 커뮤니티 발견 1회 이상 + 4 의 **개념 검색** 1회). 발견마다 이름 · 링크를 `/tmp/web.md` 에 한 줄씩 남긴다(collect 후보와 겹치면 적지 않는다). **검색 발견도 후보다** — 3 에서 원본을 읽고 5 의 `candidates`(`"source": "web"`)에 넣는다. 검색은 **발견만** — 근거 2 는 공식 문서 · 원본 저장소로 확인한 것만. 웹 **발견** 수(검색 횟수가 아니다) = `wc -l < /tmp/web.md`. 어림하지 않는다.
 
 ## 3. 원본 읽기
 **후보마다 원본을 읽는다** — 후보 = 공식 · 커뮤니티 새 항목 + 웹 발견. 인접 원천(`group: 인접`)의 새 항목은 읽지 않는다(5 에서 한 줄만).
 - CHANGELOG 절 · 태그 · HEAD: `/tmp/texts/<원천>/<id>.md`. 200줄이 넘는 절은 `grep -niE 'windows|macos|linux|hook|plugin|skill|mcp|permission|security|deprecat|breaking' /tmp/texts/<원천>/<id>.md` 로 먼저 훑은 뒤 전체를 읽는다
-- GitHub 저장소(`gh-topic` · `anthropics-new-repos` · `awesome-cc` · GitHub 웹 발견): `node /tmp/ai-scout/tools/readme.mjs --out /tmp/readme <소유자/저장소> …` 를 한 번 — 저장소마다 `/tmp/readme/<소유자>__<저장소>.md`(배지 · HTML 을 거른 본문 80줄 + OS 행 전체)가 생긴다. 그 파일을 하나씩 읽는다. OS 근거는 도구 출력의 행 번호 줄 그대로(「12: …」) — 0줄이면 「README 에 OS 언급 없음」(「미확인」이 아니다)
+- GitHub 저장소(`gh-topic` · `anthropics-new-repos` · `awesome-cc` · GitHub 웹 발견): `node /tmp/ai-scout/tools/readme.mjs --out /tmp/readme <소유자/저장소> …` 를 한 번 — 저장소마다 `/tmp/readme/<소유자>__<저장소>.md`(배지 · HTML 을 거른 본문 80줄 · OS 행 · 보안 행 — 모두 원본 행 번호 · `.claude-plugin/marketplace.json` 이 있으면 플러그인 훅 `hooks/hooks.json` 유무와 이벤트)가 생긴다. 그 파일을 하나씩 읽는다. OS 근거는 도구 출력의 행 번호 줄 그대로(「12: …」) — 0줄이면 「README 에 OS 언급 없음」(「미확인」이 아니다)
+  - details 한 줄 이상은 그 파일의 행 번호 줄을 인용한다(「48: 설치 …」) — 행 번호가 없으면 `tools/digest.mjs` 가 거부한다
+  - 「보안 행 N개」가 1 이상이면 그 줄들을 보고 ⚠️ 를 정한다 — ⚠️ 면 `security` 에 이유, 아니면 왜 ⚠️ 가 아닌지를 `reasons.security` 에(둘 다 없으면 거부한다)
 - npm: `curl -sSL https://registry.npmjs.org/<이름>/latest` 의 `description` · MCP 레지스트리: 그 항목의 `description` · 페이지 링크: 받아서 제목 · 첫 문단
 - ⛔ 「내용 미확인」으로 사실을 적지 않는다 — 못 읽었으면 `candidates` 가 아니라 `unread` 에 이유와 함께(본문을 받은 항목을 `unread` 로 보내면 `tools/digest.mjs` 가 거부한다)
 
@@ -53,41 +55,42 @@ node /tmp/ai-scout/tools/collect.mjs --sources /tmp/ai-scout/sources.json --snap
   "candidates": [{ "id": "<collect 항목 id · 웹 발견은 이름>", "name": "이름", "source": "<원천 id 또는 web>", "group": "공식|커뮤니티|web", "kind": "도구|변경", "url": "https://…",
     "what": "무엇 한 줄", "details": ["원본에서 읽은 주요 내용 · 변경 — 한 줄씩"], "os": "OS 근거",
     "evidence": 0, "cost": 0, "reach": 0, "security": false,
-    "reasons": { "evidence": "…", "cost": "…", "reach": "…" } }],
+    "reasons": { "evidence": "…", "cost": "…", "reach": "…", "security": "보안 행이 있는데 false 일 때 — 왜 ⚠️ 가 아닌가" } }],
   "unread": [{ "id": "…", "name": "…", "source": "…", "group": "공식|커뮤니티|web", "url": "…", "reason": "읽기 실패 이유 — 미확인(404) 등" }],
   "adjacent": [{ "id": "…", "source": "…", "what": "무엇이 새로 나왔나 한 줄" }],
   "concepts": [{ "term": "용어", "definition": "한 줄 정의(원문에서)", "origin": "처음 말한 쪽", "url": "원문", "date": "YYYY-MM-DD", "layer": "하네스", "grade": 0, "read": "" }] }
 ```
 - 공식 새 항목은 **빠짐없이** `candidates` 에(못 읽었으면 `unread` — 이유가 「미확인」 줄로 함께 오른다) — 「이번 주 공식 변경」 절은 도구가 여기서 만든다. 커뮤니티 새 항목 · 웹 발견도 하나씩 — **묶지 않는다**
 - `kind`: 도구 = 설치할 것(플러그인 · 스킬 · MCP · 패키지 · 저장소) · 변경 = CLI · SDK 판 · 문서 · 공식 글
-- `details`: 판이면 눈에 띄는 변경(OS 별 수정 포함), 도구면 하는 일 · 설치 방식 — 원본에서 읽은 것만. 개인 층은 원본을 다시 읽지 않고 이것으로 판정한다
+- `details`: 판이면 눈에 띄는 변경(OS 별 수정 포함), 도구면 하는 일 · 설치 방식 — 원본에서 읽은 것만. 개인 층은 원본을 다시 읽지 않고 이것으로 판정한다. 판의 백틱 안은 그 판 원문 그대로 — 도구가 그 판 절 본문에서 찾는다(다른 판의 변경을 옮겨 적지 않게). GitHub 저장소는 README 행 번호 인용(3)
+- `reasons`: 후보마다 원본에서 읽은 근거 — 점수를 문구로 바꾸지 않는다. 같은 문장이 커뮤니티 후보 절반 이상이면 도구가 거부한다
 - 인접 원천(`group: 인접`)의 새 항목은 `adjacent` 에 한 줄씩 — 채점하지 않고 **중립 사실을 적지 않는다**
 - 이름 · `@handle` 을 옮길 때는 백틱으로 감싼다 — 사용자 명의로 남에게 멘션 알림이 가지 않게
 
 | 키 | 값 | 기준 — 프로필 없이 누구에게나 같은 사실 |
 |---|---|---|
-| `evidence` 0~2 | 근거 | 2 = 공식 · 원본 저장소로 확인 · 1 = 원본은 있으나 수치는 자체 측정 · 0 = 커뮤니티 글뿐 |
+| `evidence` 0~2 | 근거 | 2 = 공식 · 원본 저장소로 확인 · 1 = 원본은 있으나 수치는 자체 측정 · 0 = 커뮤니티 글뿐. GitHub 도구: 2 = README 로 무엇 · 설치 확인 · 1 = 핵심 주장이 자체 측정 · 0 = 원본 없음 |
 | `cost` 0~2 | 도입 비용 | 2 = 설정 한 줄 · 플러그인 하나 · 1 = 파일 몇 개 · 0 = 새 의존성 · 구조 변경 |
 | `reach` 0~2 | 범용성 | 2 = Claude Code 를 쓰는 누구에게나 · 세 OS(Windows · macOS · Linux) · 1 = 특정 스택 · 일부 OS · 0 = 좁은 용도 · 한 OS |
 | `os` | OS 근거 | GitHub 저장소는 `tools/readme.mjs` 의 행 번호 줄 그대로 · 0줄이면 「README 에 OS 언급 없음」 · 판 · 문서는 본문 근거 |
-| `security` | ⚠️ 보안 | `false` 또는 이유 — 사용자 권한으로 돈다 · 로그인 공유 · 설치가 설정 · 훅을 바꾼다 |
+| `security` | ⚠️ 보안 | `false` 또는 이유 — 사용자 권한으로 돈다 · 로그인 공유 · 설치가 설정 · 훅을 바꾼다. README 보안 행이 있는데 `false` 면 `reasons.security` 에 왜 아닌지 |
 
-「이런 것도 있어요」는 도구가 고른다 — `kind: 도구` 중 근거 + 비용 + 범용성 − (⚠️ 이면 2) 순으로 상위 3, 합 4 미만은 올리지 않는다(억지로 채우지 않는다).
+「이런 것도 있어요」는 도구가 고른다 — `kind: 도구` 중 근거 + 비용 + 범용성 − (⚠️ 이면 2) 순으로 상위 3, 합 4 미만은 올리지 않는다(억지로 채우지 않는다). 동점이면 수집 순서(gh-topic 은 별 순)로 앞선 것.
 
 ```
-node /tmp/ai-scout/tools/digest.mjs --check digest/<이번 주>.json --collect /tmp/candidates.json --web <웹 발견 수>
+node /tmp/ai-scout/tools/digest.mjs --check digest/<이번 주>.json --collect /tmp/candidates.json --web <웹 발견 수> --readme /tmp/readme
 ```
-- 실패하면 메시지대로 고쳐 다시 돌린다(빠진 · 남는 후보 · 범위 · OS 근거 · 미확인 표시 · 개념 날짜 · 등급) — 통과하기 전에는 md · 이슈 · 커밋을 하지 않는다
+- 실패하면 메시지대로 고쳐 다시 돌린다(빠진 · 남는 후보 · 범위 · OS 근거 · README 행 번호 · 보안 이유 · 같은 reasons 문장 · 판 귀속 · 미확인 표시 · 개념 날짜 · 등급) — 통과하기 전에는 md · 이슈 · 커밋을 하지 않는다
 
 ## 6. 기록
 ```
 node /tmp/ai-scout/tools/digest.mjs --render digest/<이번 주>.json > digest/<이번 주>.md
 ```
 - md 는 도구가 JSON 에서 만든다 — 손으로 고치지 않는다(고칠 것은 JSON 을 고쳐 `--check` 부터 다시)
-- `digest/ledger.md`: 원천 수확 표에 원천별 후보 · 이런 것도 있어요 · 개념 수를 더하고 마지막 수확 = `<이번 주>`. 「개념」 표에 개념마다 한 줄(처음 본 날 = `<이번 주>`)
+- `digest/ledger.md`: 원천 수확 표에 원천별 후보(후보 = candidates + unread) · 이런 것도 있어요 · 개념 수를 더하고 마지막 수확 = `<이번 주>` — 같은 주 재실행이면 그 주 값으로 바꾼다(두 번 더하지 않는다). 「개념」 표에 개념마다 한 줄(처음 본 날 = `<이번 주>`)
 
 ## 7. 이슈 — 공개 `[AI-SCOUT 소식] YYYY-MM-DD`
-후보 · 개념이 모두 0 이면 만들지 않는다. 아니면 내장 GitHub MCP `issue_write` 로 제목 `[AI-SCOUT 소식] <이번 주>`, 본문 = `digest/<이번 주>.md` 그대로. 판정 줄 안내를 붙이지 않는다 — 소식지 이슈의 댓글은 판정이 아니다(스카우트는 읽지도 달지도 않는다). 만든 번호를 JSON `"issue"` 에 넣는다.
+후보 · 개념이 모두 0 이면 만들지 않는다. 아니면 내장 GitHub MCP `issue_write` 로 제목 `[AI-SCOUT 소식] <이번 주>`, 본문 = `node /tmp/ai-scout/tools/digest.mjs --issue digest/<이번 주>.json` 출력 — 도구 출력 그대로 — 요약하지 않는다(길이는 도구가 본다: GitHub 한도를 넘을 때만 「후보 전체」를 링크로 바꾼다). 판정 줄 안내를 붙이지 않는다 — 소식지 이슈의 댓글은 판정이 아니다(스카우트는 읽지도 달지도 않는다). 만든 번호를 JSON `"issue"` 에 넣는다.
 
 ## 8. 커밋 · push — `digest/` 만
 ```
