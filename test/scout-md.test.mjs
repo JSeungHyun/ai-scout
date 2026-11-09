@@ -4,6 +4,7 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 
 const md = readFileSync(new URL('../SCOUT.md', import.meta.url), 'utf8');
+const ledger = readFileSync(new URL('../ledger.md', import.meta.url), 'utf8');
 const has = (s) => assert.ok(md.includes(s), `SCOUT.md 에 「${s}」 가 없다`);
 
 test('SCOUT.md 는 세 도구를 실제 인자로 부른다', () => {
@@ -78,10 +79,27 @@ test('재시험(v0.1.1)에서 빠진 것 — 「미확인」은 CHANGELOG HTTP �
 });
 
 test('원천 정리에서 인접 원천은 뺀다 — 채점하지 않으니 매번 추천 0건이다', () => {
-  has('4주 동안 추천 0건인 원천(인접 원천 제외)');
+  has('4주 동안 추천 0건 · 개념 0건인 원천(인접 원천 제외)');
 });
 
 test('이슈 본문의 보고서 링크도 알림과 같은 절대 주소', () => {
   for (const s of ['보고서: <보고서 링크>', '이슈의 `<보고서 링크>` 도 8 과 같은 절대 주소']) has(s);
   assert.ok(!md.includes('<reports/YYYY-MM-DD.md 링크>'), '상대 경로는 이슈에서 열리지 않는다');
+});
+
+test('개념 칸(11-09) — 보고서 절 · 개념 검색 · 하네스 층 · 추천 아님', () => {
+  for (const s of ['## 이번 주 개념 (C건)', '**개념 검색**', '**우리 하네스의 어느 층인가**', '⛔ **개념은 추천이 아니다**', '「원문 미확인」', '「자체 주장」']) has(s);
+});
+
+test('개념은 채점 · 판정과 섞지 않는다 — M · --expect · 이슈 번호', () => {
+  // 개념 발견이 /tmp/web.md 에 들어가면 M 이 늘어 --expect 가 어긋난다
+  for (const s of ['`/tmp/web.md` 에 적지 않는다', '`select.mjs` 에 넣지 않고', '번호를 도구 추천과 섞지 않는다']) has(s);
+});
+
+test('알림 첫 줄 두 템플릿 모두 뒤에 개념 수', () => {
+  for (const s of ['<이슈 링크> · 개념 C건`', '<보고서 링크> · 개념 C건`']) has(s);
+});
+
+test('장부에 「개념」 표가 있다 — 같은 용어를 다시 올리지 않게', () => {
+  for (const s of ['## 개념', '| 용어 | 층 | 처음 본 날 | 원문 | 근거 등급 | 메모 |']) assert.ok(ledger.includes(s), `ledger.md 에 「${s}」 가 없다`);
 });
