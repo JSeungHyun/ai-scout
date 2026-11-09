@@ -23,7 +23,7 @@ const good = () => ({
     cand({ id: 'o/tool', name: 'tool', source: 'gh-topic', group: '커뮤니티', url: 'https://github.com/o/tool', os: '12: Works on Windows · 13: macOS', cost: 1 }),
     cand({ id: 'web-thing', name: 'web thing', source: 'web', group: 'web', url: 'https://example.com/x', evidence: 1, reach: 1, security: '설치가 훅을 바꾼다' }),
   ],
-  unread: [{ id: 'v0.3.320', name: 'Agent SDK TS v0.3.320', source: 'agent-sdk-ts', url: 'https://github.com/a/s/releases/tag/v0.3.320', reason: 'CHANGELOG 미확인(404)' }],
+  unread: [{ id: 'v0.3.320', name: 'Agent SDK TS v0.3.320', source: 'agent-sdk-ts', group: '공식', url: 'https://github.com/a/s/releases/tag/v0.3.320', reason: 'CHANGELOG 미확인(404)' }],
   adjacent: [{ id: 'rust-v0.168.0', source: 'codex', what: '새 판' }],
   concepts: [{ term: 'guide 와 sensor', definition: '앞에서 막는 것과 뒤에서 재는 것', origin: '해설 블로그', url: 'https://origin.example/x', date: '2026-11-12', layer: '하네스', grade: 1, read: 'https://explainer.example/x' }],
 });
@@ -71,6 +71,19 @@ test('본문을 받은 수집 항목은 읽기 실패로 넘기지 않고, CHANG
   assert.match(errs((d) => { d.unread[0].reason = '판올림'; }), /v0\.3\.320: .*미확인\(404\)/);
 });
 
+test('CHANGELOG 200 인데 그 판 절이 없으면 reason 에 「미확인(200 · 절 없음)」 (codex 실측: 200 + 빈 본문)', () => {
+  const noSection = structuredClone(collected);
+  noSection.sources[1].newItems[0].changelog.status = '200 · 절 없음';
+  assert.match(checkDigest(good(), noSection, 1).join('\n'), /v0\.3\.320: .*「미확인\(200 · 절 없음\)」/);
+  const d = good();
+  d.unread[0].reason = 'CHANGELOG 미확인(200 · 절 없음)';
+  assert.deepEqual(checkDigest(d, noSection, 1), []);
+});
+
+test('unread 도 group — 못 읽은 공식 항목이 「이번 주 공식 변경」에서 빠지지 않게', () => {
+  assert.match(errs((d) => { delete d.unread[0].group; }), /v0\.3\.320: group 은 공식/);
+});
+
 test('date 는 그 주 월요일(개인 층이 이 이름으로 찾는다) · url 은 그 날짜 md', () => {
   assert.match(errs((d) => { d.date = '2026-11-17'; }), /월요일/);
   assert.match(errs((d) => { d.url = 'digest/2026-11-16.md'; }), /url/);
@@ -95,8 +108,10 @@ test('picks(「이런 것도 있어요」) — 도구만, 근거 + 비용 + 범�
 test('renderDigest — 머리 숫자 · 절 · ⚠️ · 판정 줄 안내 없음', () => {
   const md = renderDigest(good());
   assert.match(md, /^# AI-SCOUT 소식 2026-11-16\n/);
-  assert.match(md, /> 원천 5곳\(실패 1곳\) · 후보 3개\(읽기 실패 1개\) · 공식 변경 1건 · 개념 1건 · 엔진 v0\.2\.0/);
-  for (const s of ['## 이런 것도 있어요 (1건)', '## 이번 주 개념 (1건)', '## 이번 주 공식 변경 (1건)', '- 인접: rust-v0.168.0(codex) — 새 판', '## 후보 전체 (3개)', '## 읽기 실패 (1개)', '- npm — curl: (28) timed out', '⚠️ 설치가 훅을 바꾼다', '12: Works on Windows', '  - 원본에서 읽은 것']) assert.ok(md.includes(s), `md 에 「${s}」 가 없다`);
+  assert.match(md, /> 원천 5곳\(실패 1곳\) · 후보 3개\(읽기 실패 1개\) · 공식 변경 2건 · 개념 1건 · 엔진 v0\.2\.0/);
+  // 못 읽은 공식 항목도 한 줄 — 머리 줄 K(개인 층이 읽는 수)와 같은 기준(v0.2.0 모의: cc-action 404 가 빠져 하나 모자랐다)
+  assert.match(md, /## 이번 주 공식 변경 \(2건\)\n- Claude Code 2\.1\.320 — .*\n- Agent SDK TS v0\.3\.320 \(agent-sdk-ts\) — CHANGELOG 미확인\(404\) · https:\/\/github\.com\/a\/s\/releases\/tag\/v0\.3\.320\n/);
+  for (const s of ['## 이런 것도 있어요 (1건)', '## 이번 주 개념 (1건)', '- 인접: rust-v0.168.0(codex) — 새 판', '## 후보 전체 (3개)', '## 읽기 실패 (1개)', '- npm — curl: (28) timed out', '⚠️ 설치가 훅을 바꾼다', '12: Works on Windows', '  - 원본에서 읽은 것']) assert.ok(md.includes(s), `md 에 「${s}」 가 없다`);
   assert.match(md, /\*\*guide 와 sensor\*\* — 앞에서 막는 것과 뒤에서 재는 것 · 처음 말한 쪽 \[해설 블로그\]\(https:\/\/origin\.example\/x\) 2026-11-12 · 층 하네스 · 근거 등급 1/);
   assert.ok(!/채택|기각|판정/.test(md), '소식지는 판정 대상이 아니다');
 });

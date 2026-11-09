@@ -5,10 +5,11 @@ import { readFileSync } from 'node:fs';
 import { FIELDS } from '../lib/digest.mjs';
 
 const read = (f) => readFileSync(new URL(`../${f}`, import.meta.url), 'utf8');
-const [md, digest, ledger, digestLedger, profile] = ['SCOUT.md', 'DIGEST.md', 'ledger.md', 'digest/ledger.md', 'profile.md'].map(read);
+const [md, digest, ledger, digestLedger, profile, design] = ['SCOUT.md', 'DIGEST.md', 'ledger.md', 'digest/ledger.md', 'profile.md', 'docs/design.md'].map(read);
 const inDoc = (doc, name) => (s) => assert.ok(doc.includes(s), `${name} 에 「${s}」 가 없다`);
 const has = inDoc(md, 'SCOUT.md');
 const dhas = inDoc(digest, 'DIGEST.md');
+const ghas = inDoc(design, 'docs/design.md');
 const WEEK = '$(date -u -d "-$(( $(date -u +%u) - 1 )) days" +%F)';
 
 // ── 개인 층 SCOUT.md ──
@@ -81,7 +82,7 @@ test('알림 첫 줄 두 템플릿 모두 뒤에 개념 수', () => {
 });
 
 test('두 층 — 개인 층은 이번 주 소식지를 읽고, 없거나 지난 것이면 알리고 멈춘다', () => {
-  for (const s of [WEEK, '`digest/` 가 있으면', '`소식지:`', 'AI-SCOUT 소식지 없음', '지난 소식지로 추천하지 않는다']) has(s);
+  for (const s of [WEEK, '`digest/` 가 있으면', '`소식지:`', '멈춤: 3 소식지 읽기 · 소식지 없음', '지난 소식지로 추천하지 않는다']) has(s);
 });
 
 test('두 층 — 수집 · 웹 검색 · 원본 읽기는 공통 층 몫, 개인은 개인 원천만 수집', () => {
@@ -100,6 +101,33 @@ test('재채점 — select 뒤에 점수를 고치면 rescore 이유, 첫 보고
 
 test('장부 제외 — CHANGELOG 판 일부만 가리키는 장부 줄로 판 전체를 빼지 않는다(v0.1.3: 2.1.319 의 ~140줄이 채점 밖)', () => {
   for (const s of ['CHANGELOG 판 단위 항목', '나머지 변경으로 채점한다']) has(s);
+});
+
+// ── 두 층 공통 ──
+
+test('엔진 도구는 이 절차의 도구 · 금지는 후보로 받은 코드만(11-09 v0.2.0: 분류기가 「가져온 코드」 금지를 clone 한 엔진 도구에도 걸었다)', () => {
+  for (const [doc, h] of [[md, has], [digest, dhas]]) {
+    for (const s of ['⛔ 후보로 받은 코드 · 패키지는 **실행하지 않는다**', '엔진 `/tmp/ai-scout/tools/` 는 이 절차의 도구다']) h(s);
+    assert.ok(!doc.includes('가져온 코드'), '「가져온 코드」는 엔진 도구까지 덮는다');
+  }
+});
+
+test('멈춤 알림은 늘 같은 첫 줄 — 루틴 상태는 멈춰도 SUCCEEDED 라 알림이 유일한 신호', () => {
+  dhas('`AI-SCOUT 소식 <이번 주> — 멈춤: <단계> · <이유>`');
+  assert.ok(digest.indexOf('— 멈춤:') < digest.indexOf('## 1. 수집'), 'DIGEST.md 0 에 — 수집 전에 멈춰도 쓰게');
+  assert.ok(digest.lastIndexOf('— 멈춤:') > digest.indexOf('## 9. 알림'), 'DIGEST.md 끝 알림 절에도');
+  has('`AI-SCOUT <이번 주> — 멈춤: <단계> · <이유>`');
+  assert.ok(md.indexOf('— 멈춤:') < md.indexOf('## 1. 읽기'), 'SCOUT.md 0 에');
+  assert.ok(!md.includes('AI-SCOUT 소식지 없음'), '소식지 없음도 멈춤 꼴로');
+});
+
+test('design.md — 루틴 지시문 틀에 엔진 도구 실행 허락 줄 · setup 이 그 틀을 쓴다 · 제약 표에 분류기 실측', () => {
+  for (const s of [
+    '`/tmp/ai-scout/tools/*.mjs` 는 내 엔진(<소유자>/ai-scout, 태그 <태그>)이다 — node 로 실행을 허락한다. ⛔ 후보로 받은 코드 · 패키지는 실행하지 않는다(npx · npm i · pip · curl | sh)',
+    '클라우드 자동 모드 분류기는 지시문의 『가져온 코드 실행 금지』를 clone 한 엔진 도구에도 적용한다 — 지시문에 엔진 도구 실행 허락과 금지 범위 예시를 둔다(v0.1.3 통과 · v0.2.0 거부, 11-09)',
+    '엔진 도구 실행 허락 줄을 빼지 않는다',
+  ]) ghas(s);
+  for (const s of ['/tmp/ai-scout/DIGEST.md 를 읽고 그대로 따른다', '/tmp/ai-scout/DIGEST.md 를 따르고 이어서 /tmp/ai-scout/SCOUT.md 를 따른다', '/tmp/ai-scout/SCOUT.md 를 읽고 그대로 따른다']) ghas(s);
 });
 
 // ── 공통 층 DIGEST.md ──
@@ -132,12 +160,12 @@ test('DIGEST.md — 웹 검색은 원본 읽기 앞 · 발견도 후보 · M 은
 });
 
 test('DIGEST.md — 원본 읽기 깊이는 도구가: README 파일 · 긴 CHANGELOG 절은 grep 먼저 · 「미확인(코드)」', () => {
-  for (const s of ['후보마다 원본을 읽는다', '파일을 하나씩 읽는다', '`changelog.status`', '「미확인(404)」', 'grep -niE', '/tmp/texts/', '「README 에 OS 언급 없음」', '「내용 미확인」으로 사실을 적지 않는다']) dhas(s);
+  for (const s of ['후보마다 원본을 읽는다', '파일을 하나씩 읽는다', '`changelog.status`', '「미확인(404)」', '「미확인(200 · 절 없음)」', 'grep -niE', '/tmp/texts/', '「README 에 OS 언급 없음」', '「내용 미확인」으로 사실을 적지 않는다']) dhas(s);
   assert.ok(!digest.includes('head -60') && !digest.includes('for 루프로'), 'README 깊이는 tools/readme.mjs 가 정한다');
 });
 
 test('DIGEST.md — 인접은 adjacent 에 요약만 · 공식 새 항목은 빠짐없이', () => {
-  for (const s of ['인접 원천(`group: 인접`)', '**중립 사실을 적지 않는다**', '공식 새 항목은 **빠짐없이**']) dhas(s);
+  for (const s of ['인접 원천(`group: 인접`)', '**중립 사실을 적지 않는다**', '공식 새 항목은 **빠짐없이**', '"source": "…", "group": "공식|커뮤니티|web", "url": "…", "reason"']) dhas(s);
 });
 
 test('DIGEST.md — 개념: 검색어 낱말 자체는 개념이 아니다 · 원문 날짜 7일 · 등급 1 은 연 글 · 원문 미확인 · 자체 주장', () => {

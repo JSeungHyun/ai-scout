@@ -150,6 +150,15 @@ test('CHANGELOG 가 없으면 HTTP 코드를 status 로 — 「미확인(404)」
   assert.equal(row.newItems[0].text, undefined);
 });
 
+test('CHANGELOG 가 200 인데 그 판 절이 없으면 status 에 「절 없음」 · 본문 없음 (codex 실측: 200 + 빈 본문)', async () => {
+  const cl = '# Changelog\n## 1.0.0\n- 옛것\n';
+  const run = fakeRun({ 'githubusercontent.com/o/t/v2.0.0/CHANGELOG.md': cl, 'github.com/o/t': 's1\trefs/tags/v2.0.0\n' });
+  const src = { id: 't', group: '공식', kind: 'git-tags', repo: 'https://github.com/o/t', tagPattern: '^v\\d+\\.\\d+\\.\\d+$', firstRun: 1 };
+  const [row] = (await collect({ sources: [src], snapshotsDir: tmp(), since: '2026-11-02', run })).sources;
+  assert.deepEqual(row.newItems[0].changelog, { url: 'https://raw.githubusercontent.com/o/t/v2.0.0/CHANGELOG.md', status: '200 · 절 없음' });
+  assert.equal(row.newItems[0].text, undefined);
+});
+
 test('writeTexts — 본문이 있는 새 항목마다 <원천>/<id>.md (Read 가 긴 JSON 줄을 자르지 않게), id 의 / 는 _', () => {
   const dir = tmp();
   writeTexts({ sources: [{ id: 'cc', newItems: [{ id: '2.1.319', text: '- a' }, { id: 'x/y', text: '- b' }, { id: 'none' }, { id: 'empty', text: '' }] }] }, dir);
