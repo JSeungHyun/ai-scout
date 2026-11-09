@@ -7,22 +7,22 @@
 
 | 원천 | 후보 | 이런 것도 있어요 | 개념 | 마지막 수확 |
 |---|---|---|---|---|
-| cc-changelog | 2 | — | 0 | 2026-11-09 |
+| cc-changelog | 3 | 0 | 0 | 2026-11-09 |
 | cc-docs-map | 0 | 0 | 0 | — |
 | anthropic-engineering | 0 | 0 | 0 | — |
 | anthropic-news | 0 | 0 | 0 | — |
 | claude-blog | 0 | 0 | 0 | — |
 | plugins-official | 0 | 0 | 0 | — |
 | skills | 0 | 0 | 0 | — |
-| agent-sdk-ts | 1 | — | 0 | 2026-11-09 |
-| cc-action | 1 | — | 0 | 2026-11-09 |
+| agent-sdk-ts | 1 | 0 | 0 | 2026-11-09 |
+| cc-action | 0 | 0 | 0 | 2026-11-09 |
 | anthropics-new-repos | 0 | 0 | 0 | — |
-| gh-topic | 20 | — | 0 | 2026-11-09 |
+| gh-topic | 20 | 3 | 0 | 2026-11-09 |
 | awesome-cc | 0 | 0 | 0 | — |
 | mcp-registry | 0 | 0 | 0 | — |
 | npm | 0 | 0 | 0 | — |
-| codex | 0 | 0 | 0 | — |
-| gemini-cli | 0 | 0 | 0 | — |
+| codex | 0 | 0 | 0 | 2026-11-09 |
+| gemini-cli | 0 | 0 | 0 | 2026-11-09 |
 | web | 0 | — | 1 | 2026-11-09 |
 
 ## 원천 정리

@@ -1,0 +1,609 @@
+{
+ "date": "2026-11-09",
+ "engine": "v0.2.1",
+ "issue": 1,
+ "url": "https://github.com/JSeungHyun/ai-scout/blob/main/digest/2026-11-09.md",
+ "sources": {
+  "total": 16,
+  "failed": []
+ },
+ "conceptSearch": "AI 코딩 에이전트 하네스 컨텍스트 루프 그래프 엔지니어링 새 용어 2026-11",
+ "candidates": [
+  {
+   "id": "2.1.319",
+   "name": "Claude Code 2.1.319",
+   "source": "cc-changelog",
+   "group": "공식",
+   "kind": "변경",
+   "url": "https://raw.githubusercontent.com/anthropics/claude-code/main/CHANGELOG.md",
+   "what": "Claude Code 2.1.319 — auto mode · MCP tasks · 권한 설정 · 보안 수정",
+   "details": [
+    "auto mode: 텔레메트리/피처 플래그가 꺼진 환경(LLM 게이트웨이 포함)에서 서버가 확인 못 하는 호출은 묻거나 거부 — `CLAUDE_CODE_AUTO_MODE_SERVER=0` 으로 내장 분류기 유지",
+    "MCP tasks 를 터미널에서 지원: 작업형 MCP 호출을 즉시 백그라운드로 보내고 끝나면 알림; `CLAUDE_CODE_DISABLE_MCP_TASKS=1` 로 끔",
+    "`permissions.denyInsteadOfPrompting` 설정 추가 — 권한 프롬프트 대기 호출을 거부하고 턴을 이어감",
+    "`CLAUDE_CODE_DISABLE_FEATURE_FLAGS` 추가 · `/claude-api latency-optimize` 추가",
+    "자체 페이싱 `/loop` 는 재예약 없이 턴이 끝나면 종료(`CLAUDE_CODE_LOOP_KEEPALIVE=1` 로 이전 동작)",
+    "보안 수정: Bash 권한 우회(조작된 환경변수 접두), 따옴표 낀 단어의 deny/ask 규칙 누락, worktree 생성 시 샌드박스 탈출, `sed` 권한 검사 누락, `/rewind` 디렉터리 심볼릭 링크",
+    "Windows: 설정 저장 시 다른 프로그램이 연 파일을 더 오래 기다림(`~/.claude.json` 빈 파일 방지)",
+    "Monitor WebSocket watch 가 모든 Bash 규칙을 따름; `which` 플래그 사용 시 권한 요청; `Read` 등 Claude in Chrome `shortcuts_*` 도구 제거"
+   ],
+   "os": "CHANGELOG 본문 — Windows 항목 포함, 나머지 OS 공통",
+   "evidence": 2,
+   "cost": 2,
+   "reach": 2,
+   "security": false,
+   "reasons": {
+    "evidence": "공식 CHANGELOG",
+    "cost": "업데이트만",
+    "reach": "모든 사용자"
+   }
+  },
+  {
+   "id": "2.1.318",
+   "name": "Claude Code 2.1.318",
+   "source": "cc-changelog",
+   "group": "공식",
+   "kind": "변경",
+   "url": "https://raw.githubusercontent.com/anthropics/claude-code/main/CHANGELOG.md",
+   "what": "Claude Code 2.1.318 — 로그인 만료 표시 · 네트워크 홈 디렉터리 안정화 · 클라우드 세션 개선",
+   "details": [
+    "`claude auth status` 에 `loginExpiresAt`, `claude -p` JSON 에 `credential_expires_at` 추가; 만료 10일 전부터 stderr 경고",
+    "`~/.claude.json` · 설정 · 로그인이 공유 네트워크 홈에서 저장 중 비거나 옛 사본으로 대체되는 문제 개선; 비 JSON `~/.claude.json` 을 기본값으로 덮어쓰지 않고 시작 실패",
+    "`claude mcp add/remove` 락 사용, `claude plugin` 명령의 토큰 갱신 대기 수정",
+    "`deniedMcpServers` URL 항목이 Anthropic 제공 서버 · 클라우드 커넥터도 차단",
+    "IDE 터미널에서 시작할 때 IDE 확장 자동 설치/업데이트 중단",
+    "macOS: 많은 Bash 명령 실행 시 메모리 증가 · 정체 수정; 내장 `/bin/bash` 에서 git commit · PR 생성 안정화",
+    "클라우드 세션: 저장소 없이 시작 옵션, Chrome 이름(`google-chrome` · `CHROME_PATH`) 추가, 상태 필드 없는 PushNotification 중복 알림 수정"
+   ],
+   "os": "CHANGELOG 본문 — macOS · Windows · VSCode · 클라우드 항목 포함",
+   "evidence": 2,
+   "cost": 2,
+   "reach": 2,
+   "security": false,
+   "reasons": {
+    "evidence": "공식 CHANGELOG",
+    "cost": "업데이트만",
+    "reach": "모든 사용자"
+   }
+  },
+  {
+   "id": "2.1.317",
+   "name": "Claude Code 2.1.317",
+   "source": "cc-changelog",
+   "group": "공식",
+   "kind": "변경",
+   "url": "https://raw.githubusercontent.com/anthropics/claude-code/main/CHANGELOG.md",
+   "what": "Claude Code 2.1.317 — 계정 이메일 전송 확인 · SDK 훅 `onFailure` · 게이트웨이 비용 리포트",
+   "details": [
+    "웹/셸 도구 호출이 계정 이메일 주소를 네트워크로 보내기 전에 묻는 확인 추가",
+    "`/schedule` 에서 새 클라우드 예약 작업에 요청하지 않은 커넥터가 붙으면 경고",
+    "Agent SDK 훅 콜백 `onFailure: \"block\"` — 콜백 실패 시 동작을 막음",
+    "OTel 지표에 `anthropic.plan` · `seat_type` · `provider` · `custom_base_url` 추가; 프록시 뒤 OTel 내보내기 행(hang)/403 폭주 수정",
+    "Claude apps gateway: 비용 리포트 API `GET /v1/organizations/analytics/cost`, `assume_role`(mantle) 추가",
+    "`CLAUDE_CODE_DISABLE_NESTED_SESSION_ID` 추가; 클라우드/셀프호스트 러너 안 `claude -p` 가 세션 ID 를 공유하던 문제 수정",
+    "`claude -p` 가 디스크 가득/쿼터로 transcript 를 잃으면 exit 1",
+    "Windows: 일부 볼륨에서 모든 도구 호출이 거부되던 문제 · 스크래치패드 경로가 길어 260자 제한에 걸리던 문제 수정",
+    "Read 도구의 「file unchanged」 스텁 제거(같은 파일을 다시 읽으면 내용 반환)"
+   ],
+   "os": "CHANGELOG 본문 — Windows 항목 포함",
+   "evidence": 2,
+   "cost": 2,
+   "reach": 2,
+   "security": false,
+   "reasons": {
+    "evidence": "공식 CHANGELOG",
+    "cost": "업데이트만",
+    "reach": "모든 사용자"
+   }
+  },
+  {
+   "id": "v0.3.319",
+   "name": "Agent SDK TypeScript v0.3.319",
+   "source": "agent-sdk-ts",
+   "group": "공식",
+   "kind": "변경",
+   "url": "https://github.com/anthropics/claude-agent-sdk-typescript/releases/tag/v0.3.319",
+   "what": "Agent SDK(TS) v0.3.319 — MCP task 지원, Claude Code 2.1.319 동기화",
+   "details": [
+    "SDK 세션에서 MCP task 지원(Bedrock · Vertex · Foundry 제외): `CLAUDE_AUTO_BACKGROUND_TASKS=1` + 스트리밍 입력이면 백그라운드 `task_type: \"mcp_task\"`",
+    "`claude_code.session.count` 가 `prewarm()` 미사용 프로세스를 세던 문제 수정",
+    "`deleteSession()` 이 폴더를 다 못 지우면 `ENOTEMPTY` 로 reject; `session_writes_lost` 는 CLI exit 0 일 때만 전송",
+    "Claude Code v2.1.319 와 동기화"
+   ],
+   "os": "CHANGELOG 본문 — OS 별 항목 없음",
+   "evidence": 2,
+   "cost": 2,
+   "reach": 1,
+   "security": false,
+   "reasons": {
+    "evidence": "공식 CHANGELOG",
+    "cost": "의존성 버전 올리기",
+    "reach": "SDK 사용자"
+   }
+  },
+  {
+   "id": "morluto/rea",
+   "name": "`morluto/rea`",
+   "source": "gh-topic",
+   "group": "커뮤니티",
+   "kind": "도구",
+   "url": "https://github.com/morluto/rea",
+   "what": "리버스 엔지니어링용 MCP — 바이너리 · 앱 · 런타임 동작 분석",
+   "details": [
+    "README 소개: 「One MCP for reverse engineering across binaries, applications, and runtime behavior」",
+    "Ghidra · JADX · 펌웨어 도구 실행, ELF 레이아웃 · 커널 모듈 분석 등(README 표)"
+   ],
+   "os": "73: On Linux, Ghidra, JADX, firmware tool launches … · 76: \"Linux owned-process prerequisite\". · 128: … `\"D:/apps/example\"` on Windows.",
+   "evidence": 1,
+   "cost": 1,
+   "reach": 0,
+   "security": "사용자 권한으로 외부 분석 도구를 실행(설정 · 실행 권한 필요)",
+   "reasons": {
+    "evidence": "GitHub 저장소 README 로 확인 — 수치는 자체 주장일 수 있음",
+    "cost": "파일 · 설치 단계 몇 개",
+    "reach": "좁은 용도 또는 한 OS"
+   }
+  },
+  {
+   "id": "affaan-m/ECC",
+   "name": "`affaan-m/ECC`",
+   "source": "gh-topic",
+   "group": "커뮤니티",
+   "kind": "도구",
+   "url": "https://github.com/affaan-m/ECC",
+   "what": "에이전트 하네스 성능 시스템 — plan→test→implement→review→verify→remember 흐름의 Claude Code 플러그인(`ecc@ecc`)",
+   "details": [
+    "플러그인 설치(가이드 설치 또는 네이티브 플러그인 명령) · npm `ecc-universal`",
+    "README 경고: 공식 채널에서만 설치(가짜 패키지 주의)",
+    "수동 설치와 중복 설치 금지 안내"
+   ],
+   "os": "179: #### Windows first-time walkthrough · 184: 2. Open **PowerShell** from the Windows Start menu. · 467: Windows:",
+   "evidence": 1,
+   "cost": 1,
+   "reach": 2,
+   "security": "플러그인이 훅 · 설정을 바꿈",
+   "reasons": {
+    "evidence": "GitHub 저장소 README 로 확인 — 수치는 자체 주장일 수 있음",
+    "cost": "파일 · 설치 단계 몇 개",
+    "reach": "Claude Code 사용자 누구나 · 세 OS"
+   }
+  },
+  {
+   "id": "NousResearch/hermes-agent",
+   "name": "`NousResearch/hermes-agent`",
+   "source": "gh-topic",
+   "group": "커뮤니티",
+   "kind": "도구",
+   "url": "https://github.com/NousResearch/hermes-agent",
+   "what": "Nous Research 의 자기개선 AI 에이전트(스킬 자동 생성 · 학습 루프, 모델 교체 가능) — Claude Code 용 도구가 아닌 독립 에이전트",
+   "details": [
+    "설치: `curl … | bash`(Linux · macOS · WSL2), Windows PowerShell 네이티브 지원",
+    "모델 제공자 교체 `hermes model`"
+   ],
+   "os": "37: ### Linux, macOS, WSL2 · 43: ### Windows (native, PowerShell) · 45: > **Heads up:** Native Windows runs Hermes without WSL …",
+   "evidence": 1,
+   "cost": 0,
+   "reach": 2,
+   "security": "curl|bash 설치 · 사용자 권한 에이전트",
+   "reasons": {
+    "evidence": "GitHub 저장소 README 로 확인 — 수치는 자체 주장일 수 있음",
+    "cost": "새 의존성 · 구조 변경",
+    "reach": "Claude Code 사용자 누구나 · 세 OS"
+   }
+  },
+  {
+   "id": "farion1231/cc-switch",
+   "name": "`farion1231/cc-switch`",
+   "source": "gh-topic",
+   "group": "커뮤니티",
+   "kind": "도구",
+   "url": "https://github.com/farion1231/cc-switch",
+   "what": "Claude Code · Codex · Gemini CLI 등의 API 제공자 · MCP · 스킬 · 프롬프트 설정을 한 곳에서 바꾸는 데스크톱 앱(Tauri 2)",
+   "details": [
+    "제공자 한 번 클릭 전환 — JSON/TOML/YAML 설정 직접 편집 불필요",
+    "공식 사이트 ccswitch.io 만 공식이라고 명시"
+   ],
+   "os": "10: platform-Windows | macOS | Linux 배지 · 244: Cross-Platform … Tauri 2 · 267: Windows 10 and above · 268: macOS 12 and above · 269: Linux x86_64/ARM64 glibc 2.35+",
+   "evidence": 1,
+   "cost": 1,
+   "reach": 2,
+   "security": "앱이 Claude Code 설정 파일을 직접 수정",
+   "reasons": {
+    "evidence": "GitHub 저장소 README 로 확인 — 수치는 자체 주장일 수 있음",
+    "cost": "파일 · 설치 단계 몇 개",
+    "reach": "Claude Code 사용자 누구나 · 세 OS"
+   }
+  },
+  {
+   "id": "nextlevelbuilder/ui-ux-pro-max-skill",
+   "name": "`nextlevelbuilder/ui-ux-pro-max-skill`",
+   "source": "gh-topic",
+   "group": "커뮤니티",
+   "kind": "도구",
+   "url": "https://github.com/nextlevelbuilder/ui-ux-pro-max-skill",
+   "what": "UI/UX 디자인 시스템 생성 스킬(v2.0 Design System Generator)",
+   "details": [
+    "프로젝트 요구에서 디자인 시스템 생성",
+    "검색 스크립트에 Python 3.x 필요"
+   ],
+   "os": "338: … install it yourself from python.org … · 688: # macOS, Linux, or WSL · 693: # Windows PowerShell · 768: The search scripts require Python 3.x.",
+   "evidence": 1,
+   "cost": 1,
+   "reach": 2,
+   "security": false,
+   "reasons": {
+    "evidence": "GitHub 저장소 README 로 확인 — 수치는 자체 주장일 수 있음",
+    "cost": "파일 · 설치 단계 몇 개",
+    "reach": "Claude Code 사용자 누구나 · 세 OS"
+   }
+  },
+  {
+   "id": "Graphify-Labs/graphify",
+   "name": "`Graphify-Labs/graphify`",
+   "source": "gh-topic",
+   "group": "커뮤니티",
+   "kind": "도구",
+   "url": "https://github.com/Graphify-Labs/graphify",
+   "what": "`/graphify` — 코드 · 문서 · PDF · 이미지 · 영상을 지식 그래프로 만들어 grep 대신 질의",
+   "details": [
+    "코드는 tree-sitter AST 로 로컬 처리(LLM 없음), 문서 등은 어시스턴트 모델 사용",
+    "엣지를 EXTRACTED / INFERRED 로 구분 · 임베딩 없음",
+    "Python 3.10+ 와 uv(또는 pipx) 필요; 유료 Graphify Cloud 별도"
+   ],
+   "os": "76: One install, any assistant, any OS. … · 166: macOS quick install (Homebrew) · 171: Windows quick install: winget install astral-sh.uv",
+   "evidence": 1,
+   "cost": 0,
+   "reach": 2,
+   "security": false,
+   "reasons": {
+    "evidence": "GitHub 저장소 README 로 확인 — 수치는 자체 주장일 수 있음",
+    "cost": "새 의존성 · 구조 변경",
+    "reach": "Claude Code 사용자 누구나 · 세 OS"
+   }
+  },
+  {
+   "id": "stablyai/orca",
+   "name": "`stablyai/orca`",
+   "source": "gh-topic",
+   "group": "커뮤니티",
+   "kind": "도구",
+   "url": "https://github.com/stablyai/orca",
+   "what": "Claude Code · Codex 등 여러 에이전트를 각자 worktree 에서 병렬 실행하는 앱(채팅/터미널, diff · 브라우저 · CLI 통합)",
+   "details": [
+    "에이전트 오케스트레이션: 큰 작업을 워커 에이전트로 분할",
+    "macOS Homebrew · AUR · 릴리스 빌드"
+   ],
+   "os": "11: macOS | Windows | Linux 배지 · 262: ### Desktop — macOS, Windows, Linux · 270: # macOS (Homebrew) · 276: # Arch Linux (AUR)",
+   "evidence": 1,
+   "cost": 1,
+   "reach": 2,
+   "security": false,
+   "reasons": {
+    "evidence": "GitHub 저장소 README 로 확인 — 수치는 자체 주장일 수 있음",
+    "cost": "파일 · 설치 단계 몇 개",
+    "reach": "Claude Code 사용자 누구나 · 세 OS"
+   }
+  },
+  {
+   "id": "JuliusBrussee/caveman",
+   "name": "`JuliusBrussee/caveman`",
+   "source": "gh-topic",
+   "group": "커뮤니티",
+   "kind": "도구",
+   "url": "https://github.com/JuliusBrussee/caveman",
+   "what": "에이전트 출력 · 입력 토큰을 줄이는 「caveman」 말투 스킬/플러그인",
+   "details": [
+    "README 의 수치(입력 토큰 감소 · 비용 절감)는 만든 쪽 주장 — 자체 측정",
+    "한 줄 설치 명령, Claude Code 플러그인 경로도 있음"
+   ],
+   "os": "69: One command. Mac, Linux, Windows. · 141: Other ways in … Claude Code plugin … · 165: Windows, PowerShell 5.1+",
+   "evidence": 1,
+   "cost": 2,
+   "reach": 2,
+   "security": "설치 스크립트가 에이전트 설정 · 로그인을 찾아 변경(설치 시 변경 내역 표시)",
+   "reasons": {
+    "evidence": "GitHub 저장소 README 로 확인 — 수치는 자체 주장일 수 있음",
+    "cost": "플러그인 하나 · 한 줄",
+    "reach": "Claude Code 사용자 누구나 · 세 OS"
+   }
+  },
+  {
+   "id": "thedotmack/claude-mem",
+   "name": "`thedotmack/claude-mem`",
+   "source": "gh-topic",
+   "group": "커뮤니티",
+   "kind": "도구",
+   "url": "https://github.com/thedotmack/claude-mem",
+   "what": "세션 옆에서 메모를 남기는 두 번째 에이전트로 다음 세션에 기억 색인을 이어주는 메모리 도구",
+   "details": [
+    "`npx claude-mem install` 설치, 메모리는 `~/.claude-mem` 로컬 · 클라우드 동기화는 선택",
+    "관찰자(observer) 선택 시 30일 무료 체험 후 결제 수단 요구 · 익명 분석은 기본 켜짐(`npx claude-mem telemetry disable`)",
+    "Claude Code 네이티브 auto-memory 비활성화 여부를 설치 중 묻는다"
+   ],
+   "os": "347: ### Windows Setup Notes · 351: ```powershell",
+   "evidence": 1,
+   "cost": 0,
+   "reach": 2,
+   "security": "설치가 설정 · 훅을 바꾸고 텔레메트리 기본 켜짐",
+   "reasons": {
+    "evidence": "GitHub 저장소 README 로 확인 — 수치는 자체 주장일 수 있음",
+    "cost": "새 의존성 · 구조 변경",
+    "reach": "Claude Code 사용자 누구나 · 세 OS"
+   }
+  },
+  {
+   "id": "paperclipai/paperclip",
+   "name": "`paperclipai/paperclip`",
+   "source": "gh-topic",
+   "group": "커뮤니티",
+   "kind": "도구",
+   "url": "https://github.com/paperclipai/paperclip",
+   "what": "AI 에이전트 팀을 회사처럼 운영(목표 · 예산 · 거버넌스 · 비용 추적)하는 Node.js 서버 + React UI",
+   "details": [
+    "bring-your-own-agents, 에이전트별 모델 · 하네스 선택",
+    "Claude Code 플러그인이 아니라 별도 서버"
+   ],
+   "os": "README 에 OS 언급 없음",
+   "evidence": 1,
+   "cost": 0,
+   "reach": 0,
+   "security": false,
+   "reasons": {
+    "evidence": "GitHub 저장소 README 로 확인 — 수치는 자체 주장일 수 있음",
+    "cost": "새 의존성 · 구조 변경",
+    "reach": "좁은 용도 또는 한 OS"
+   }
+  },
+  {
+   "id": "Leonxlnx/taste-skill",
+   "name": "`Leonxlnx/taste-skill`",
+   "source": "gh-topic",
+   "group": "커뮤니티",
+   "kind": "도구",
+   "url": "https://github.com/Leonxlnx/taste-skill",
+   "what": "코딩 에이전트가 기업 웹사이트를 한 디자인 시스템으로 만들게 하는 스킬(tasteskill 2.5.1)",
+   "details": [
+    "`./install.sh` 가 Claude Code 에 심볼릭 링크(`--codex`, `--all-agents`)"
+   ],
+   "os": "117: `./install.sh` symlinks the skill into Claude Code (`--codex` for Codex …)",
+   "evidence": 1,
+   "cost": 1,
+   "reach": 1,
+   "security": false,
+   "reasons": {
+    "evidence": "GitHub 저장소 README 로 확인 — 수치는 자체 주장일 수 있음",
+    "cost": "파일 · 설치 단계 몇 개",
+    "reach": "특정 스택 또는 일부 OS"
+   }
+  },
+  {
+   "id": "Panniantong/Agent-Reach",
+   "name": "`Panniantong/Agent-Reach`",
+   "source": "gh-topic",
+   "group": "커뮤니티",
+   "kind": "도구",
+   "url": "https://github.com/Panniantong/Agent-Reach",
+   "what": "에이전트가 X · Reddit · YouTube · 샤오홍슈 등을 검색 · 읽게 해주는 도구(중국어 README)",
+   "details": [
+    "Discord 커뮤니티 · 스폰서 안내 포함"
+   ],
+   "os": "README 에 OS 언급 없음",
+   "evidence": 1,
+   "cost": 1,
+   "reach": 1,
+   "security": "외부 플랫폼 로그인 · 쿠키를 에이전트에 넘길 수 있음(README 미확인)",
+   "reasons": {
+    "evidence": "GitHub 저장소 README 로 확인 — 수치는 자체 주장일 수 있음",
+    "cost": "파일 · 설치 단계 몇 개",
+    "reach": "특정 스택 또는 일부 OS"
+   }
+  },
+  {
+   "id": "ruvnet/RuView",
+   "name": "`ruvnet/RuView`",
+   "source": "gh-topic",
+   "group": "커뮤니티",
+   "kind": "도구",
+   "url": "https://github.com/ruvnet/RuView",
+   "what": "WiFi CSI(ESP32)로 사람 감지 · 호흡/심박 측정 · 모션 추적하는 센싱 플랫폼 — 코딩 에이전트 도구가 아님",
+   "details": [
+    "Home Assistant · Apple Home · Google Home 연동",
+    "ESP32 센서 하드웨어 필요"
+   ],
+   "os": "219: … PyO3 wheel (abi3-py310, Linux/macOS/Windows) · 245: Any WiFi … Windows, macOS, or Linux laptop",
+   "evidence": 1,
+   "cost": 0,
+   "reach": 0,
+   "security": false,
+   "reasons": {
+    "evidence": "GitHub 저장소 README 로 확인 — 수치는 자체 주장일 수 있음",
+    "cost": "새 의존성 · 구조 변경",
+    "reach": "좁은 용도 또는 한 OS"
+   }
+  },
+  {
+   "id": "tt-a1i/archify",
+   "name": "`tt-a1i/archify`",
+   "source": "gh-topic",
+   "group": "커뮤니티",
+   "kind": "도구",
+   "url": "https://github.com/tt-a1i/archify",
+   "what": "한 문장 또는 저장소로 소스 링크가 달린 아키텍처 다이어그램을 만드는 스킬(Cursor · Claude Code · Codex CLI · OpenCode)",
+   "details": [
+    "설치: 에이전트에게 `llms.txt` 를 읽혀 설치하게 하는 방식",
+    "웹 갤러리 · 인터랙티브 예시"
+   ],
+   "os": "README 에 OS 언급 없음",
+   "evidence": 1,
+   "cost": 2,
+   "reach": 1,
+   "security": false,
+   "reasons": {
+    "evidence": "GitHub 저장소 README 로 확인 — 수치는 자체 주장일 수 있음",
+    "cost": "플러그인 하나 · 한 줄",
+    "reach": "특정 스택 또는 일부 OS"
+   }
+  },
+  {
+   "id": "Egonex-AI/Understand-Anything",
+   "name": "`Egonex-AI/Understand-Anything`",
+   "source": "gh-topic",
+   "group": "커뮤니티",
+   "kind": "도구",
+   "url": "https://github.com/Egonex-AI/Understand-Anything",
+   "what": "Claude Code 플러그인 — 멀티 에이전트로 프로젝트를 분석해 파일 · 함수 · 의존성 지식 그래프와 가이드 투어 제공",
+   "details": [
+    "`/plugin marketplace add Egonex-AI/Understand-Anything` → `/plugin install understand-anything`",
+    "`/understand-knowledge` 로 Karpathy 패턴 LLM wiki 도 그래프화"
+   ],
+   "os": "199: **macOS / Linux:** · 206: **Windows (PowerShell):** · 217: macOS / Linux: `./install.sh --update`",
+   "evidence": 1,
+   "cost": 2,
+   "reach": 2,
+   "security": false,
+   "reasons": {
+    "evidence": "GitHub 저장소 README 로 확인 — 수치는 자체 주장일 수 있음",
+    "cost": "플러그인 하나 · 한 줄",
+    "reach": "Claude Code 사용자 누구나 · 세 OS"
+   }
+  },
+  {
+   "id": "rtk-ai/rtk",
+   "name": "`rtk-ai/rtk`",
+   "source": "gh-topic",
+   "group": "커뮤니티",
+   "kind": "도구",
+   "url": "https://github.com/rtk-ai/rtk",
+   "what": "셸 명령 출력을 LLM 에 닿기 전에 압축하는 Rust 단일 바이너리(100+ 명령, <10ms)",
+   "details": [
+    "출력 최대 90% 축소 주장은 만든 쪽 — 자체 측정",
+    "brew · winget · `curl … | sh`; 에이전트 훅으로 명령을 가로챔"
+   ],
+   "os": "82: brew install rtk # macOS / Linux · 83: winget install rtk-ai.rtk # Windows · 94: … native Windows, WSL …",
+   "evidence": 1,
+   "cost": 1,
+   "reach": 2,
+   "security": "훅으로 셸 명령 출력을 가로채 바꿈",
+   "reasons": {
+    "evidence": "GitHub 저장소 README 로 확인 — 수치는 자체 주장일 수 있음",
+    "cost": "파일 · 설치 단계 몇 개",
+    "reach": "Claude Code 사용자 누구나 · 세 OS"
+   }
+  },
+  {
+   "id": "cheaper-inference/OmniRoute",
+   "name": "`cheaper-inference/OmniRoute`",
+   "source": "gh-topic",
+   "group": "커뮤니티",
+   "kind": "도구",
+   "url": "https://github.com/cheaper-inference/OmniRoute",
+   "what": "여러 제공자의 무료 티어를 묶는 무료 AI 게이트웨이(토큰 합산 수치는 추정)",
+   "details": [
+    "README 의 월 ~1.62B 토큰은 제3자 무료 티어 합산 추정 — 자체 추정",
+    "데스크톱(Electron) · 메뉴바 앱 · npm"
+   ],
+   "os": "450: … · 775: Desktop (Electron) … · 776: Menu-bar (OmniRouteTray) brew install --cask … · 1148: Arch Linux (AUR)",
+   "evidence": 1,
+   "cost": 0,
+   "reach": 1,
+   "security": "API 키 · 계정을 모아 중계 서버에 맡김",
+   "reasons": {
+    "evidence": "GitHub 저장소 README 로 확인 — 수치는 자체 주장일 수 있음",
+    "cost": "새 의존성 · 구조 변경",
+    "reach": "특정 스택 또는 일부 OS"
+   }
+  },
+  {
+   "id": "heygen-com/hyperframes",
+   "name": "`heygen-com/hyperframes`",
+   "source": "gh-topic",
+   "group": "커뮤니티",
+   "kind": "도구",
+   "url": "https://github.com/heygen-com/hyperframes",
+   "what": "HTML · CSS · 애니메이션을 결정적 MP4 로 렌더링하는 오픈소스 프레임워크 + Claude Code 플러그인",
+   "details": [
+    "`claude plugin marketplace add heygen-com/hyperframes`; `npx hyperframes skills update`",
+    "Studio 앱 무료, Pro 플랜은 유료 모델 포함"
+   ],
+   "os": "35: … download?os=mac … · 36: … os=windows … · 37: … os=deb … · 343: # macOS",
+   "evidence": 1,
+   "cost": 2,
+   "reach": 1,
+   "security": false,
+   "reasons": {
+    "evidence": "GitHub 저장소 README 로 확인 — 수치는 자체 주장일 수 있음",
+    "cost": "플러그인 하나 · 한 줄",
+    "reach": "특정 스택 또는 일부 OS"
+   }
+  },
+  {
+   "id": "ruvnet/ruflo",
+   "name": "`ruvnet/ruflo`",
+   "source": "gh-topic",
+   "group": "커뮤니티",
+   "kind": "도구",
+   "url": "https://github.com/ruvnet/ruflo",
+   "what": "Claude Code · Codex 용 에이전트 메타 하네스",
+   "details": [
+    "`npx ruflo@latest init` 으로 프로젝트에 초기화",
+    "`curl | bash` 는 POSIX 셸 필요; Windows 는 npx 형"
+   ],
+   "os": "317: **macOS / Linux / WSL / Git-Bash:** · 324: **All platforms (including native Windows PowerShell / cmd):** · 337: > Windows users: the `curl ... | bash` form needs a POSIX shell",
+   "evidence": 1,
+   "cost": 1,
+   "reach": 2,
+   "security": "init 이 프로젝트 설정 · 훅을 바꿈",
+   "reasons": {
+    "evidence": "GitHub 저장소 README 로 확인 — 수치는 자체 주장일 수 있음",
+    "cost": "파일 · 설치 단계 몇 개",
+    "reach": "Claude Code 사용자 누구나 · 세 OS"
+   }
+  },
+  {
+   "id": "career-ops-hq/career-ops",
+   "name": "`career-ops-hq/career-ops`",
+   "source": "gh-topic",
+   "group": "커뮤니티",
+   "kind": "도구",
+   "url": "https://github.com/career-ops-hq/career-ops",
+   "what": "채용 공고를 붙여넣으면 열려 있는지 · 맞는지 판단하고 CV 를 맞춤 작성하는 로컬 도구 — 제출은 사람이",
+   "details": [
+    "개발 도구 아님(구직용)",
+    "Chromium 필요, Windows 별도 안내"
+   ],
+   "os": "237: # On a non-Debian/Ubuntu Linux distro … Chromium … · 566: How do I install career-ops on Windows? · 567: career-ops runs on Windows …",
+   "evidence": 1,
+   "cost": 0,
+   "reach": 0,
+   "security": false,
+   "reasons": {
+    "evidence": "GitHub 저장소 README 로 확인 — 수치는 자체 주장일 수 있음",
+    "cost": "새 의존성 · 구조 변경",
+    "reach": "좁은 용도 또는 한 OS"
+   }
+  }
+ ],
+ "unread": [
+  {
+   "id": "v1.0.269",
+   "name": "Claude Code Action v1.0.269",
+   "source": "cc-action",
+   "group": "공식",
+   "url": "https://github.com/anthropics/claude-code-action/releases/tag/v1.0.269",
+   "reason": "미확인(404) — CHANGELOG 를 받지 못함, 릴리스 본문 비어 있음"
+  }
+ ],
+ "adjacent": [
+  {
+   "id": "rust-v0.167.0",
+   "source": "codex",
+   "what": "`openai/codex` rust-v0.167.0 릴리스"
+  },
+  {
+   "id": "v0.67.0",
+   "source": "gemini-cli",
+   "what": "`google-gemini/gemini-cli` v0.67.0 릴리스"
+  }
+ ],
+ "concepts": []
+}
