@@ -1,6 +1,6 @@
 {
  "date": "2026-11-16",
- "issue": null,
+ "issue": 3,
  "threshold": 5,
  "cap": 7,
  "expect": 34,
