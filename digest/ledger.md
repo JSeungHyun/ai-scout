@@ -7,23 +7,23 @@
 
 | 원천 | 후보 | 이런 것도 있어요 | 개념 | 마지막 수확 |
 |---|---|---|---|---|
-| cc-changelog | 3 | 0 | 0 | 2026-11-09 |
-| cc-docs-map | 0 | 0 | 0 | — |
-| anthropic-engineering | 0 | 0 | 0 | — |
-| anthropic-news | 0 | 0 | 0 | — |
-| claude-blog | 0 | 0 | 0 | — |
-| plugins-official | 0 | 0 | 0 | — |
-| skills | 0 | 0 | 0 | — |
-| agent-sdk-ts | 1 | 0 | 0 | 2026-11-09 |
-| cc-action | 0 | 0 | 0 | 2026-11-09 |
-| anthropics-new-repos | 0 | 0 | 0 | — |
-| gh-topic | 20 | 3 | 0 | 2026-11-09 |
-| awesome-cc | 0 | 0 | 0 | — |
-| mcp-registry | 0 | 0 | 0 | — |
-| npm | 0 | 0 | 0 | — |
-| codex | 0 | 0 | 0 | 2026-11-09 |
-| gemini-cli | 0 | 0 | 0 | 2026-11-09 |
-| web | 0 | — | 1 | 2026-11-09 |
+| cc-changelog | 7 | 0 | 0 | 2026-11-16 |
+| cc-docs-map | 2 | 0 | 0 | 2026-11-16 |
+| anthropic-engineering | 1 | 0 | 0 | 2026-11-16 |
+| anthropic-news | 1 | 0 | 0 | 2026-11-16 |
+| claude-blog | 11 | 0 | 1 | 2026-11-16 |
+| plugins-official | 2 | 2 | 0 | 2026-11-16 |
+| skills | 1 | 0 | 0 | 2026-11-16 |
+| agent-sdk-ts | 5 | 0 | 0 | 2026-11-16 |
+| cc-action | 7 | 0 | 0 | 2026-11-16 |
+| anthropics-new-repos | 0 | 0 | 0 | 2026-11-16 |
+| gh-topic | 22 | 3 | 0 | 2026-11-16 |
+| awesome-cc | 0 | 0 | 0 | 2026-11-16 |
+| mcp-registry | 3 | 0 | 0 | 2026-11-16 |
+| npm | 4 | 0 | 0 | 2026-11-16 |
+| codex | 0 | 0 | 0 | 2026-11-16 |
+| gemini-cli | 0 | 0 | 0 | 2026-11-16 |
+| web | 0 | — | 1 | 2026-11-16 |
 
 ## 원천 정리
 4주마다 소식지 실행이 제안을 적는다 — 4주 동안 「이런 것도 있어요」 0건 · 개념 0건인 커뮤니티 원천(공식은 「공식 변경」으로 늘 값이 있고, 인접은 채점하지 않는다). 바꾸는 것은 사람이다.
@@ -35,3 +35,4 @@
 
 | 용어 | 층 | 처음 본 날 | 원문 | 원문 날짜 | 근거 등급 |
 |---|---|---|---|---|---|
+| always-on agent(상시 에이전트) | 루프 | 2026-11-16 | https://claude.com/resources/articles/building-always-on-agents | 2026-11-13 | 2 |

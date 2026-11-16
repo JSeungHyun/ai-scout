@@ -4,6 +4,7 @@
   "ai.getvda/google-sign-in-claude-agent",
   "ai.getvda/traced-claude-format-guard",
   "ai.smithery/huuthangntk-claude-vision-mcp-server",
+  "app.agentwright/claude-pricing",
   "com.claude-world/worlds-knowledge",
   "com.claude.platform/docs",
   "com.claudeers/mcp",
@@ -30,6 +31,7 @@
   "io.github.PyModel/claude-agy-mcp",
   "io.github.Sisuthros/claude-amplifier",
   "io.github.TonySimonovsky/claude-code-conversation-search-mcp",
+  "io.github.UmarMuhammad18/aseprite-claude-connector",
   "io.github.Vasilispapg/claude-handoff",
   "io.github.Wolfe-Jam/claude-faf-mcp",
   "io.github.aibenyclaude-coder/kira",
@@ -46,6 +48,7 @@
   "io.github.dimitrihilverda/claude-session-relay",
   "io.github.edouard-claude/ent1-mcp",
   "io.github.edouard-claude/helloasso-mcp",
+  "io.github.edouard-claude/henrri-mcp",
   "io.github.emretheus/claude-remind-mcp",
   "io.github.eoinjordan/gbstudio-claude-mcp",
   "io.github.ericm1018/skillfm-claude-code-token-usage-cost",
@@ -93,5 +96,5 @@
   "one.faf/claude-faf-mcp",
   "online.claudenews/claude-news"
  ],
- "updatedAt": "2026-11-09T10:12:21.582Z"
+ "updatedAt": "2026-11-16T00:10:33.484Z"
 }

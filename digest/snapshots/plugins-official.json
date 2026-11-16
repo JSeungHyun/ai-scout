@@ -8,7 +8,6 @@
   "aikido",
   "airtable",
   "airwallex-agentos",
-  "airwallex-dev",
   "aiven",
   "alloydb",
   "alloydb-omni",
@@ -244,7 +243,7 @@
   "salesforce-development",
   "sanity",
   "sap-cds-mcp",
-  "sap-fiori-mcp-server",
+  "sap-ux-fiori-tools",
   "sap-hana-cli",
   "sap-mdk-server",
   "save-to-spotify",
@@ -282,6 +281,7 @@
   "teamcity-cli",
   "telegram",
   "terraform",
+  "theme-examples",
   "togetherai-skills",
   "twilio-developer-kit",
   "typescript-lsp",
@@ -316,7 +316,9 @@
   "hubspot-sales",
   "dynatrace",
   "wingspan",
-  "amazon-selling-partner"
+  "amazon-selling-partner",
+  "airwallex-dev",
+  "sap-fiori-mcp-server"
  ],
- "updatedAt": "2026-11-09T10:12:18.479Z"
+ "updatedAt": "2026-11-16T00:10:28.528Z"
 }

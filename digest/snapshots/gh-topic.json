@@ -8,18 +8,20 @@
   "Graphify-Labs/graphify",
   "stablyai/orca",
   "JuliusBrussee/caveman",
+  "addyosmani/agent-skills",
   "thedotmack/claude-mem",
   "paperclipai/paperclip",
-  "Leonxlnx/taste-skill",
-  "Panniantong/Agent-Reach",
   "ruvnet/RuView",
   "tt-a1i/archify",
   "Egonex-AI/Understand-Anything",
-  "rtk-ai/rtk",
   "cheaper-inference/OmniRoute",
+  "rtk-ai/rtk",
   "heygen-com/hyperframes",
+  "career-ops-hq/career-ops",
   "ruvnet/ruflo",
-  "career-ops-hq/career-ops"
+  "shareAI-lab/learn-claude-code",
+  "Leonxlnx/taste-skill",
+  "Panniantong/Agent-Reach"
  ],
- "updatedAt": "2026-11-09T10:12:21.172Z"
+ "updatedAt": "2026-11-16T00:10:33.060Z"
 }

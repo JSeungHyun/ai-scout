@@ -110,6 +110,7 @@
   "https://code.claude.com/docs/en/feature-availability.md",
   "https://code.claude.com/docs/en/amazon-bedrock.md",
   "https://code.claude.com/docs/en/claude-platform-on-aws.md",
+  "https://code.claude.com/docs/en/claude-models-on-google-cloud-anthropic-managed.md",
   "https://code.claude.com/docs/en/google-vertex-ai.md",
   "https://code.claude.com/docs/en/microsoft-foundry.md",
   "https://code.claude.com/docs/en/network-config.md",
@@ -154,6 +155,7 @@
   "https://code.claude.com/docs/en/model-config.md",
   "https://code.claude.com/docs/en/fast-mode.md",
   "https://code.claude.com/docs/en/advisor.md",
+  "https://code.claude.com/docs/en/code-mode.md",
   "https://code.claude.com/docs/en/output-styles.md",
   "https://code.claude.com/docs/en/terminal-config.md",
   "https://code.claude.com/docs/en/fullscreen.md",
@@ -202,6 +204,7 @@
   "https://code.claude.com/docs/en/agent-sdk/typescript.md",
   "https://code.claude.com/docs/en/agent-sdk/typescript-v2-preview.md",
   "https://code.claude.com/docs/en/agent-sdk/python.md",
+  "https://code.claude.com/docs/en/legal-and-compliance.md",
   "https://code.claude.com/docs/en/whats-new/index.md",
   "https://code.claude.com/docs/en/whats-new/2026-w37.md",
   "https://code.claude.com/docs/en/whats-new/2026-w36.md",
@@ -226,8 +229,7 @@
   "https://code.claude.com/docs/en/whats-new/2026-w16.md",
   "https://code.claude.com/docs/en/whats-new/2026-w15.md",
   "https://code.claude.com/docs/en/whats-new/2026-w14.md",
-  "https://code.claude.com/docs/en/whats-new/2026-w13.md",
-  "https://code.claude.com/docs/en/legal-and-compliance.md"
+  "https://code.claude.com/docs/en/whats-new/2026-w13.md"
  ],
- "updatedAt": "2026-11-09T10:12:17.715Z"
+ "updatedAt": "2026-11-16T00:10:27.531Z"
 }

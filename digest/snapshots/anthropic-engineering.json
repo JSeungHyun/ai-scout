@@ -4,6 +4,7 @@
   "/research/redesigning-source-control",
   "/research/harness-design-long-running-apps",
   "/research/AI-resistant-technical-evaluations",
+  "/research/building-strong-safety-evaluations",
   "/research/how-we-contain-claude",
   "/research/april-23-postmortem",
   "/research/managed-agents",
@@ -25,5 +26,5 @@
   "/research/multi-agent-research-system",
   "/research/claude-code-best-practices"
  ],
- "updatedAt": "2026-11-09T10:12:17.918Z"
+ "updatedAt": "2026-11-16T00:10:27.744Z"
 }

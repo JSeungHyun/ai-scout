@@ -1,5 +1,16 @@
 {
  "ids": [
+  "/resources/articles/interactive-connectors-full-tool",
+  "/resources/articles/building-always-on-agents",
+  "/resources/articles/claude-tag-guide-for-startups",
+  "/resources/articles/self-hosted-claude-managed-agents",
+  "/resources/articles/j-crew-style-advisor-with-claude",
+  "/resources/articles/claude-for-manufacturing",
+  "/resources/articles/claude-meetings",
+  "/resources/articles/using-claude-opus-5-5-as-your-daily-driver-for-knowledge-work",
+  "/resources/articles/how-curative-is-building-a-national-provider-network-with-agents-on-claude",
+  "/resources/articles/more-ways-to-work-with-claude-sheets-whiteboards-and-interactive-connectors",
+  "/resources/articles/sheets-whiteboards-data",
   "/resources/articles/building-agents-when-to-fold-subagents-into-your-main-agent-loop",
   "/resources/articles/introducing-personal-finance-in-claude",
   "/resources/articles/claude-enterprise-security-updates",
@@ -13,5 +24,5 @@
   "/resources/articles/expanding-claude-for-nonprofits",
   "/resources/articles/unified-claude-enterprise"
  ],
- "updatedAt": "2026-11-09T10:12:18.337Z"
+ "updatedAt": "2026-11-16T00:10:28.381Z"
 }
