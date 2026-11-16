@@ -1,0 +1,816 @@
+{
+ "date": "2026-11-16",
+ "issue": null,
+ "threshold": 5,
+ "cap": 7,
+ "expect": 34,
+ "digest": {
+  "date": "2026-11-16",
+  "url": "https://github.com/JSeungHyun/ai-scout/blob/main/digest/2026-11-16.md"
+ },
+ "items": [
+  {
+   "n": 1,
+   "id": "2.1.325",
+   "name": "Claude Code 2.1.325",
+   "kind": "구조",
+   "source": "cc-changelog",
+   "url": "https://raw.githubusercontent.com/anthropics/claude-code/main/CHANGELOG.md",
+   "scores": {
+    "relevance": 3,
+    "evidence": 2,
+    "cost": 2,
+    "env": 2,
+    "removes": false,
+    "security": false
+   },
+   "reasons": {
+    "relevance": "plan.md:73 로컬 전용 설치가 worktree 에서 사라지는 문제와 같은 자리 — 샌드박스가 worktree 설정 · 훅을 보호하고, `--plugin-dir` 중첩 스킬 로딩이 바뀜; plan.md:9 · plan.md:168 보류 `/security-review` 는 bare 저장소 worktree 오류가 고쳐졌으나 보류 조건(브랜치 마무리 사례)은 그대로. 예약 작업 · `/loop` 가 훅 선언 스킬 앞에서 묻는 변경은 루프 운영에 영향",
+    "evidence": "공식 CHANGELOG",
+    "cost": "업데이트만",
+    "env": "CHANGELOG 에 Windows(`/resume` 드라이브 문자 · PATH 지연)와 macOS 항목 — 정식 지원, 가진 것과 겹치지 않음"
+   },
+   "summary": "Claude Code 2.1.325 — zstd 보안 수정 · 권한/샌드박스 보강 · 플러그인 로딩 변경",
+   "why": "하네스(plan.md:73 worktree) 쪽 변경 — 샌드박스 · 스킬 로딩 · 예약 작업 규칙이 바뀐다",
+   "smallest": "`claude --version` 이 2.1.325 이상이면 이미 반영 — 아니면 `claude update` 만(주 PC · 보조 PC 둘 다)",
+   "pretest": "새 worktree 에서 `claude` 를 띄워 훅이 도는지, `/loop` 로 훅 선언 스킬을 돌려 확인 프롬프트가 뜨는지 본다",
+   "total": 9
+  },
+  {
+   "n": 2,
+   "id": "2.1.323",
+   "name": "Claude Code 2.1.323",
+   "kind": "구조",
+   "source": "cc-changelog",
+   "url": "https://raw.githubusercontent.com/anthropics/claude-code/main/CHANGELOG.md",
+   "scores": {
+    "relevance": 3,
+    "evidence": 2,
+    "cost": 2,
+    "env": 2,
+    "removes": false,
+    "security": false
+   },
+   "reasons": {
+    "relevance": "plan.md:73 `--settings` 로만 뜨는 worktree 설치와 닿는 변경 — `--settings` 파일이 유효하지 않은 JSON 이고 `sandbox` 키가 있으면 시작이 멈춘다; plan.md:342 `--local` 설정 병합 시험, structure.md:36 PostToolUse 훅 항목(클라우드 예약 작업에서 PostToolUse 가 plan 을 못 바꿈) 확인; 하네스 deny 정책에 닿는 Bash 권한 검사 수정 다수(`Bash(ls*)` 등); 237행 `--allowedTools` 는 plan.md:218 · plan.md:352 와 닿지만 SDK 호스트용 MCP 시작 대기 수정이라 하네스 줄과 직접 관계 없음 — 봤다; 346행 `/security-review` 는 이제 실행 전에 묻는다(plan.md:9 실행 상태 · plan.md:168 보류 `/security-review` — 보류 조건 변화 없음)",
+    "evidence": "공식 CHANGELOG",
+    "cost": "업데이트만(Code Mode 는 선택 켜기)",
+    "env": "Windows(260자 경로 · `.cmd` 래퍼 · 플러그인 설치)와 macOS · Linux 항목 포함 — 정식 지원, 겹침 없음"
+   },
+   "summary": "Claude Code 2.1.323 — Code Mode(실험) · 플러그인 `engines` · Bash 권한 검사 수정 다수",
+   "why": "권한 검사 수정 다수가 하네스 deny 정책의 실효성을 높이고 `--settings` 시작 중단이 worktree 우회 방식에 닿는다",
+   "smallest": "2.1.323 이상으로 올린다(Code Mode 는 켜지 않는다)",
+   "pretest": "하네스 설치 폴더에서 `claude` 를 시작해 훅 · 설정 오류 없이 뜨는지, `claude plugin validate` 를 하네스 플러그인에 돌려 본다",
+   "total": 9
+  },
+  {
+   "n": 3,
+   "id": "2.1.321",
+   "name": "Claude Code 2.1.321",
+   "kind": "구조",
+   "source": "cc-changelog",
+   "url": "https://raw.githubusercontent.com/anthropics/claude-code/main/CHANGELOG.md",
+   "scores": {
+    "relevance": 3,
+    "evidence": 2,
+    "cost": 2,
+    "env": 2,
+    "removes": false,
+    "security": false
+   },
+   "reasons": {
+    "relevance": "plan.md:73 `--settings` 와 structure.md:36 PostToolUse 의 연결 후보를 확인 — `claude remote-control --settings` 는 이 하네스 설치 방식과 직접 겹치진 않음; 대신 프로필의 「Windows 프로세스 기동이 느리다(0.7초 안팎)」 자리에 Git for Windows · PATH 탐색 시작 시간 개선이 닿고, Bash 권한 검사 수정이 deny 정책 실효성에 닿음",
+    "evidence": "공식 CHANGELOG",
+    "cost": "업데이트만",
+    "env": "Windows 시작 속도 · macOS MDM · Linux NFS 항목 포함 — 정식 지원, 겹침 없음"
+   },
+   "summary": "Claude Code 2.1.321 — Fable 5.2 기본 모델 · MCP OAuth 비밀 유출 수정 · Windows 시작 속도",
+   "why": "Windows 시작 속도 개선이 프로필의 느린 프로세스 기동 문제에 닿고 Bash 권한 검사 수정이 deny 정책에 닿는다",
+   "smallest": "2.1.321 이상으로 올린다(2.1.325 에 포함)",
+   "pretest": "Windows 에서 훅이 도는 세션의 첫 명령 시간을 전후로 비교(0.7초 안팎 기준)",
+   "total": 9
+  }
+ ],
+ "nearMiss": [
+  {
+   "id": "https://code.claude.com/docs/en/code-mode.md",
+   "name": "Code Mode 문서(code-mode)",
+   "kind": "구조",
+   "source": "cc-docs-map",
+   "url": "https://code.claude.com/docs/en/code-mode.md",
+   "scores": {
+    "relevance": 1,
+    "evidence": 2,
+    "cost": 2,
+    "env": 1,
+    "removes": false,
+    "security": false
+   },
+   "reasons": {
+    "relevance": "하네스 훅(PreToolUse · Stop 관문) 위에서 Code Mode 가 어떻게 동작하는지 궁금하나 실험 · 기본 꺼짐 — 문서의 훅 거부 절만 확인(structure.md 훅 표 대조), 해당 하네스 열린 줄 없음",
+    "evidence": "공식 문서",
+    "cost": "설정에서 켜기만",
+    "env": "터미널 대화형 · Windows 는 Git for Windows 필요 — 조건부"
+   },
+   "summary": "Code Mode(실험) 새 문서 — Claude 가 JavaScript 로 여러 도구 호출을 한 번에 실행",
+   "total": 6
+  },
+  {
+   "id": "/resources/articles/building-always-on-agents",
+   "name": "Building always-on agents",
+   "kind": "구조",
+   "source": "claude-blog",
+   "url": "https://claude.com/resources/articles/building-always-on-agents",
+   "scores": {
+    "relevance": 1,
+    "evidence": 2,
+    "cost": 2,
+    "env": 1,
+    "removes": false,
+    "security": false
+   },
+   "reasons": {
+    "relevance": "루프 엔지니어링 관심 개념과 닿는 가이드이나(개념 절에 올림) 하네스가 상시 에이전트를 운영하진 않음 — 열린 줄 연결 없음",
+    "evidence": "공식 글(Anthropic 자체 측정 포함)",
+    "cost": "읽기만",
+    "env": "OS 무관 글"
+   },
+   "summary": "항상 켜진 에이전트의 핵심 프리미티브와 조합 가이드(가이드 글)",
+   "total": 6
+  },
+  {
+   "id": "shareAI-lab/learn-claude-code",
+   "name": "`shareAI-lab/learn-claude-code`",
+   "kind": "도구",
+   "source": "gh-topic",
+   "url": "https://github.com/shareAI-lab/learn-claude-code",
+   "scores": {
+    "relevance": 1,
+    "evidence": 1,
+    "cost": 1,
+    "env": 1,
+    "removes": false,
+    "security": false
+   },
+   "reasons": {
+    "relevance": "하네스 엔지니어링 관심 개념의 학습 자료 — 하네스 문서 열린 줄과 직접 연결은 없음",
+    "evidence": "GitHub 저장소 README 로 확인 — 주장은 자체 의견",
+    "cost": "읽는 자료 — 설치 없음(예제 실행 시 환경 구성)",
+    "env": "Windows 호환 언급(410행)이나 설치 대상이 아님"
+   },
+   "summary": "Claude Code 같은 에이전트 하네스를 처음부터 만들며 배우는 튜토리얼 저장소(「Agent = Model + Harness」)",
+   "total": 4
+  }
+ ],
+ "seen": [
+  {
+   "id": "2.1.322",
+   "name": "Claude Code 2.1.322",
+   "kind": "구조",
+   "source": "cc-changelog",
+   "url": "https://raw.githubusercontent.com/anthropics/claude-code/main/CHANGELOG.md",
+   "scores": {
+    "relevance": 0,
+    "evidence": 2,
+    "cost": 2,
+    "env": 1,
+    "removes": false,
+    "security": false
+   },
+   "reasons": {
+    "relevance": "프로필·하네스에 Vertex 를 쓴다는 기록 없음 — 해당 줄 없음",
+    "evidence": "공식 CHANGELOG",
+    "cost": "업데이트만",
+    "env": "Vertex 한정 기능 — OS 와 무관, 프로필 OS 근거 없음"
+   },
+   "summary": "Claude Code 2.1.322 — Vertex 에서 fast mode",
+   "total": 5
+  },
+  {
+   "id": "/research/building-strong-safety-evaluations",
+   "name": "Building strong safety evaluations",
+   "kind": "구조",
+   "source": "anthropic-engineering",
+   "url": "https://www.anthropic.com/research/building-strong-safety-evaluations",
+   "scores": {
+    "relevance": 0,
+    "evidence": 2,
+    "cost": 2,
+    "env": 1,
+    "removes": false,
+    "security": false
+   },
+   "reasons": {
+    "relevance": "모델 안전 평가를 만들지 않는다 — 해당 줄 없음",
+    "evidence": "공식 글(Anthropic)",
+    "cost": "읽기만",
+    "env": "OS 무관 글"
+   },
+   "summary": "Anthropic 연구 글 — 안전성 평가(eval)를 설계 · 실행 · 보고하는 권고",
+   "total": 5
+  },
+  {
+   "id": "/news/roadshow-launch",
+   "name": "Anthropic IPO 로드쇼 시작",
+   "kind": "구조",
+   "source": "anthropic-news",
+   "url": "https://www.anthropic.com/news/roadshow-launch",
+   "scores": {
+    "relevance": 0,
+    "evidence": 2,
+    "cost": 2,
+    "env": 1,
+    "removes": false,
+    "security": false
+   },
+   "reasons": {
+    "relevance": "회사 소식 — 개발 흐름과 무관, 해당 줄 없음",
+    "evidence": "공식 보도자료",
+    "cost": "읽기만",
+    "env": "OS 무관 글"
+   },
+   "summary": "Anthropic, PBC 가 Class A 보통주 기업공개 로드쇼를 시작 — 개발 도구와 무관한 회사 소식",
+   "total": 5
+  },
+  {
+   "id": "/resources/articles/interactive-connectors-full-tool",
+   "name": "연결 앱을 Claude 안에서 함께 쓰기(interactive connectors)",
+   "kind": "구조",
+   "source": "claude-blog",
+   "url": "https://claude.com/resources/articles/interactive-connectors-full-tool",
+   "scores": {
+    "relevance": 0,
+    "evidence": 2,
+    "cost": 2,
+    "env": 1,
+    "removes": false,
+    "security": false
+   },
+   "reasons": {
+    "relevance": "CLI 가 아니라 웹 · 데스크톱 앱 기능 — 프로필 「주로 쓰는 것」에 없음",
+    "evidence": "공식 글",
+    "cost": "계정 업데이트 후 사용",
+    "env": "OS 무관 글"
+   },
+   "summary": "커넥터를 채팅 옆이나 전체 화면으로 열어 Claude 와 같은 도구에서 함께 작업",
+   "total": 5
+  },
+  {
+   "id": "/resources/articles/claude-tag-guide-for-startups",
+   "name": "스타트업용 Claude Tag 가이드",
+   "kind": "구조",
+   "source": "claude-blog",
+   "url": "https://claude.com/resources/articles/claude-tag-guide-for-startups",
+   "scores": {
+    "relevance": 0,
+    "evidence": 2,
+    "cost": 2,
+    "env": 1,
+    "removes": false,
+    "security": false
+   },
+   "reasons": {
+    "relevance": "Slack Claude Tag 를 쓰지 않는다 — 해당 줄 없음",
+    "evidence": "공식 글",
+    "cost": "읽기만",
+    "env": "OS 무관 글"
+   },
+   "summary": "Slack 채널 어디에 Claude Tag 를 먼저 붙일지 — 사례 8곳 기반 가이드",
+   "total": 5
+  },
+  {
+   "id": "/resources/articles/j-crew-style-advisor-with-claude",
+   "name": "J.Crew Style Advisor 사례",
+   "kind": "구조",
+   "source": "claude-blog",
+   "url": "https://claude.com/resources/articles/j-crew-style-advisor-with-claude",
+   "scores": {
+    "relevance": 0,
+    "evidence": 2,
+    "cost": 2,
+    "env": 1,
+    "removes": false,
+    "security": false
+   },
+   "reasons": {
+    "relevance": "고객 사례 — 해당 줄 없음",
+    "evidence": "공식 글(고객 사례)",
+    "cost": "읽기만",
+    "env": "OS 무관 글"
+   },
+   "summary": "Claude 로 만든 J.Crew 의 AI 스타일리스트 사례 글",
+   "total": 5
+  },
+  {
+   "id": "/resources/articles/claude-meetings",
+   "name": "Claude Meetings(베타)",
+   "kind": "구조",
+   "source": "claude-blog",
+   "url": "https://claude.com/resources/articles/claude-meetings",
+   "scores": {
+    "relevance": 0,
+    "evidence": 2,
+    "cost": 2,
+    "env": 1,
+    "removes": false,
+    "security": false
+   },
+   "reasons": {
+    "relevance": "화상 회의 기능 — 해당 줄 없음",
+    "evidence": "공식 글",
+    "cost": "플랜 기능",
+    "env": "OS 무관 글"
+   },
+   "summary": "화상 회의에 Claude 를 넣어 노트 · 질의응답 · 문서 · 화이트보드를 같이 만듦",
+   "total": 5
+  },
+  {
+   "id": "/resources/articles/using-claude-opus-5-5-as-your-daily-driver-for-knowledge-work",
+   "name": "지식 업무 기본 모델로 Opus 5.5 쓰기",
+   "kind": "구조",
+   "source": "claude-blog",
+   "url": "https://claude.com/resources/articles/using-claude-opus-5-5-as-your-daily-driver-for-knowledge-work",
+   "scores": {
+    "relevance": 0,
+    "evidence": 2,
+    "cost": 2,
+    "env": 1,
+    "removes": false,
+    "security": false
+   },
+   "reasons": {
+    "relevance": "지식 업무 모델 선택 글 — 하네스 문서에 모델 선택 열린 줄 없음",
+    "evidence": "공식 글(자체 주장)",
+    "cost": "모델 선택만",
+    "env": "OS 무관 글"
+   },
+   "summary": "Opus 5.5 를 일상 지식 업무 기본 모델로 쓰라는 모델 비교 글",
+   "total": 5
+  },
+  {
+   "id": "/resources/articles/how-curative-is-building-a-national-provider-network-with-agents-on-claude",
+   "name": "Curative 에이전트 계층 사례",
+   "kind": "구조",
+   "source": "claude-blog",
+   "url": "https://claude.com/resources/articles/how-curative-is-building-a-national-provider-network-with-agents-on-claude",
+   "scores": {
+    "relevance": 0,
+    "evidence": 2,
+    "cost": 2,
+    "env": 1,
+    "removes": false,
+    "security": false
+   },
+   "reasons": {
+    "relevance": "고객 사례 — 해당 줄 없음",
+    "evidence": "공식 글(고객 자체 수치)",
+    "cost": "읽기만",
+    "env": "OS 무관 글"
+   },
+   "summary": "Curative 가 Claude 에이전트 계층으로 의료 제공자 계약을 2025년보다 약 50배 빠르게 체결했다는 사례",
+   "total": 5
+  },
+  {
+   "id": "/resources/articles/more-ways-to-work-with-claude-sheets-whiteboards-and-interactive-connectors",
+   "name": "Claude Sheets · Whiteboards · interactive connectors 소개",
+   "kind": "구조",
+   "source": "claude-blog",
+   "url": "https://claude.com/resources/articles/more-ways-to-work-with-claude-sheets-whiteboards-and-interactive-connectors",
+   "scores": {
+    "relevance": 0,
+    "evidence": 2,
+    "cost": 2,
+    "env": 1,
+    "removes": false,
+    "security": false
+   },
+   "reasons": {
+    "relevance": "비개발자 팀 협업 기능 소개 — 해당 줄 없음",
+    "evidence": "공식 글",
+    "cost": "읽기만",
+    "env": "OS 무관 글"
+   },
+   "summary": "새 artifact 유형 Claude Sheets · Whiteboards · Data 와 interactive connectors 업그레이드 소개",
+   "total": 5
+  },
+  {
+   "id": "/resources/articles/sheets-whiteboards-data",
+   "name": "Claude Whiteboards · Sheets · Data",
+   "kind": "구조",
+   "source": "claude-blog",
+   "url": "https://claude.com/resources/articles/sheets-whiteboards-data",
+   "scores": {
+    "relevance": 0,
+    "evidence": 2,
+    "cost": 2,
+    "env": 1,
+    "removes": false,
+    "security": false
+   },
+   "reasons": {
+    "relevance": "Sheets · Whiteboards · Data 는 개발 하네스와 무관 — 해당 줄 없음",
+    "evidence": "공식 글",
+    "cost": "플랜 기능",
+    "env": "OS 무관 글"
+   },
+   "summary": "공유 화이트보드, Claude 가 만들고 고치는 스프레드시트, 데이터 스토리 · 인증 쿼리 · 라이브 공유(Claude Data)",
+   "total": 5
+  },
+  {
+   "id": "sap-ux-fiori-tools",
+   "name": "sap-ux-fiori-tools",
+   "kind": "도구",
+   "source": "plugins-official",
+   "url": "https://github.com/SAP/open-ux-tools/tree/main/plugins-coding-agents/fiori",
+   "scores": {
+    "relevance": 0,
+    "evidence": 2,
+    "cost": 2,
+    "env": 1,
+    "removes": false,
+    "security": false
+   },
+   "reasons": {
+    "relevance": "SAP Fiori 스택을 쓰지 않는다 — 해당 줄 없음",
+    "evidence": "공식 마켓플레이스 항목(marketplace.json)",
+    "cost": "플러그인 하나",
+    "env": "OS 언급 없음"
+   },
+   "summary": "SAP Fiori 개발용 MCP 서버 + 스킬 플러그인(공식 마켓플레이스 새 항목)",
+   "total": 5
+  },
+  {
+   "id": "theme-examples",
+   "name": "theme-examples",
+   "kind": "도구",
+   "source": "plugins-official",
+   "url": "https://github.com/anthropics/claude-plugins-official/tree/main/plugins/theme-examples",
+   "scores": {
+    "relevance": 0,
+    "evidence": 2,
+    "cost": 2,
+    "env": 1,
+    "removes": false,
+    "security": false
+   },
+   "reasons": {
+    "relevance": "데스크톱 앱 장식 플러그인 — 해당 줄 없음(주 사용은 CLI)",
+    "evidence": "공식 마켓플레이스 항목(marketplace.json)",
+    "cost": "플러그인 하나",
+    "env": "데스크톱 앱 대상"
+   },
+   "summary": "Claude 데스크톱 앱 채팅 뒤에 움직이는 배경 20종을 까는 예제 플러그인(읽고 · 복사해 · 고치라는 예제)",
+   "total": 5
+  },
+  {
+   "id": "v0.3.325",
+   "name": "Agent SDK TypeScript v0.3.325",
+   "kind": "구조",
+   "source": "agent-sdk-ts",
+   "url": "https://github.com/anthropics/claude-agent-sdk-typescript/releases/tag/v0.3.325",
+   "scores": {
+    "relevance": 0,
+    "evidence": 2,
+    "cost": 2,
+    "env": 1,
+    "removes": false,
+    "security": false
+   },
+   "reasons": {
+    "relevance": "Agent SDK 를 쓰지 않는다 — 프로필 「주로 쓰는 것」에 없음",
+    "evidence": "공식 CHANGELOG",
+    "cost": "의존성 버전 올리기(샌드박스 동작 변경 확인)",
+    "env": "Windows · macOS 정책 항목은 SDK 호스트용"
+   },
+   "summary": "Agent SDK(TS) v0.3.325 — 세션 보관 · 샌드박스 자동승인 기본 해제 · 훅 무응답 경고",
+   "total": 5
+  },
+  {
+   "id": "v0.3.323",
+   "name": "Agent SDK TypeScript v0.3.323",
+   "kind": "구조",
+   "source": "agent-sdk-ts",
+   "url": "https://github.com/anthropics/claude-agent-sdk-typescript/releases/tag/v0.3.323",
+   "scores": {
+    "relevance": 0,
+    "evidence": 2,
+    "cost": 2,
+    "env": 1,
+    "removes": false,
+    "security": false
+   },
+   "reasons": {
+    "relevance": "Agent SDK 를 쓰지 않는다 — 해당 줄 없음",
+    "evidence": "공식 CHANGELOG",
+    "cost": "의존성 버전 올리기",
+    "env": "MDM · 레지스트리 정책 항목은 SDK 호스트용"
+   },
+   "summary": "Agent SDK(TS) v0.3.323 — 정책 해석 · 훅 하트비트 · `canUseTool` 변경",
+   "total": 5
+  },
+  {
+   "id": "v0.3.322",
+   "name": "Agent SDK TypeScript v0.3.322",
+   "kind": "구조",
+   "source": "agent-sdk-ts",
+   "url": "https://github.com/anthropics/claude-agent-sdk-typescript/releases/tag/v0.3.322",
+   "scores": {
+    "relevance": 0,
+    "evidence": 2,
+    "cost": 2,
+    "env": 1,
+    "removes": false,
+    "security": false
+   },
+   "reasons": {
+    "relevance": "Agent SDK 를 쓰지 않는다 — 동기화 판일 뿐",
+    "evidence": "공식 CHANGELOG",
+    "cost": "의존성 버전 올리기",
+    "env": "OS 별 항목 없음"
+   },
+   "summary": "Agent SDK(TS) v0.3.322 — Claude Code 2.1.322 동기화",
+   "total": 5
+  },
+  {
+   "id": "v0.3.321",
+   "name": "Agent SDK TypeScript v0.3.321",
+   "kind": "구조",
+   "source": "agent-sdk-ts",
+   "url": "https://github.com/anthropics/claude-agent-sdk-typescript/releases/tag/v0.3.321",
+   "scores": {
+    "relevance": 0,
+    "evidence": 2,
+    "cost": 2,
+    "env": 1,
+    "removes": false,
+    "security": false
+   },
+   "reasons": {
+    "relevance": "Agent SDK 를 쓰지 않는다 — 훅 충돌 수정도 SDK 호스트 쪽",
+    "evidence": "공식 CHANGELOG",
+    "cost": "의존성 버전 올리기",
+    "env": "OS 별 항목 없음"
+   },
+   "summary": "Agent SDK(TS) v0.3.321 — 훅 `ask`/`defer` 충돌 수정 · 서브에이전트 보고 묶음",
+   "total": 5
+  },
+  {
+   "id": "https://code.claude.com/docs/en/claude-models-on-google-cloud-anthropic-managed.md",
+   "name": "Google Cloud 의 Claude 모델(Anthropic 관리) 문서",
+   "kind": "구조",
+   "source": "cc-docs-map",
+   "url": "https://code.claude.com/docs/en/claude-models-on-google-cloud-anthropic-managed.md",
+   "scores": {
+    "relevance": 0,
+    "evidence": 2,
+    "cost": 1,
+    "env": 1,
+    "removes": false,
+    "security": false
+   },
+   "reasons": {
+    "relevance": "Google Cloud 사용 기록 없음 — 해당 줄 없음",
+    "evidence": "공식 문서",
+    "cost": "환경변수 · Google Cloud 설정 필요",
+    "env": "OS 별 항목 없음"
+   },
+   "summary": "Google Cloud 프로젝트를 통해 Anthropic 이 운영하는 Claude API 로 Claude Code 를 쓰는 설정 문서",
+   "total": 4
+  },
+  {
+   "id": "/resources/articles/claude-for-manufacturing",
+   "name": "Claude for Manufacturing",
+   "kind": "구조",
+   "source": "claude-blog",
+   "url": "https://claude.com/resources/articles/claude-for-manufacturing",
+   "scores": {
+    "relevance": 0,
+    "evidence": 2,
+    "cost": 1,
+    "env": 1,
+    "removes": false,
+    "security": false
+   },
+   "reasons": {
+    "relevance": "제조업 전용 플러그인 — 해당 줄 없음",
+    "evidence": "공식 글",
+    "cost": "플러그인 + 커넥터 설정",
+    "env": "OS 무관 글"
+   },
+   "summary": "제조 현장 기록으로 견적 · 품질 보고서 · 공급사 요청서를 초안하는 플러그인",
+   "total": 4
+  },
+  {
+   "id": "addyosmani/agent-skills",
+   "name": "`addyosmani/agent-skills`",
+   "kind": "도구",
+   "source": "gh-topic",
+   "url": "https://github.com/addyosmani/agent-skills",
+   "scores": {
+    "relevance": 1,
+    "evidence": 1,
+    "cost": 2,
+    "env": 1,
+    "removes": false,
+    "security": true
+   },
+   "reasons": {
+    "relevance": "superpowers 와 영역이 겹치는 개발 수명주기 스킬 모음 — 과설계 방지 원칙상 「있으면 좋다」, 열린 줄 연결 없음",
+    "evidence": "GitHub 저장소 README 로 확인 — 수치는 자체 주장일 수 있음",
+    "cost": "플러그인 하나",
+    "env": "Windows · macOS 안내 있으나 가진 것(superpowers)과 겹침",
+    "security": "플러그인 훅 · 명령을 설치 — 사용자 권한으로 돈다"
+   },
+   "summary": "개발 수명주기(/spec · /plan · /build · /test · /review · /ship)에 맞춘 엔지니어링 스킬 25종 + 슬래시 명령 9개 플러그인",
+   "total": 3
+  },
+  {
+   "id": "/resources/articles/self-hosted-claude-managed-agents",
+   "name": "자체 호스팅 Claude Managed Agents(비공개 베타)",
+   "kind": "구조",
+   "source": "claude-blog",
+   "url": "https://claude.com/resources/articles/self-hosted-claude-managed-agents",
+   "scores": {
+    "relevance": 0,
+    "evidence": 2,
+    "cost": 0,
+    "env": 1,
+    "removes": false,
+    "security": false
+   },
+   "reasons": {
+    "relevance": "Managed Agents 를 쓰지 않고 비공개 베타 — 해당 줄 없음",
+    "evidence": "공식 글",
+    "cost": "구조 변경 수준 — 신청 필요",
+    "env": "OS 무관 글"
+   },
+   "summary": "Managed Agents 의 에이전트 제어 평면을 자기 클라우드 · 온프레미스에서 운영",
+   "total": 3
+  },
+  {
+   "id": "app.agentwright/claude-pricing",
+   "name": "`app.agentwright/claude-pricing`",
+   "kind": "도구",
+   "source": "mcp-registry",
+   "url": "https://github.com/agentwright-app/site",
+   "scores": {
+    "relevance": 0,
+    "evidence": 0,
+    "cost": 2,
+    "env": 1,
+    "removes": false,
+    "security": false
+   },
+   "reasons": {
+    "relevance": "Claude API 가격 계산 — 해당 줄 없음",
+    "evidence": "레지스트리 설명뿐 — 연결 저장소 README 는 마케팅 사이트 소스라 서버 동작 미확인",
+    "cost": "원격 MCP URL 하나 추가",
+    "env": "OS 언급 없음"
+   },
+   "summary": "Claude API 가격 · 프롬프트 캐싱 · Batch API 비용을 계산해 주는 원격 MCP 서버",
+   "total": 3
+  },
+  {
+   "id": "io.github.edouard-claude/henrri-mcp",
+   "name": "`io.github.edouard-claude/henrri-mcp`",
+   "kind": "도구",
+   "source": "mcp-registry",
+   "url": "https://github.com/edouard-claude/henrri-mcp",
+   "scores": {
+    "relevance": 0,
+    "evidence": 1,
+    "cost": 1,
+    "env": 1,
+    "removes": false,
+    "security": false
+   },
+   "reasons": {
+    "relevance": "외부 청구 서비스용 MCP — 해당 줄 없음",
+    "evidence": "README 로 확인 — 비공식 프로젝트",
+    "cost": "컨테이너 실행 필요",
+    "env": "세 OS 바이너리가 있으나 용도가 다름"
+   },
+   "summary": "Henrri 청구 서비스(고객 · 견적 · 청구서 · 결제 · 웹훅)용 비공식 MCP",
+   "total": 3
+  },
+  {
+   "id": "@tanstack/ai-claude-code",
+   "name": "`@tanstack/ai-claude-code`",
+   "kind": "도구",
+   "source": "npm",
+   "url": "https://www.npmjs.com/package/@tanstack/ai-claude-code",
+   "scores": {
+    "relevance": 0,
+    "evidence": 1,
+    "cost": 1,
+    "env": 1,
+    "removes": false,
+    "security": false
+   },
+   "reasons": {
+    "relevance": "TanStack AI 앱용 어댑터 — 해당 줄 없음",
+    "evidence": "npm 설명 확인 — 코드 미확인",
+    "cost": "라이브러리 의존성 추가",
+    "env": "OS 언급 없음"
+   },
+   "summary": "TanStack AI 용 Claude Code 하네스 어댑터 — Claude Code 를 채팅 백엔드로 쓴다",
+   "total": 3
+  },
+  {
+   "id": "freellmapi",
+   "name": "`freellmapi`",
+   "kind": "도구",
+   "source": "npm",
+   "url": "https://github.com/tashfeenahmed/freellmapi/tree/main/cli#readme",
+   "scores": {
+    "relevance": 0,
+    "evidence": 1,
+    "cost": 1,
+    "env": 1,
+    "removes": false,
+    "security": false
+   },
+   "reasons": {
+    "relevance": "무료 게이트웨이 설정 CLI — 해당 줄 없음",
+    "evidence": "npm 설명 확인 — 코드 미확인",
+    "cost": "CLI 설치 + 게이트웨이 필요",
+    "env": "OS 언급 없음"
+   },
+   "summary": "코딩 에이전트가 FreeLLMAPI 게이트웨이를 쓰도록 설정하는 CLI",
+   "total": 3
+  },
+  {
+   "id": "@opengsd/gsd-core",
+   "name": "`@opengsd/gsd-core`",
+   "kind": "도구",
+   "source": "npm",
+   "url": "https://github.com/open-gsd/gsd-core",
+   "scores": {
+    "relevance": 1,
+    "evidence": 1,
+    "cost": 1,
+    "env": 0,
+    "removes": false,
+    "security": true
+   },
+   "reasons": {
+    "relevance": "컨텍스트 엔지니어링 · 스펙 주도 프레임워크라 관심 개념과 닿지만 하네스 · superpowers 와 겹쳐 과설계 위험 — 열린 줄 연결 없음",
+    "evidence": "README 로 무엇 · 설치 확인 — 효과 주장은 자체 주장",
+    "cost": "설치기 + 파일 추가",
+    "env": "README 에 OS 언급 없음 + 가진 것과 겹침",
+    "security": "`npx` 설치기가 에이전트 런타임 설정에 파일을 설치한다(README 43행)"
+   },
+   "summary": "메타 프롬프팅 · 컨텍스트 엔지니어링 · 스펙 주도 개발을 위한 AI 코딩 에이전트 시스템",
+   "total": 1
+  },
+  {
+   "id": "@agentmemory/agentmemory",
+   "name": "`@agentmemory/agentmemory`",
+   "kind": "도구",
+   "source": "npm",
+   "url": "https://github.com/rohitg00/agentmemory",
+   "scores": {
+    "relevance": 1,
+    "evidence": 1,
+    "cost": 0,
+    "env": 0,
+    "removes": false,
+    "security": true
+   },
+   "reasons": {
+    "relevance": "지속 메모리 — 하네스 lessons · 그래프(plan.md:165 보류 lessons)와 영역이 겹침, 열린 줄 해결은 아님",
+    "evidence": "README 로 확인 — 수치는 자체 주장",
+    "cost": "새 의존성 · 서버 + 훅 설치(구조 변경)",
+    "env": "Windows 는 WSL2 또는 네이티브(109행) + 가진 것과 겹침",
+    "security": "설치가 설정을 쓰고 훅 12개 · 메모리 서버를 들인다(README 98 · 117행)"
+   },
+   "summary": "AI 코딩 에이전트용 지속 메모리 CLI",
+   "total": 0
+  },
+  {
+   "id": "io.github.UmarMuhammad18/aseprite-claude-connector",
+   "name": "`io.github.UmarMuhammad18/aseprite-claude-connector`",
+   "kind": "도구",
+   "source": "mcp-registry",
+   "url": "https://github.com/UmarMuhammad18/aseprite-claude-connector",
+   "scores": {
+    "relevance": 0,
+    "evidence": 1,
+    "cost": 0,
+    "env": 0,
+    "removes": false,
+    "security": true
+   },
+   "reasons": {
+    "relevance": "픽셀아트 도구 — 해당 줄 없음",
+    "evidence": "README 로 무엇 · 설치 확인 — 도구 수 등은 자체 주장",
+    "cost": "Aseprite · Python 패키지 필요",
+    "env": "Aseprite · Python 필요, 하네스 외 영역",
+    "security": "설치 명령이 Claude Code 에 MCP 서버를 등록하고 Aseprite 확장을 추가한다(설정 변경)"
+   },
+   "summary": "실행 중인 Aseprite 에 Claude 가 그림을 그리고 Godot · Unity 로 내보내는 MCP",
+   "total": -1
+  }
+ ],
+ "rescored": []
+}
