@@ -1,8 +1,11 @@
 {
  "ids": [
   "/news/announcements",
+  "/claude-fable-and-mythos-5-2",
   "/news/public-benefit-fund",
   "/news/s1-sec",
+  "/claude-haiku-5-5",
+  "/claude-opus-5-5",
   "/news/features",
   "/news/roadshow-launch",
   "/news/ai-for-science-expands-foundations-research-institutions",
@@ -25,8 +28,9 @@
   "/news/cyber-verification-program",
   "/news/claude-frontier-academy",
   "/news/barclays-scales-claude",
+  "/claude-sonnet-5-5",
   "/news/accenture-embedded-evaluation",
   "/news/life-sciences-verification-program"
  ],
- "updatedAt": "2026-11-16T00:10:27.967Z"
+ "updatedAt": "2026-11-18T02:50:06.661Z"
 }

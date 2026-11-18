@@ -83,6 +83,17 @@ test('모든 원천의 스냅숏은 쌓는다 — 일부만 잡히다 돌아와�
   assert.deepEqual(r3.sources[0].newItems.map((i) => i.id), ['c']);
 });
 
+test('같은 글이 두 원천의 목록에 있으면 앞 원천만 새것 — 뒤 원천은 스냅숏에만 (소식지 검사는 겹친 id 를 거부한다)', async () => {
+  const dir = tmp();
+  const src = (id, url) => ({ id, group: '공식', kind: 'lines', url, pattern: 'href="(/research/[^"]+)"', firstRun: 9 });
+  const run = fakeRun({ '/engineering': 'href="/research/both" href="/research/eng-only"', '/research': 'href="/research/both" href="/research/res-only"' });
+  const once = () => collect({ sources: [src('eng', 'https://a.example/engineering'), src('res', 'https://a.example/research')], snapshotsDir: dir, since: '2026-11-02', run });
+  const r = await once();
+  assert.deepEqual(r.sources.map((s) => s.newItems.map((i) => i.id)), [['/research/both', '/research/eng-only'], ['/research/res-only']]);
+  assert.deepEqual(snap(dir, 'res'), ['/research/both', '/research/res-only']);
+  assert.deepEqual((await once()).sources.map((s) => s.newItems.length), [0, 0]);
+});
+
 test('실패 원인은 stderr 마지막 줄로 남긴다', async () => {
   const err = Object.assign(new Error('Command failed: curl -sSL https://x.example/'), { stderr: 'curl: (6) Could not resolve host: x.example\n' });
   const r = await collect({ sources: [lines('x', 'https://x.example/')], snapshotsDir: tmp(), since: '2026-11-02', run: fakeRun({ 'x.example': err }) });

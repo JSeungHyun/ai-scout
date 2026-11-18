@@ -170,7 +170,7 @@ AI-SCOUT 는 **매주 정해진 원천을 훑어 「내 환경에 맞는 것」�
 |---|---|---|
 | 공식 | Claude Code CHANGELOG | raw |
 | 공식 | 공식 문서 목차(`code.claude.com/docs/en/claude_code_docs_map.md`) — 지난주와 비교해 새 문서 = 새 기능 | 페이지 |
-| 공식 | Anthropic engineering · news · Claude 블로그 | 페이지 |
+| 공식 | Anthropic engineering · research · news(루트 경로 발표 `/claude-…` 포함) · Claude 블로그 | 페이지 |
 | 공식 | 공식 플러그인 마켓 목록 · 공식 스킬 저장소 | raw + `git ls-remote` |
 | 공식 | Agent SDK · claude-code-action | `git ls-remote` 태그 → 바뀌면 raw CHANGELOG |
 | 공식 | anthropics 의 새 저장소 | GitHub 검색 API(`org:anthropics created:>지난주`) |
@@ -180,7 +180,9 @@ AI-SCOUT 는 **매주 정해진 원천을 훑어 「내 환경에 맞는 것」�
 | 인접 | OpenAI Codex · Gemini CLI | `git ls-remote` 태그(다른 에이전트가 먼저 낸 기능 = 구조 아이디어) |
 | 보충 | 웹 검색 | 커뮤니티 발견용 — 판정 근거는 공식 · 원본으로 확인 |
 
-**2단 — 선택**(허용 목록에 도메인 추가 필요): Hacker News(`hn.algolia.com`) · GeekNews(`news.hada.io`, `feeds.feedburner.com`) · Simon Willison(`simonwillison.net`) · Lobsters(`lobste.rs`) · Cursor 변경 이력(`cursor.com`). **4주 뒤 다시 본다.** **제외**: Reddit(로컬에서도 403).
+**2단 — 선택**(허용 목록에 도메인 추가 필요): Hacker News(`hn.algolia.com`) · GeekNews(`news.hada.io`, `feeds.feedburner.com`) · Simon Willison(`simonwillison.net`) · Lobsters(`lobste.rs`) · Cursor 변경 이력(`cursor.com`) · claude.dev 블로그(`claude.dev/rss.xml` — 기본 환경(Limited) 허용 목록의 Anthropic 묶음에 `claude.com` · `claude.ai` · `anthropic.com` 은 있고 `claude.dev` 는 없다: code.claude.com/docs/en/cloud-environments 「Default allowed domains」, 2026-11-18 확인 · 클라우드에서 직접 시험하지는 않았다). **4주 뒤 다시 본다.** **제외**: Reddit(로컬에서도 403).
+
+**v0.2.5**(2026-11-18) — 11-16 실행이 놓친 공식 글을 메웠다. ① `anthropic-research`: `/engineering` 목록에 없는 연구 글(`claude-electronics-design` 11-09 · `coordinated-vulnerability-disclosure-timelines` 11-16). ② `anthropic-news` 패턴에 루트 경로 발표 `/claude-…`(`/claude-fable-and-mythos-5-2` 11-09) — 그 페이지의 루트 경로 링크는 발표 4개와 탐색 4개(`/news` · `/press-kit` · `/science` · `/search`)뿐이라 `claude-` 머리말이 가장 좁다. 같은 페이지라 원천을 나누지 않았다. ③ 한 글이 두 목록(engineering · research)에 걸리면 `collect` 가 **앞 원천만** 새것으로 낸다(주소 기준 · 뒤 원천은 스냅숏에만) — 소식지 검사는 겹친 id 를 거부한다. 두 원천의 지금 글은 스냅숏에 미리 넣었다. `/features/…` · `/institute/…` 글은 잡지 않는다.
 
 **원천도 판정 대상이다.** 공통 원천은 `digest/ledger.md` 에 원천별 수확(후보 · 「이런 것도 있어요」 · 개념)을 남기고, 4주 동안 「이런 것도 있어요」 0건 · 개념 0건인 커뮤니티 원천은 소식지 실행이 「빼기」를 제안한다(공식은 「공식 변경」으로 늘 값이 있고, 인접은 채점하지 않는다 — 공통 층은 개인 추천 수를 모른다). 개인 원천은 개인 `ledger.md` 에 후보 · 추천 · 채택을 남긴다.
 
@@ -218,7 +220,7 @@ AI-SCOUT 는 **매주 정해진 원천을 훑어 「내 환경에 맞는 것」�
 - **왜**: 사용자 질문(11-09) 「스카우트가 지식도 알려 주나」. 스카우트는 도구 · 릴리스만 채점해, 새 개념(층 모델 프롬프트 → 컨텍스트 → 하네스 → 루프 → 그래프 · 소프트웨어 팩토리 같은 것)은 웹 검색에 우연히 걸릴 때만 보이고 낮은 점수로 묻혔다. 개념은 설치할 것이 아니라 **우리 구조에 질문을 던지는 것**이다
 - **도구 채점과 분리한 이유**: 도입 비용 · 환경 점수가 개념에는 맞지 않는다(설치할 것이 없어 점수가 부풀거나 0 으로 묻힌다). 채택 · 도입 판정도 맞지 않는다. 그래서 문턱 · 상한 · `select.mjs` · 판정 줄 밖에 두고, 이슈에는 번호 없이 목록만 싣는다. 개념 검색 발견은 후보 M · `--expect` 에 세지 않는다
 - **두 층**: 개념은 공통 소식지가 모은다(정의 · 출처 · 원문 날짜 · 일반 층 · 근거 등급). 개인 층은 새로 찾지 않고 소식지 개념마다 「내 환경의 어느 자리」 한 줄을 단다
-- **후보**: 공식 원천(Anthropic engineering · news · Claude 블로그)의 새 글 + 웹 검색 1~3회 중 1회를 쓰는 개념 검색(층 이름 낱말 — 공통 층이라 프로필을 쓰지 않는다) + 그 글이 가리키는 원문. 원문 호스트(논문 사이트 등)가 클라우드 허용 목록에 있는지는 미확인 — 막히면 「원문 미확인」
+- **후보**: 공식 원천(Anthropic engineering · research · news · Claude 블로그)의 새 글 + 웹 검색 1~3회 중 1회를 쓰는 개념 검색(층 이름 낱말 — 공통 층이라 프로필을 쓰지 않는다) + 그 글이 가리키는 원문. 원문 호스트(논문 사이트 등)가 클라우드 허용 목록에 있는지는 미확인 — 막히면 「원문 미확인」
 - **v0.1.3 보강**(그 실행의 개념 1건이 셋 다 걸렸다): 검색어 낱말 자체는 개념이 아니다(함께 나온 새 용어만) · 원문 날짜가 7일 밖이면 올리지 않는다 · 등급 1 은 해설 글을 실제로 열었을 때만(검색 요약뿐이면 0) — `digest.mjs --check` 가 날짜 · 등급 · 연 글(`read`) 필드를 본다
 - **한 줄 형식**: 공통 — 용어 · 한 줄 정의(원문에서) · 처음 말한 쪽 · 원문 날짜 · 층(프롬프트 · 컨텍스트 · 하네스 · 루프 · 그래프) · 근거 등급 / 개인 — 내 환경의 어느 자리
 - **근거 등급**: 원문 2 · 해설 글 1 · 검색 요약 · 벤더 글 0(⚠️). 11-09 조사에서 이 분야 출처는 블로그 · 벤더 글이 대부분이고 원문은 드물었다 — 등급이 없으면 벤더의 자체 주장이 정의로 굳는다. 벤더 주장은 「자체 주장」으로 적는다
