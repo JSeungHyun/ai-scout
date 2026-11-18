@@ -10,7 +10,7 @@ const inDoc = (doc, name) => (s) => assert.ok(doc.includes(s), `${name} 에 「$
 const has = inDoc(md, 'SCOUT.md');
 const dhas = inDoc(digest, 'DIGEST.md');
 const ghas = inDoc(design, 'docs/design.md');
-const WEEK = '$(date -u -d "-$(( $(date -u +%u) - 1 )) days" +%F)';
+const WEEK = '$(TZ=KST-9 date -d "-$(( $(TZ=KST-9 date +%u) - 1 )) days" +%F)';
 
 // ── 개인 층 SCOUT.md ──
 
@@ -35,7 +35,7 @@ test('셸 변수 대신 실제 경로 — Bash 호출 사이에 변수가 이어
 
 test('재실행 · 부분 실패 · push 가 안전하다', () => {
   // select 가 성공해야 --out 을 쓴다 — /tmp 를 거쳐 mv 하던 것을 도구가 맡는다
-  for (const s of ['reports/$(date -u +%F).json 이 이미 있으면', '--out reports/$(date -u +%F).json', 'git push origin HEAD:main', 'force push 금지', 'git add reports ledger.md snapshots']) has(s);
+  for (const s of ['reports/$(TZ=KST-9 date +%F).json 이 이미 있으면', '--out reports/$(TZ=KST-9 date +%F).json', 'git push origin HEAD:main', 'force push 금지', 'git add reports ledger.md snapshots']) has(s);
 });
 
 test('판정 반영은 보고서 JSON 에서 시작하고, 채택 수는 다시 센다', () => {
@@ -57,7 +57,7 @@ test('0건 알림 · 관련성 문턱 — 추천은 관련성 2 이상(v0.1.3: �
 });
 
 test('알림의 보고서 링크는 절대 주소 · 첫 줄은 템플릿 그대로', () => {
-  for (const s of [String.raw`$(git remote get-url origin | sed 's/\.git$//')/blob/main/reports/$(date -u +%F).md`, '첫 줄은 템플릿 그대로']) has(s);
+  for (const s of [String.raw`$(git remote get-url origin | sed 's/\.git$//')/blob/main/reports/$(TZ=KST-9 date +%F).md`, '첫 줄은 템플릿 그대로']) has(s);
 });
 
 test('후보 전부 채점 · --expect = 소식지 후보 수 − 장부로 뺀 수 + 개인 원천 새것', () => {
@@ -65,7 +65,7 @@ test('후보 전부 채점 · --expect = 소식지 후보 수 − 장부로 뺀 
 });
 
 test('보고서의 추천 · 아깝게 · 본 것 · 재채점 절은 도구가 JSON 에서 만든다 · 이슈의 ⚠️ 는 묶음 줄에도', () => {
-  for (const s of ['tools/report.mjs reports/$(date -u +%F).json --notes /tmp/notes.md > reports/$(date -u +%F).md', '손으로 옮기거나 고치지 않는다', '묶음 줄에서도']) has(s);
+  for (const s of ['tools/report.mjs reports/$(TZ=KST-9 date +%F).json --notes /tmp/notes.md > reports/$(TZ=KST-9 date +%F).md', '손으로 옮기거나 고치지 않는다', '묶음 줄에서도']) has(s);
 });
 
 test('이슈 본문의 보고서 링크도 알림과 같은 절대 주소', () => {
@@ -96,7 +96,7 @@ test('두 층 — 근거 · 비용 · 보안은 소식지 값 그대로(select -
 });
 
 test('재채점 — select 뒤에 점수를 고치면 rescore 이유, 첫 보고서는 지우지 않는다', () => {
-  for (const s of ['"rescore": "이유"', '「재채점」', '⛔ `reports/$(date -u +%F).json` 을 지우거나 옮기지 않는다']) has(s);
+  for (const s of ['"rescore": "이유"', '「재채점」', '⛔ `reports/$(TZ=KST-9 date +%F).json` 을 지우거나 옮기지 않는다']) has(s);
 });
 
 test('장부 제외 — CHANGELOG 판 일부만 가리키는 장부 줄로 판 전체를 빼지 않는다(v0.1.3: 2.1.319 의 ~140줄이 채점 밖)', () => {
@@ -213,12 +213,23 @@ test('DIGEST.md — 원천 정리는 커뮤니티 원천만(공식은 공식 변
 // ── 장부 · 프로필 ──
 
 test('장부 — 개인 장부의 원천 수확은 개인 원천만, 공통 원천 수확 · 개념 표는 digest/ledger.md', () => {
-  for (const s of ['## 개념', '| 용어 | 층 | 처음 본 날 | 원문 | 근거 등급 | 메모 |', '| pinned |']) assert.ok(ledger.includes(s), `ledger.md 에 「${s}」 가 없다`);
-  for (const s of ['| cc-changelog |', '| gh-topic |', '| web |']) assert.ok(!ledger.includes(s), `ledger.md 에 공통 원천 「${s}」 가 남았다`);
+  for (const s of ['## 원천 수확', '## 개념', '| 용어 | 층 | 처음 본 날 | 원문 | 근거 등급 | 메모 |', '| pinned |']) assert.ok(ledger.includes(s), `ledger.md 에 「${s}」 가 없다`);
+  // 판정 표의 원천 칸에는 소식지 후보의 공통 원천 이름이 정상으로 들어간다(11-16 cc-changelog) — 원천 수확 표만 본다
+  const harvest = ledger.slice(ledger.indexOf('## 원천 수확'), ledger.indexOf('## 개념'));
+  for (const s of ['| cc-changelog |', '| gh-topic |', '| web |']) assert.ok(!harvest.includes(s), `ledger.md 원천 수확 표에 공통 원천 「${s}」 가 남았다`);
   for (const s of ['| cc-changelog |', '| gh-topic |', '| web |', '| 원천 | 후보 | 이런 것도 있어요 | 개념 | 마지막 수확 |', '| 용어 | 층 | 처음 본 날 | 원문 | 원문 날짜 | 근거 등급 |']) assert.ok(digestLedger.includes(s), `digest/ledger.md 에 「${s}」 가 없다`);
   assert.ok(!digestLedger.includes('| pinned |'), '공통 장부에 개인 원천이 들어가면 안 된다');
 });
 
 test('프로필에 소식지 raw 주소', () => {
   assert.ok(profile.includes('- 소식지: https://raw.githubusercontent.com/JSeungHyun/ai-scout/main/digest/'));
+});
+
+test('날짜는 한국 시간 — 루틴이 월 06:00 KST(일 21:00 UTC)에 돌아 UTC 날짜면 「이번 주」가 지난주가 된다', () => {
+  for (const [doc, name] of [[md, 'SCOUT.md'], [digest, 'DIGEST.md']]) {
+    assert.ok(!doc.includes('date -u'), `${name} 에 UTC 날짜(date -u)가 남았다`);
+    assert.ok(doc.includes('일 21:00 UTC'), `${name} 에 「시스템 안내의 UTC 날짜가 아니라」 안내가 없다`);
+  }
+  ghas('월 06:00 KST');
+  ghas('`TZ=KST-9`');
 });

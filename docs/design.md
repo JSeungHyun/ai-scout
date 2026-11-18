@@ -25,10 +25,11 @@ AI-SCOUT 는 **매주 정해진 원천을 훑어 「내 환경에 맞는 것」�
 |---|---|
 | 클라우드 예약(루틴)은 **실행마다 새 세션**이다. 한 세션에 이어 쓰는 설정은 문서에 없다(대안: claude.ai 프로젝트 안의 예약은 thread 를 이을 수 있다 — 미시험) | code.claude.com/docs/en/routines |
 | 루틴은 **개인 계정 소유**(팀 공유 없음) · Pro/Max/Ultra/Team/Enterprise · Team/Enterprise 관리자가 끌 수 있다 · 시간당 1회보다 잦은 cron 거부 · 계정당 시간당 예약 실행 100회 | 같은 문서 「Usage and limits」 |
+| 날짜는 **한국 시간**(`TZ=KST-9`)으로 센다 — 루틴을 월 06:00 KST(= 일 21:00 UTC)로 당겨 결과를 월 07:00 에 받는다(2026-11-18). UTC 날짜면 일요일이라 「이번 주」가 지난주가 되고 소식지가 「이미 있음」으로 멈춘다. `Asia/Seoul` 대신 POSIX 표기라 tzdata 가 없는 이미지에서도 맞다 | 사용자 요청 · `TZ=KST-9 date` 실측(일 21:10 UTC → 월) |
 | 기본 네트워크(Trusted)에서 **열림**: `raw.githubusercontent.com`(공개 저장소 파일) · `git ls-remote`/`clone`(공개 저장소) · GitHub **검색** API · code.claude.com · anthropic.com · claude.com · MCP 레지스트리 · npm 레지스트리 · 웹 검색(서버 쪽) | 시험 실행 2회 |
 | **막힘**: 남의 저장소 GitHub REST(403) · `releases.atom`(403) · 허용 목록 밖 호스트(HN Algolia · GeekNews · Simon Willison · Lobsters · Cursor · Reddit — curl · WebFetch 모두 DNS 실패) | 같은 시험 |
 | 이슈는 **내장 GitHub MCP**(`issue_write` · `add_issue_comment` · `issue_read`)로 쓴다 — 세션에 설정된 저장소(루틴 sources)만 된다. `gh` CLI 는 안 된다(GraphQL 차단) | 이슈 시험 #1 |
-| 이슈 · 댓글 작성자는 **사용자 계정**으로 보인다(`via claude`) — 자기 활동이라 GitHub 알림이 오지 않을 수 있다. 실행 끝의 Claude 앱 푸시는 온다 | 같은 시험 · 사용자 확인 |
+| 이슈 · 댓글 작성자는 **사용자 계정**으로 보인다(`via claude`) — 자기 활동이라 GitHub 알림이 오지 않을 수 있다. 실행 끝의 Claude 앱 푸시는 시험 실행 때는 왔지만 예약 실행(11-09 · 11-16)은 「Mobile push requested」인데도 오지 않았다(11-18 사용자) — 엔진 주인은 결과를 로컬 세션이 월 07:00 에 받아 보여 준다 | 같은 시험 · 사용자 확인 · 실행 기록 |
 | GitHub push · 이슈 쓰기에는 결과 저장소에 Claude GitHub App 설치가 필요하다 | 첫 시험 403 → 설치 후 성공 |
 | 클라우드 자동 모드 분류기는 지시문의 『가져온 코드 실행 금지』를 clone 한 엔진 도구에도 적용한다 — 지시문에 엔진 도구 실행 허락과 금지 범위 예시를 둔다(v0.1.3 통과 · v0.2.0 거부, 11-09) | 첫 소식지 실행 — `node /tmp/ai-scout/tools/collect.mjs` 가 「Code from External」로 거부돼 수집에서 멈췄다. clone 한 `DIGEST.md` 가 도구를 부르라 해도 허락으로 치지 않았다 · 루틴 상태는 그래도 SUCCEEDED |
 | 대안 실행: GitHub Actions(`anthropics/claude-code-action` + `schedule:`, `ANTHROPIC_API_KEY` 또는 `claude setup-token` 구독 토큰) · 로컬 `claude -p` | code.claude.com/docs/en/github-actions · headless |
@@ -91,21 +92,21 @@ AI-SCOUT 는 **매주 정해진 원천을 훑어 「내 환경에 맞는 것」�
 
 | 층 | 어디 · 언제 | 하는 일 | 낸 것 |
 |---|---|---|---|
-| **공통 소식지** | 엔진 저장소 `digest/` · 매주 월 09:00 KST 한 번(엔진 주인의 루틴) | 수집(§9) · 공식 변경 전부 요약 · 도구 · 플러그인 후보마다 **중립 사실**(무엇 · OS 지원 · 도입 비용 · 근거 등급 · ⚠️ 보안) · 개념(정의 · 출처 · 일반 층) · 「이런 것도 있어요」(프로필 없는 기준 — 근거 · 비용 · 범용성) | `digest/YYYY-MM-DD.md`(사람) · `.json`(개인 층 입력) · 공개 이슈 `[AI-SCOUT 소식] YYYY-MM-DD` — 저장소 Watch 로 받는다. 프로필 · 사내 정보 없음 |
+| **공통 소식지** | 엔진 저장소 `digest/` · 매주 월 06:00 KST 한 번(엔진 주인의 루틴) | 수집(§9) · 공식 변경 전부 요약 · 도구 · 플러그인 후보마다 **중립 사실**(무엇 · OS 지원 · 도입 비용 · 근거 등급 · ⚠️ 보안) · 개념(정의 · 출처 · 일반 층) · 「이런 것도 있어요」(프로필 없는 기준 — 근거 · 비용 · 범용성) | `digest/YYYY-MM-DD.md`(사람) · `.json`(개인 층 입력) · 공개 이슈 `[AI-SCOUT 소식] YYYY-MM-DD` — 저장소 Watch 로 받는다. 프로필 · 사내 정보 없음 |
 | **개인 추천** | 각자 결과 저장소(첫 사용자는 엔진 루트) · 공통 뒤(예: 월 10:00) | 이번 주 소식지 JSON 을 raw 로 읽고 + 개인 원천(`sources.local.json` — 고정 플러그인 등)만 직접 수집 → 프로필로 관련성 · 내 환경 · 지울 수 있음을 더해 고른다 → 이슈 · 판정 · 장부(§8 · §10 그대로). 개념에는 「내 환경의 어느 자리」 한 줄 | `reports/` · `ledger.md` · 개인 이슈 · 알림 |
 
 - **점수 나누기**: 공통 = 근거 · 도입 비용 · 보안 · 범용 OS 지원 / 개인 = 관련성 · 내 환경(내 OS · 가진 것과 겹침) · 지울 수 있음. 합산 · 문턱 · 상한은 개인의 `select.mjs`
 - **쓰는 법 세 단계**: ① 설정 없이 엔진 저장소를 Watch → 공통 소식지만(지식 공유) ② 플러그인 `/ai-scout:setup` → 개인 층(맞춤 추천 · 판정) ③ 팀 모드(나중)
 - **첫 사용자**: 루틴 하나가 공통 → 개인을 차례로 돈다(같은 저장소). 동료는 개인 루틴만 — 공통은 엔진 주인이 돈다
 - **비용**: 수집 · 원본 읽기 · 웹 검색은 공통에서 한 번. 개인은 판정만 하므로 짧다
-- **확인 장치**(규칙만 두지 않는다): 소식지 JSON 형식을 도구가 검사(`digest.mjs --check` — 필수 필드 · 범위 · 후보 = 수집 새것 + 웹 발견 − 인접을 원천별 id 로 · GitHub 후보의 OS 근거 · details 의 README 행 번호 · README 보안 행이 있으면 ⚠️ 또는 `reasons.security` · 같은 reasons 문장 반복(커뮤니티 절반 이상) · CHANGELOG details 백틱 낱말의 판 귀속 · 공식 판 `lines` = collect 절 · CHANGELOG 「미확인(코드)」 · 개념 날짜 · 등급) · 개인 `select --links` = 연결 후보가 있는 항목의 관련성 이유가 그 하네스 자리를 인용 · 관련성 이유 상투문 거부 · 개인 `select --expect` = 이번 주 소식지 후보 수 − 장부로 뺀 수 + 개인 원천 새것 − 개인 원천 읽기 실패 · 근거 · 비용 · 보안은 `select --digest` 가 소식지 값과 맞춰 본다 · 개인 층은 소식지 날짜가 이번 주(그 주 월요일 UTC — 소식지 파일 이름)가 아니면 멈추고 알린다(지난 소식지로 추천하지 않는다 — `select` 도 `--date` 의 주와 소식지 `date` 가 다르면 거부한다)
+- **확인 장치**(규칙만 두지 않는다): 소식지 JSON 형식을 도구가 검사(`digest.mjs --check` — 필수 필드 · 범위 · 후보 = 수집 새것 + 웹 발견 − 인접을 원천별 id 로 · GitHub 후보의 OS 근거 · details 의 README 행 번호 · README 보안 행이 있으면 ⚠️ 또는 `reasons.security` · 같은 reasons 문장 반복(커뮤니티 절반 이상) · CHANGELOG details 백틱 낱말의 판 귀속 · 공식 판 `lines` = collect 절 · CHANGELOG 「미확인(코드)」 · 개념 날짜 · 등급) · 개인 `select --links` = 연결 후보가 있는 항목의 관련성 이유가 그 하네스 자리를 인용 · 관련성 이유 상투문 거부 · 개인 `select --expect` = 이번 주 소식지 후보 수 − 장부로 뺀 수 + 개인 원천 새것 − 개인 원천 읽기 실패 · 근거 · 비용 · 보안은 `select --digest` 가 소식지 값과 맞춰 본다 · 개인 층은 소식지 날짜가 이번 주(그 주 월요일 한국 시간 — 소식지 파일 이름)가 아니면 멈추고 알린다(지난 소식지로 추천하지 않는다 — `select` 도 `--date` 의 주와 소식지 `date` 가 다르면 거부한다)
 - **소식지 JSON**: 형식은 `DIGEST.md` §5, 개인 층이 읽는 후보 필드는 `lib/digest.mjs` 의 `FIELDS`(시험으로 고정) — `id · name · source · group · kind · url · what · details · lines · os · evidence · cost · reach · security · reasons`. 개인 층은 원본을 다시 읽지 않으므로 `details`(원본에서 읽은 주요 내용)가 판정 근거다 — CHANGELOG 판은 절 전문 `lines`(원본 행 번호 — `digest.mjs --lines` 가 채운다 · md 에는 안 싣는다)도 실어 `link.mjs` 가 details 밖 줄까지 하네스와 맞춘다(§10 연결 후보)
 - **버린 것**: 사람마다 전부 수집(지금 — 공유가 없고 비용이 사람 수만큼) · 판정 집계 공유(「동료 3명이 채택」 — 회사 정책 확인 전, §13 ⏸)
 
 ## 6. 매주 흐름 — `DIGEST.md`(공통) → `SCOUT.md`(개인)
 
-**공통 — `DIGEST.md`** (엔진 주인의 루틴 · 월 09:00 KST · 프로필 · 개인 장부를 읽지도 쓰지도 않는다)
-1. **이번 주 소식지가 이미 있으면 멈춘다** — 이름 = 그 주 월요일(UTC)
+**공통 — `DIGEST.md`** (엔진 주인의 루틴 · 월 06:00 KST · 프로필 · 개인 장부를 읽지도 쓰지도 않는다)
+1. **이번 주 소식지가 이미 있으면 멈춘다** — 이름 = 그 주 월요일(한국 시간)
 2. **수집한다** — `collect.mjs` 가 1단 원천(§9)을 `digest/snapshots/` 와 비교해 새것만 낸다. 태그 · HEAD 새 항목은 그 ref 의 CHANGELOG 절과 HTTP 코드를 도구가 받아 두고, 본문은 `/tmp/texts/` 파일로 쓴다(JSON 한 줄의 긴 절은 읽는 쪽에서 잘린다)
 3. **웹 검색 1~3회**(커뮤니티 + 개념 검색) — 원본 읽기 앞에, 발견도 후보
 4. **원본을 읽는다** — CHANGELOG 절 파일(긴 절은 grep 먼저) · `readme.mjs`(README 본문 80줄 + OS · 보안 행 · 플러그인 훅 — 원본 행 번호) · npm · MCP 설명. 못 읽으면 `unread`
@@ -237,13 +238,13 @@ AI-SCOUT 는 **매주 정해진 원천을 훑어 「내 환경에 맞는 것」�
 
 **③ 팀 모드** — 나중(§12).
 
-**엔진 주인(첫 사용자)**: 루틴 하나가 `DIGEST.md` → `SCOUT.md` 를 차례로 돈다(월 09:00 KST · 같은 저장소 · 지시문 = §5 의 틀(2 = 공통 → 개인)). 공통이 실패해 소식지가 없으면 개인은 「소식지 없음」으로 멈춘다.
+**엔진 주인(첫 사용자)**: 루틴 하나가 `DIGEST.md` → `SCOUT.md` 를 차례로 돈다(월 06:00 KST · 같은 저장소 · 지시문 = §5 의 틀(2 = 공통 → 개인)). 공통이 실패해 소식지가 없으면 개인은 「소식지 없음」으로 멈춘다.
 
 Actions 를 고르면 2 다음에 워크플로 파일과 비밀값(`CLAUDE_CODE_OAUTH_TOKEN` 또는 `ANTHROPIC_API_KEY`) 설정을 안내한다 — public 저장소는 60일 무활동이면 예약이 꺼진다.
 
 ## 12. 단계
 
-발표가 4주 안이라 주 단위로 끊는다. 예약 실행은 매주 월요일 09:00 이고, 그때마다 실제 데이터가 하나씩 쌓인다.
+발표가 4주 안이라 주 단위로 끊는다. 예약 실행은 매주 월요일 아침(11-16 까지 09:00 · 11-23 부터 06:00)이고, 그때마다 실제 데이터가 하나씩 쌓인다.
 
 | 주 | 단계 | 내용 | 끝났다 |
 |---|---|---|---|

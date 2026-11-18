@@ -17,7 +17,7 @@ if (!file || !a.date || a.expect === undefined || !a.digest || !a.links || !a.ou
 }
 const read = (p) => JSON.parse(readFileSync(p, 'utf8'));
 const [threshold, cap, near, expect] = [a.threshold, a.cap, a.near, a.expect].map(Number);
-// 소식지 이름은 그 주 월요일(UTC) — 지난 소식지로 추천하지 않게 문장만이 아니라 여기서도 막는다
+// 소식지 이름은 그 주 월요일(한국 시간 — --date 도 한국 날짜) — 지난 소식지로 추천하지 않게 문장만이 아니라 여기서도 막는다
 const week = new Date(`${a.date}T00:00:00Z`);
 week.setUTCDate(week.getUTCDate() - ((week.getUTCDay() + 6) % 7));
 try {

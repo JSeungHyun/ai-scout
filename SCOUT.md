@@ -5,13 +5,13 @@
 경로 — Bash 호출 사이에 셸 변수가 이어지지 않으므로 아래 경로를 그대로 쓴다:
 - 엔진: `/tmp/ai-scout/` (이 파일 · `tools/`)
 - 결과 저장소: 작업 폴더(엔진 저장소와 같은 저장소일 수 있다 — 그래도 도구는 `/tmp/ai-scout/` 것을 쓴다). 그 안의 `profile.md` · `ledger.md` · `sources.local.json` · `reports/` · `snapshots/` 는 상대 경로로 쓴다
-- 오늘 날짜: 명령 안에서 `$(date -u +%F)` — 보고서 이름 · 이슈 제목 · 커밋 메시지가 모두 이 값이다
-- 이번 주: `$(date -u -d "-$(( $(date -u +%u) - 1 )) days" +%F)` — 그 주 월요일(UTC), 소식지 파일 이름이다. 아래 `<이번 주>` 자리에 그 날짜를 그대로 적는다
+- 오늘 날짜: 명령 안에서 `$(TZ=KST-9 date +%F)`(한국 시간) — 보고서 이름 · 이슈 제목 · 커밋 메시지가 모두 이 값이다. 루틴은 월 06:00 한국 시간(= 일 21:00 UTC)에 돈다 — 시스템 안내의 UTC 날짜(일요일)가 아니라 이 명령의 값을 쓴다
+- 이번 주: `$(TZ=KST-9 date -d "-$(( $(TZ=KST-9 date +%u) - 1 )) days" +%F)` — 그 주 월요일(한국 시간), 소식지 파일 이름이다. 아래 `<이번 주>` 자리에 그 날짜를 그대로 적는다
 
 ## 0. 준비
 - 어느 단계에서든 멈추면(실패 · 권한 거부 · 아래 멈춤 조건) 알림 첫 줄은 `AI-SCOUT <이번 주> — 멈춤: <단계> · <이유>` 다(예: `— 멈춤: 4 개인 원천 수집 · collect.mjs 실행 거부`) — 루틴은 멈춰도 성공으로 찍혀 알림이 유일한 신호다
 - `node --version` 이 20 이상이 아니면 멈춘다
-- `reports/$(date -u +%F).json 이 이미 있으면` 오늘 실행은 끝난 것이다 — 아무것도 바꾸지 않고 멈춘다(이유 「오늘 이미 실행됨」 — 같은 날 다시 돌면 스냅숏이 이미 전진해 있어 보고서와 이슈 연결을 빈 결과로 덮는다)
+- `reports/$(TZ=KST-9 date +%F).json 이 이미 있으면` 오늘 실행은 끝난 것이다 — 아무것도 바꾸지 않고 멈춘다(이유 「오늘 이미 실행됨」 — 같은 날 다시 돌면 스냅숏이 이미 전진해 있어 보고서와 이슈 연결을 빈 결과로 덮는다)
 
 ## 1. 읽기
 `profile.md` · `ledger.md` 를 읽는다. 하네스 문서는 5 의 `link.mjs` 로 읽는다 — curl 로 따로 받아 일부만 grep 하지 않는다(열린 줄 전부와 연결 후보를 도구가 낸다). 프로필의 「문턱」 값(없으면 5)과 `소식지:` 주소를 기억한다.
@@ -81,12 +81,12 @@ node /tmp/ai-scout/tools/collect.mjs --sources sources.local.json --snapshots sn
    "summary": "무엇 한 줄", "why": "왜 나에게(관련성 2 이상만)", "smallest": "가장 작은 도입(〃)", "pretest": "사전 시험 방법(〃)" }]
 ```
 ```
-node /tmp/ai-scout/tools/select.mjs /tmp/scores.json --digest <소식지 JSON> --links /tmp/links.json --threshold <문턱> --cap 7 --expect <scores.json 에 넣어야 할 수> --date $(date -u +%F) --out reports/$(date -u +%F).json [--near 3]
+node /tmp/ai-scout/tools/select.mjs /tmp/scores.json --digest <소식지 JSON> --links /tmp/links.json --threshold <문턱> --cap 7 --expect <scores.json 에 넣어야 할 수> --date $(TZ=KST-9 date +%F) --out reports/$(TZ=KST-9 date +%F).json [--near 3]
 ```
 - `--expect` 수 = 소식지 후보 수 − 장부로 뺀 수 + 개인 원천 새것 − 개인 원천 읽기 실패 — 3 · 4 · 5 에서 센 값으로 넣는다(scores.json 을 센 값이 아니다). 어긋나면 select 가 scores.json 에 없는 소식지 후보 id 를 보여 준다
 - `--near 3` 은 `reports/*.json` 이 2개 미만일 때만(처음 2회)
 - 실패하면(범위 밖 점수 · 소식지와 다른 근거 · 비용 · 보안 · 숫자 아닌 문턱 · 항목 수가 `--expect` 와 다름 · 연결 후보 인용 없음 · 같은 관련성 이유 · 관련성 2 이상인데 why · smallest · pretest 없음) 메시지대로 고친다 — 소식지가 이번 주 것이 아니라는 실패는 고치지 말고 3 대로 알리고 멈춘다. 그 밖에는 메시지대로 고쳐 다시 돌린다 — 성공하기 전에는 `reports/` 에 아무것도 생기지 않는다
-- **재채점**: select 가 성공한 뒤 점수를 고치려면 그 항목에 `"rescore": "이유"` 를 넣고 같은 명령을 다시 돌린다 — select 가 첫 결과와 비교해 이유 없는 변경은 거부하고, 전 · 후 · 이유를 보고서 「재채점」 절에 남긴다. ⛔ `reports/$(date -u +%F).json` 을 지우거나 옮기지 않는다
+- **재채점**: select 가 성공한 뒤 점수를 고치려면 그 항목에 `"rescore": "이유"` 를 넣고 같은 명령을 다시 돌린다 — select 가 첫 결과와 비교해 이유 없는 변경은 거부하고, 전 · 후 · 이유를 보고서 「재채점」 절에 남긴다. ⛔ `reports/$(TZ=KST-9 date +%F).json` 을 지우거나 옮기지 않는다
 
 ## 5-1. 개념 — 소식지 것에 내 자리 한 줄
 소식지 `concepts`(최대 3)마다 한 줄: 용어 — 「내 환경의 어느 자리」(5 의 `/tmp/links.json` 하네스 열린 줄 · 프로필 「가진 것」과 대조해 어느 모듈 · 규칙에 질문을 던지나 — 하네스가 없으면 층만) · 소식지 근거 등급 · 원문 링크. 새로 찾지 않는다 — 개념 검색 · 원문 읽기는 공통 층 몫이다.
@@ -104,7 +104,7 @@ node /tmp/ai-scout/tools/select.mjs /tmp/scores.json --digest <소식지 JSON> -
 ## 판정 반영               (2 에서 반영한 것 · unparsed 줄)
 ```
 ```
-node /tmp/ai-scout/tools/report.mjs reports/$(date -u +%F).json --notes /tmp/notes.md > reports/$(date -u +%F).md
+node /tmp/ai-scout/tools/report.mjs reports/$(TZ=KST-9 date +%F).json --notes /tmp/notes.md > reports/$(TZ=KST-9 date +%F).md
 ```
 - 머리(소식지 링크 · 채점 수 · 문턱)와 추천 · 아깝게 빠진 것 · 본 것 · 재채점 절은 도구가 보고서 JSON 에서 만든다 — md 에 손으로 옮기거나 고치지 않는다(점수를 고칠 것이면 5 의 재채점으로)
 
@@ -112,7 +112,7 @@ node /tmp/ai-scout/tools/report.mjs reports/$(date -u +%F).json --notes /tmp/not
 
 커밋 · push:
 ```
-git add reports ledger.md snapshots && git commit -m "scout: $(date -u +%F) 주간 보고" && git push origin HEAD:main
+git add reports ledger.md snapshots && git commit -m "scout: $(TZ=KST-9 date +%F) 주간 보고" && git push origin HEAD:main
 ```
 - push 가 거절되면 `git pull --rebase origin main` 을 한 번 하고 다시 push 한다. 그래도 안 되면 알림에 「push 실패」와 이유를 적는다
 - force push 금지
@@ -141,7 +141,7 @@ git add reports ledger.md snapshots && git commit -m "scout: $(date -u +%F) 주�
 - 추천 있음: `AI-SCOUT 추천 N건 — 이슈 #M <이슈 링크> · 개념 C건`
 - 0건: `AI-SCOUT 0건 (공식 변경 K건) <보고서 링크> · 개념 C건`
 - K · C = 3 의 소식지 머리 줄 값(C 는 0 이어도 적는다)
-- `<보고서 링크>` 는 상대 경로가 아니라 `$(git remote get-url origin | sed 's/\.git$//')/blob/main/reports/$(date -u +%F).md` — 알림에서 열려야 한다
+- `<보고서 링크>` 는 상대 경로가 아니라 `$(git remote get-url origin | sed 's/\.git$//')/blob/main/reports/$(TZ=KST-9 date +%F).md` — 알림에서 열려야 한다
 
 ## 9. 4주마다
 `reports/*.json` 개수가 4의 배수인 주에는 `/tmp/notes.md` 에 두 절을 더한다. **바꾸는 것은 사람이다 — 제안만.**
