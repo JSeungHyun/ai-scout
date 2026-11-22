@@ -3,25 +3,26 @@
   "morluto/rea",
   "affaan-m/ECC",
   "NousResearch/hermes-agent",
+  "DietrichGebert/ponytail",
   "farion1231/cc-switch",
   "nextlevelbuilder/ui-ux-pro-max-skill",
   "Graphify-Labs/graphify",
   "stablyai/orca",
   "JuliusBrussee/caveman",
+  "Leonxlnx/taste-skill",
   "addyosmani/agent-skills",
   "thedotmack/claude-mem",
   "paperclipai/paperclip",
+  "Panniantong/Agent-Reach",
   "ruvnet/RuView",
   "tt-a1i/archify",
   "Egonex-AI/Understand-Anything",
   "cheaper-inference/OmniRoute",
-  "rtk-ai/rtk",
   "heygen-com/hyperframes",
+  "rtk-ai/rtk",
   "career-ops-hq/career-ops",
   "ruvnet/ruflo",
-  "shareAI-lab/learn-claude-code",
-  "Leonxlnx/taste-skill",
-  "Panniantong/Agent-Reach"
+  "shareAI-lab/learn-claude-code"
  ],
- "updatedAt": "2026-11-16T00:10:33.060Z"
+ "updatedAt": "2026-11-22T21:02:55.447Z"
 }

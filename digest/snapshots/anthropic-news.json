@@ -7,6 +7,8 @@
   "/claude-haiku-5-5",
   "/claude-opus-5-5",
   "/news/features",
+  "/news/ipo-close",
+  "/news/anthropic-prices-initial-public-offering",
   "/news/roadshow-launch",
   "/news/ai-for-science-expands-foundations-research-institutions",
   "/news/expanding-partnership-gsa",
@@ -32,5 +34,5 @@
   "/news/accenture-embedded-evaluation",
   "/news/life-sciences-verification-program"
  ],
- "updatedAt": "2026-11-18T02:50:06.661Z"
+ "updatedAt": "2026-11-22T21:02:49.135Z"
 }

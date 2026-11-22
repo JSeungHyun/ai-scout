@@ -1,6 +1,7 @@
 {
  "ids": [
   "/resources/articles/interactive-connectors-full-tool",
+  "/resources/articles/linked-billing-on-claude-platform",
   "/resources/articles/building-always-on-agents",
   "/resources/articles/claude-tag-guide-for-startups",
   "/resources/articles/self-hosted-claude-managed-agents",
@@ -24,5 +25,5 @@
   "/resources/articles/expanding-claude-for-nonprofits",
   "/resources/articles/unified-claude-enterprise"
  ],
- "updatedAt": "2026-11-16T00:10:28.381Z"
+ "updatedAt": "2026-11-22T21:02:49.439Z"
 }
