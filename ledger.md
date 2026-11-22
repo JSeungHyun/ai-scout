@@ -20,13 +20,17 @@
 | Claude Code 2.1.325 | 구조 | cc-changelog | 9 | 추천 | — | worktree 샌드박스 · 스킬 로딩 · 예약 작업 확인 — plan.md:73 와 닿음 | — | 2026-11-16 |
 | Claude Code 2.1.323 | 구조 | cc-changelog | 9 | 추천 | — | Bash 권한 검사 수정 · `--settings` 시작 중단 — deny 정책 실효성 | — | 2026-11-16 |
 | Claude Code 2.1.321 | 구조 | cc-changelog | 9 | 추천 | — | Windows 시작 속도 · 권한 검사 수정 | — | 2026-11-16 |
+| Claude Code 2.1.329 | 구조 | cc-changelog | 9 | 추천 | — | 신뢰 대화상자가 훅 선언 위치를 알림(plan.md:73) · 저장된 예약 작업 재등록 | — | 2026-11-23 |
+| Claude Code 2.1.327 | 구조 | cc-changelog | 9 | 추천 | — | Windows 시작 속도 · `--disallowedTools` 괄호 규칙 수정(plan.md:420) | — | 2026-11-23 |
+| Claude Code 2.1.326 | 구조 | cc-changelog | 9 | 추천 | — | `--allowedTools` 값 경고(plan.md:420) · 훅 exit 127 안내(plan.md:265) | — | 2026-11-23 |
+| Claude Code 2.1.330 | 구조 | cc-changelog | 8 | 추천 | — | SessionStart 환경 변수 수정(plan.md:264·265) · 예약 작업 30일 | — | 2026-11-23 |
 
 ## 원천 수확
 개인 원천(`sources.local.json`)만 — 공통 원천의 수확은 공통 소식지 장부 `digest/ledger.md` 에 있다(2026-11-09 의 공통 원천 줄은 두 층으로 나누며 그리로 옮겼다). 고정 점검을 뺀 개인 원천이 4주 동안 추천 0건이면 보고서가 「빼기」를 제안한다.
 
 | 원천 | 후보 | 추천 | 채택 | 마지막 수확 |
 |---|---|---|---|---|
-| pinned | 0 | 0 | 0 | 2026-11-16 |
+| pinned | 1 | 0 | 0 | 2026-11-23 |
 
 ## 개념
 개념은 판정하지 않는다(추천이 아니다). 개념은 공통 소식지에서 온다 — 같은 용어를 다시 올리지 않는 기록은 `digest/ledger.md` 이고, 여기는 소식지 개념마다 「내 환경의 어느 자리」(메모)를 남긴다. 근거 등급: 원문 2 · 해설 글 1 · 검색 요약 · 벤더 글 0(⚠️).
